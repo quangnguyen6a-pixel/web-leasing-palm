@@ -148,6 +148,37 @@ and update the `@font-face` / `font-family` stack accordingly.
   **is** disabled under `prefers-reduced-motion` (explicit
   `animation-name: none !important` override, since the text would
   otherwise strobe under the site's global near-zero-duration rule).
+- **Water-reflection system:** a restrained, riverside-inspired layer
+  on top of the existing glassmorphism, applied selectively — never to
+  nav, mobile menu, popup, or body copy:
+  - **Hero:** `.hero__water` (lower ~32% of the hero, `mask-image`
+    fades the top edge) drifts very slowly (`water-drift`, 19s,
+    `translate3d`+`scale` only) via its `::before`, opacity ~0.1,
+    `mix-blend-mode: screen`, `pointer-events: none`.
+  - **Storytelling panel:** `.project-overview__panel::before` is a
+    static, low-opacity refraction glow in the upper-left/lower-right
+    corners (no motion); `::after` plays a single 2.6s entrance shine
+    the first time the panel scrolls into view, piggy-backing on the
+    existing `.is-visible` scroll-reveal class — it does not loop.
+  - **USP cards:** `.stat-card::before` is a static idle water texture
+    identical on all three cards; `::after` is a one-shot light ripple
+    that plays only while a given card is `:hover` (never more than
+    one card at a time, since it's hover-scoped, not global).
+    `.stat-card__accent` (the yellow top tick) was split out into a
+    real element so `::before`/`::after` were free for the water
+    layers; all real card content is pinned to `z-index: 1` above them.
+  - **Section seam:** `.section-water-divider`, a 2px strip between
+    the hero and Project Overview with a slow-drifting (20s, linear)
+    low-opacity highlight line — not a wave shape.
+  - **Reduced motion:** the two infinite-loop animations (hero water,
+    divider) get an explicit `animation-name: none !important` under
+    `prefers-reduced-motion` (same reasoning as the headline shine —
+    the site's global near-zero-duration rule would otherwise make an
+    infinite animation strobe). The one-shot effects (panel entrance,
+    card ripple) are left to that global rule, since a single
+    near-instant play is harmless. Static `::before` textures remain
+    visible either way. The hero/divider drift is also turned off
+    below 768px to keep mobile scrolling cheap.
 
 ---
 

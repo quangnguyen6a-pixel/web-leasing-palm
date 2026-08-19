@@ -471,6 +471,42 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   opacity: 1;
 }
 
+/* Riverside water-reflection layer — confined to the lower band of the
+   hero, well clear of the headline/supporting copy. Slow atmospheric
+   drift, very low opacity, screen blend so it reads as light on the
+   water rather than a texture sitting on top of the photo. */
+.hero__water {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 32%;
+  overflow: hidden;
+  pointer-events: none;
+  isolation: isolate;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.9) 45%);
+  mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.9) 45%);
+}
+.hero__water::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  opacity: 0.1;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(255, 255, 255, 0.36) 0%, transparent 38%),
+    radial-gradient(ellipse at 70% 60%, rgba(255, 223, 0, 0.14) 0%, transparent 32%),
+    repeating-radial-gradient(ellipse at 50% 100%, rgba(255, 255, 255, 0.14) 0 1px, transparent 2px 14px);
+  filter: blur(9px);
+  transform: translate3d(0, 0, 0) scale(1.08);
+  animation: water-drift 19s ease-in-out infinite;
+}
+@keyframes water-drift {
+  0% { transform: translate3d(-2%, -1%, 0) scale(1.08); }
+  50% { transform: translate3d(2%, 1%, 0) scale(1.12); }
+  100% { transform: translate3d(-2%, -1%, 0) scale(1.08); }
+}
+
 .hero__content {
   position: relative;
   z-index: 1;
@@ -534,6 +570,18 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
     color: var(--color-white) !important;
     -webkit-text-fill-color: currentColor !important;
   }
+  /* Infinite-loop water animations must be explicitly stopped, not just
+     sped up — the site-wide near-zero-duration override alone would
+     make an infinite-iteration animation strobe rather than freeze.
+     One-shot effects (panel entrance shine, card hover ripple) are left
+     to that global override since a single near-instant play is
+     harmless. Static low-opacity textures (::before layers) stay. */
+  .hero__water::before,
+  .section-water-divider::before {
+    animation-name: none !important;
+    transform: none !important;
+    background-position: 0 0 !important;
+  }
 }
 .hero__draft-flag {
   display: inline-block;
@@ -594,6 +642,36 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   50% { opacity: 1; transform: scaleY(1); }
 }
 
+/* Thin water-reflection seam between hero and Project Overview —
+   an irregular, low-opacity highlight drifting very slowly, not a
+   decorative wave shape. */
+.section-water-divider {
+  position: relative;
+  height: 2px;
+  overflow: hidden;
+  background: var(--color-navy-primary);
+}
+.section-water-divider::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 15%,
+    rgba(255, 223, 0, 0.28) 30%,
+    transparent 45%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: divider-drift 20s linear infinite;
+}
+@keyframes divider-drift {
+  0% { background-position: 0% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* =========================================================
    PROJECT OVERVIEW
    Reuses the same global container (var(--content-max-width)) and
@@ -639,6 +717,8 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 /* Storytelling panel — restrained glassmorphism */
 .project-overview__panel {
   position: relative;
+  overflow: hidden;
+  isolation: isolate;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.13);
   backdrop-filter: blur(8px);
@@ -653,6 +733,49 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   border-color: rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.08);
   box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
+}
+/* Water-glass framing: static refraction near the upper-left and
+   lower-right corners; the centre (behind the copy) stays calmer and
+   darker, so the texture frames the content instead of moving under
+   every line of text. */
+.project-overview__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.09;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(ellipse 220px 140px at 4% 8%, rgba(255, 255, 255, 0.4), transparent 70%),
+    radial-gradient(ellipse 240px 150px at 97% 94%, rgba(255, 223, 0, 0.18), transparent 70%);
+  filter: blur(7px);
+}
+/* One-shot entrance shine, piggybacking on the existing scroll-reveal
+   .is-visible class (js/main.js) — plays once, then stays off. No
+   continuous movement behind the paragraph text. */
+.project-overview__panel::after {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background: radial-gradient(ellipse 320px 220px at 15% 20%, rgba(255, 255, 255, 0.32), transparent 45%);
+  filter: blur(10px);
+}
+.project-overview__panel.is-visible::after {
+  animation: panel-shine-once 2600ms ease-out 1;
+}
+@keyframes panel-shine-once {
+  0% { transform: translate3d(-6%, -4%, 0); opacity: 0; }
+  35% { opacity: 0.12; }
+  100% { transform: translate3d(6%, 4%, 0); opacity: 0; }
+}
+.project-overview__panel > * {
+  position: relative;
+  z-index: 1;
 }
 .project-overview__quote-mark {
   display: block;
@@ -691,6 +814,8 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 }
 .stat-card {
   position: relative;
+  overflow: hidden;
+  isolation: isolate;
   background: rgba(255, 255, 255, 0.055);
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 4px;
@@ -709,15 +834,61 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   background: rgba(255, 255, 255, 0.09);
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.25);
 }
-.stat-card::before {
-  content: "";
+.stat-card__accent {
   position: absolute;
   top: 0;
   left: 50%;
+  z-index: 1;
   transform: translateX(-50%);
   width: 32px;
   height: 2px;
   background: var(--color-savills-yellow);
+}
+/* Idle state: consistent low-opacity water texture across all three
+   cards — no motion, same on every card. */
+.stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(ellipse at 18% 22%, rgba(255, 255, 255, 0.32), transparent 45%),
+    radial-gradient(ellipse at 85% 82%, rgba(255, 223, 0, 0.14), transparent 45%);
+  filter: blur(5px);
+}
+/* Hover state: one soft light ripple crosses the card, then stops —
+   never runs on more than one card at a time since it's :hover-scoped. */
+.stat-card::after {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.32) 48%,
+    rgba(255, 223, 0, 0.16) 52%,
+    transparent 70%
+  );
+  filter: blur(4px);
+}
+.stat-card:hover::after {
+  animation: card-ripple 900ms ease-out 1;
+}
+@keyframes card-ripple {
+  0% { opacity: 0; transform: translateX(-55%); }
+  35% { opacity: 0.16; }
+  100% { opacity: 0; transform: translateX(55%); }
+}
+.stat-card > *:not(.stat-card__accent) {
+  position: relative;
+  z-index: 1;
 }
 .stat-card__label {
   font-size: 12px;
@@ -980,6 +1151,16 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   }
   .hero__headline { font-size: clamp(26px, 8vw, 36px); }
   .hero__supporting { font-size: 15px; margin-bottom: 24px; }
+
+  /* Keep the water/shine textures visible but stop the continuous
+     drift on mobile — cheap to leave as a static layer, not worth the
+     animated blur+scale cost on lower-power GPUs. */
+  .hero__water::before,
+  .section-water-divider::before {
+    animation: none;
+    transform: none;
+    background-position: 0 0;
+  }
 
   .placeholder-section { padding: 56px 20px; min-height: 50vh; }
 
