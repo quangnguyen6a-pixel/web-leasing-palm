@@ -204,13 +204,21 @@ project-specific claims).
 
 ## 11. Assets to replace before production
 
-See `assets/README.md`. In short: drop in
-`assets/palm-city-logo.svg`, `assets/savills-logo.svg`, and
-`assets/palm-city-hero.webp` (exact filenames) and the prototype's
-`[PALM_CITY_LOGO]` / `[SAVILLS_LOGO]` / `[APPROVED_HERO_IMAGE]`
-placeholders disappear automatically (via each `<img>`'s `onerror`
-fallback). Also replace the Google Fonts Playfair Display link and the
-Gotham font stack with licensed, self-hosted webfont files.
+See `assets/README.md`. The client-supplied logos and hero photo are
+now in place: `assets/palm-city-logo.png`, `assets/savills-logo.png`,
+`assets/palm-city-hero.webp` (the hero was cropped to remove a
+baked-in headline/stats panel from the source file — see
+`assets/README.md` for details). If missing, the prototype falls back
+automatically to `[PALM_CITY_LOGO]` / `[SAVILLS_LOGO]` /
+`[APPROVED_HERO_IMAGE]` text placeholders via each `<img>`'s
+`onerror` handler.
+
+Production should still swap in: a vector (SVG) version of each logo
+if available, and — ideally — a light/white version of the Palm City
+logo (see `assets/README.md` re: the `.logo-chip` contrast plaque used
+in this prototype as a stand-in). Also replace the Google Fonts
+Playfair Display link and the Gotham font stack with licensed,
+self-hosted webfont files.
 
 Hero copy (headline + supporting copy) in `index.html` is marked
 **Draft – Pending Approval** and must be confirmed by the project team

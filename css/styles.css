@@ -118,6 +118,19 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   min-width: 0;
 }
 .brand-primary img { height: 40px; width: auto; }
+
+/* Palm City logo is dark-on-transparent; a light plaque keeps it legible
+   against the navy header in both the transparent and scrolled states,
+   without altering the logo file itself. */
+.logo-chip {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 6px 10px;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+.logo-chip img { display: block; }
 .brand-divider {
   width: 1px;
   height: 28px;
@@ -661,7 +674,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   .utility-group .lang-switcher { display: none; }
   .utility-group .btn--register { display: none; }
   .hamburger { display: flex; }
-  .brand-secondary__label { display: none; }
+  .header-inner .brand-secondary__label { display: none; }
 
   .hero {
     min-height: 80svh;
