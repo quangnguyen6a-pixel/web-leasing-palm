@@ -11,9 +11,19 @@ to any back-end, CRM, or CMS. It exists to:
 - Act as a front-end reference for the development team.
 - Serve as the layout/behaviour baseline for the eventual WordPress/Elementor build.
 
-Brand hierarchy: **Palm City** is the lead brand throughout. **Savills**
-appears only as the distribution/sales agent (labelled "Đại lý phân phối
-/ Sales Agent"), never as the developer or investor.
+Brand hierarchy: **Palm City** is the lead brand throughout the page
+(page `<title>`, hero, footer). **Savills** appears only as the
+distribution/sales agent (labelled "Đại lý phân phối / Sales Agent"),
+never as the developer or investor.
+
+> **Header exception, by explicit client request:** the top navigation
+> shows the Savills mark only — the Palm City logo was removed from
+> the header. This departs from the brand-hierarchy principle above
+> (Palm City normally leading visually everywhere, including the nav);
+> it was a deliberate, confirmed client decision, not an oversight.
+> Palm City identity is still carried by the page title, hero, and
+> footer. See the comment above the brand mark in `index.html` for the
+> same note in code. Revisit if stakeholders flag it during review.
 
 ---
 
@@ -107,9 +117,18 @@ and update the `@font-face` / `font-family` stack accordingly.
 - **Top of page:** transparent background, white text/logo, height
   ~84px (72px on mobile).
 - **Scrolled** (after ~64px of scroll): switches to
-  `data-state="scrolled"` — navy background with `backdrop-filter:
-  blur()`, subtle bottom border/shadow, height reduced to ~70px
-  (~60px on mobile). Transition is 240ms.
+  `data-state="scrolled"` — translucent navy (`rgba(0,28,61,0.74)`)
+  with `backdrop-filter: blur(14px)`, subtle bottom border/shadow,
+  height reduced to ~70px (~60px on mobile). Transition is 240ms.
+- **Glass/interactive treatment:** nav links, the language switcher,
+  hamburger, and the brand mark all get a translucent
+  `rgba(255,255,255,0.08)` + `blur(6px)` hover/focus pill; the
+  Register Interest button rests as a subtle glass pill and fills
+  solid yellow on hover. The mobile drawer, its overlay, and the popup
+  overlay also carry backdrop blur. The Project Overview stat cards
+  lift and brighten their border on hover. All of this is CSS
+  `transition`/`:hover`/`:focus-visible` only — no JS — and durations
+  collapse under `prefers-reduced-motion` via the existing global rule.
 - Implemented in `js/main.js` via a `scroll` listener that toggles
   `data-state` on `#site-header`; all visual differences are pure CSS
   driven off that attribute.
