@@ -179,16 +179,41 @@ acceptable SEO solution in production.
 
 ---
 
-## 9. Placeholder sections
+## 9. Project Overview section
 
-`#overview`, `#location`, `#amenities`, `#floor-plans`, `#gallery`,
-`#progress` in `index.html` are intentionally minimal — bilingual
-heading + a "Placeholder for development" label, alternating neutral
-backgrounds. They exist only to validate sticky header behaviour,
-smooth scrolling, active-menu state, anchor links, and responsive
-layout. **They are not final section designs** and carry no assumed
-project content (no pricing, unit counts, handover dates, or other
-project-specific claims).
+`#overview` (`.project-overview` in `index.html`) is a fully designed
+section, not a placeholder: a bilingual eyebrow/heading, a restrained
+glassmorphism storytelling panel, and a 3-column USP stat-card grid
+(reference price / booking value / incentive level).
+
+- **Container/alignment:** reuses the exact same box model as
+  `.header-inner` and `.hero__content` — `.project-overview__container`
+  has `max-width: var(--content-max-width)` with the padding *inside*
+  that max-width box (not section-padding-then-inner, which is what
+  `.placeholder-section` uses). This keeps its left/right edges
+  pixel-identical to the hero and nav at every breakpoint, including
+  the ≥1440px max-width bump to 1360px.
+- **Copy and figures are drafts.** The storytelling paragraph carries
+  a "Nội dung minh hoạ — chờ duyệt / Draft copy — pending approval"
+  flag; the three stat cards show a dimmed "—" placeholder value
+  (`.stat-card__value--placeholder`) with a note below the grid
+  ("Số liệu minh hoạ — chờ xác nhận…"). Swap in approved copy/figures
+  by editing the `data-lang-vi`/`data-lang-en` text and replacing the
+  `—` — no structural changes needed.
+- **Scroll reveal:** the panel and cards fade/slide in on scroll via
+  `[data-reveal]` + `IntersectionObserver` in `js/main.js`
+  (`.reveal-pending` / `.is-visible` in `styles.css`). This is
+  progressive enhancement — the JS only *adds* the hidden state, so
+  content stays visible with JS disabled or no `IntersectionObserver`
+  support. Respects `prefers-reduced-motion` via the existing global
+  rule.
+
+`#location`, `#amenities`, `#floor-plans`, `#gallery`, `#progress`
+remain intentionally minimal placeholders — bilingual heading + a
+"Placeholder for development" label — used only to validate sticky
+header behaviour, smooth scrolling, active-menu state, anchor links,
+and responsive layout. **They are not final section designs** and
+carry no assumed project content.
 
 ---
 

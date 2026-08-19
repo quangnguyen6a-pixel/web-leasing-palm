@@ -77,6 +77,33 @@
   }
 
   /* -----------------------------------------------------
+     3b. SUBTLE SCROLL REVEAL (Project Overview panel/cards)
+     Content is visible by default; JS only opts elements into a
+     hidden-then-revealed state when IntersectionObserver is
+     available, so nothing depends on JS to be readable.
+     ----------------------------------------------------- */
+  var revealEls = document.querySelectorAll("[data-reveal]");
+  if ("IntersectionObserver" in window && revealEls.length) {
+    revealEls.forEach(function (el) {
+      el.classList.add("reveal-pending");
+    });
+    var revealObserver = new IntersectionObserver(
+      function (entries, obs) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+    revealEls.forEach(function (el) {
+      revealObserver.observe(el);
+    });
+  }
+
+  /* -----------------------------------------------------
      4. MOBILE MENU
      ----------------------------------------------------- */
   var mobileMenu = document.getElementById("mobile-menu");

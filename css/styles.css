@@ -20,6 +20,15 @@
   --header-height-scrolled: 70px;
   --transition-header: 240ms ease;
   --content-max-width: 1280px;
+
+  /* Spacing scale — used by Project Overview and available for future sections */
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 72px;
 }
 
 /* --- Reset --- */
@@ -496,6 +505,173 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 }
 
 /* =========================================================
+   PROJECT OVERVIEW
+   Reuses the same global container (var(--content-max-width)) and
+   horizontal gutters as .header-inner / .hero__content, so the
+   storytelling panel and USP grid align exactly with the hero and
+   top navigation above.
+   ========================================================= */
+.project-overview {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.04), transparent 42%),
+    var(--color-navy-primary);
+  color: var(--color-white);
+  padding: 88px 0;
+}
+/* Matches .header-inner / .hero__content exactly (max-width + padding
+   on the same box, not section-padding-then-inner) so the left/right
+   edges align pixel-for-pixel with the hero and nav at every
+   breakpoint, including the >=1440px max-width bump below. */
+.project-overview__container {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0 64px;
+}
+
+.project-overview__header {
+  max-width: 640px;
+}
+.project-overview__eyebrow {
+  color: var(--color-savills-yellow);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-sm);
+}
+.project-overview__title {
+  font-size: clamp(30px, 3.6vw, 44px);
+  font-weight: 600;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+/* Storytelling panel — restrained glassmorphism */
+.project-overview__panel {
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.16);
+  border-radius: 6px;
+  padding: var(--space-xl) 40px;
+  margin-top: var(--space-xl);
+}
+.project-overview__quote-mark {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 48px;
+  line-height: 1;
+  color: var(--color-savills-yellow);
+  opacity: 0.65;
+  margin-bottom: var(--space-sm);
+}
+.project-overview__copy {
+  max-width: 68ch;
+  font-size: 17px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: left;
+}
+.project-overview__copy-flag {
+  display: inline-block;
+  margin-top: var(--space-md);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-navy-primary);
+  background: var(--color-savills-yellow);
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+/* USP stat cards */
+.project-overview__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+.stat-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 4px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-xs);
+}
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 2px;
+  background: var(--color-savills-yellow);
+}
+.stat-card__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-white);
+}
+.stat-card__prefix {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+.stat-card__value-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+}
+.stat-card__value {
+  font-family: var(--font-heading);
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--color-savills-yellow);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.stat-card__unit {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+}
+/* Draft figures render dimmer than a resolved number would, so the
+   placeholder reads as "pending" rather than as real (broken) data. */
+.stat-card__value--placeholder {
+  opacity: 0.45;
+  font-weight: 400;
+}
+
+.project-overview__stats-note {
+  margin-top: var(--space-md);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Subtle scroll reveal — opt-in via JS; content is fully visible
+   without JS/IntersectionObserver support (see js/main.js). */
+.reveal-pending {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 400ms ease, transform 400ms ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal-pending.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================================
    PLACEHOLDER SECTIONS
    ========================================================= */
 .placeholder-section {
@@ -661,6 +837,12 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   .btn--register { padding: 8px 14px; font-size: 12px; }
   .hero__content { padding: 0 32px; padding-top: var(--header-height-top); }
   .placeholder-section { padding: 64px 32px; }
+
+  .project-overview { padding: 72px 0; }
+  .project-overview__container { padding: 0 32px; }
+  .project-overview__stats { gap: var(--space-sm); }
+  .stat-card { padding: 24px 16px; }
+  .stat-card__value { font-size: 32px; }
 }
 
 /* Mobile */
@@ -689,6 +871,18 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   .placeholder-section { padding: 56px 20px; min-height: 50vh; }
 
   .popup__dialog { padding: 32px 22px 24px; }
+
+  .project-overview { padding: 56px 0; }
+  .project-overview__container { padding: 0 20px; }
+  .project-overview__title { font-size: clamp(26px, 8vw, 34px); }
+  .project-overview__panel { padding: 24px 20px; margin-top: var(--space-lg); }
+  .project-overview__quote-mark { font-size: 36px; }
+  .project-overview__copy { font-size: 16px; }
+  .project-overview__stats {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+  .stat-card { padding: 24px 20px; }
 }
 
 /* Desktop */
@@ -700,7 +894,8 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 @media (min-width: 1440px) {
   .header-inner,
   .hero__content,
-  .placeholder-section__inner {
+  .placeholder-section__inner,
+  .project-overview__container {
     max-width: 1360px;
   }
 }
