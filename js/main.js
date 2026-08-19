@@ -337,7 +337,12 @@
 
     langTextEls.forEach(function (el) {
       var text = lang === "en" ? el.getAttribute("data-lang-en") : el.getAttribute("data-lang-vi");
-      if (text !== null) el.textContent = text;
+      if (text === null) return;
+      el.textContent = text;
+      // Elements with a data-text mirror (hero headline/supporting water
+      // and reflection layers use content: attr(data-text) in CSS) need
+      // that attribute kept in sync with the visible text.
+      if (el.hasAttribute("data-text")) el.setAttribute("data-text", text);
     });
 
     langAriaEls.forEach(function (el) {

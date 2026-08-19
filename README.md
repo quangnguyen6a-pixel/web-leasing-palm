@@ -148,34 +148,70 @@ and update the `@font-face` / `font-family` stack accordingly.
   0→1 + `translateY(14px)→0`, `cubic-bezier(0.22, 1, 0.36, 1)`,
   `animation-fill-mode: forwards`, `animation-iteration-count: 1`) with
   a 90ms stagger and per-element durations (450/650/500/400ms) — the
-  whole sequence resolves well under 2s. The entrance classes are on
-  `.hero__headline-wrap` (not the `<h1>` itself), because the `<h1>`
-  already carries its own infinite shine `animation` — putting both on
-  one element means whichever rule's `animation` shorthand comes later
-  in the cascade silently replaces the other's (this is what caused an
-  earlier build to render the headline permanently invisible: the
-  shine rule's shorthand clobbered the entrance animation, leaving
-  `opacity: 0` with nothing left to animate it to `1`). Splitting the
-  two onto wrapper vs. heading avoids that trap entirely.
+  whole sequence resolves well under 2s. The entrance classes live on
+  the eyebrow/`<h1>`/supporting/explore-link elements themselves; the
+  headline's decorative water/bling layers live on `::before`/`::after`
+  pseudo-elements of the inner `.hero__headline-text` span rather than
+  on the `<h1>`, so no single element ever carries two conflicting
+  `animation` shorthand declarations (see the shorthand-collision note
+  below).
+- **Hero typography (Cormorant Garamond, full-width):** the hero copy
+  is a single centred column (`width: min(94vw, 1480px)`), not a boxed
+  or right-aligned panel. All hero text uses Cormorant Garamond
+  (headline 600, supporting 500 italic, eyebrow 500) so the Vietnamese
+  diacritics stay sharp at large sizes; headline `clamp(76px, 7.2vw,
+  118px)` desktop / `clamp(44px, 12vw, 62px)` mobile, `text-wrap:
+  balance` to avoid orphan words instead of manual line breaks (which
+  would fight the i18n textContent swap).
+- **Water-in-letters headline effect:** three layers, all scoped to
+  `.hero__headline-text` so the water texture never bleeds outside the
+  glyphs:
+  1. The live text itself is a sharp, static icy white-to-light-blue
+     `background-clip: text` gradient (`@supports`-guarded, with a
+     plain `#eaf6ff` fallback) — always legible, never blurred.
+  2. A `::before` duplicate (`content: attr(data-text)`, kept in sync
+     with the current language by `applyLanguage()` in `js/main.js`)
+     layers a second, animated gradient on top (`hero-water-move`,
+     6.2s ease-in-out alternate, background-position drift only) with
+     `mix-blend-mode: screen` so it reads as moving light, not a flat
+     texture.
+  3. That same `::before` layer — and only that layer — carries
+     `filter: url(#hero-water-turbulence)`, a hidden inline SVG filter
+     (`feTurbulence` with an animated `baseFrequency` + light
+     `feDisplacementMap`, defined once near the top of `.hero`) for a
+     subtle refraction wobble. It is dropped on mobile
+     (`filter: none`) to keep low-power GPUs smooth.
+  A separate `::after` on `.hero__headline-text` is the "bling": a
+  narrow white-cyan sweep clipped to the letters (`hero-bling-sweep`,
+  ~1.3s travel, repeating every 6s, first pass ~1.2s after load) plus
+  five small four-point `.hero__sparkle` spans positioned via
+  `--sx`/`--sy`/`--sdelay` custom properties, each flashing
+  scale/opacity 0→0.85→0 in sync with the sweep. The supporting line
+  gets a quieter version of the same sweep (its own `::before`, 200ms
+  delayed) and a restrained reflection (`::after`, flipped copy,
+  opacity ~0.1, height-capped and mask-faded so it never reaches the
+  CTA below it).
+- **Shorthand-collision lesson (recorded once, still relevant):** an
+  earlier build put an infinite shine `animation` and the one-shot
+  entrance `animation` on the *same* element; because both rules had
+  equal CSS specificity, the later one in source order silently
+  replaced the other's shorthand, leaving the headline stuck at
+  `opacity: 0` with nothing left to animate it to `1`. The current
+  design avoids this by construction — every animated hero layer is
+  its own pseudo-element or sibling span, never sharing an `animation`
+  shorthand with the entrance classes.
+- **Reduced motion:** under `prefers-reduced-motion: reduce`, the
+  headline and supporting line fall back to the sharp static gradient
+  text only — `.hero__headline-text::before/::after`,
+  `.hero__supporting::before/::after` and `.hero__sparkle` are all
+  `display: none !important` (not just paused), which also removes the
+  SVG filter reference entirely.
 - **Hero interactivity:** on mouse/trackpad devices only (`(hover:
   hover) and (pointer: fine)`, checked in `js/main.js`), a soft warm
   glow (`.hero__spotlight`) tracks the cursor over the hero image via
   `--spot-x`/`--spot-y` CSS custom properties updated on `mousemove`.
   Since it's driven directly by the user's own pointer rather than
-  autoplay, it stays active under `prefers-reduced-motion`. The
-  headline (`.hero__headline`) gets a restrained gold-white shine: a
-  narrow highlight band sweeps across the text once every ~6.5s via a
-  `background-clip: text` gradient animation, resting as plain white
-  for most of the cycle — not a continuous shimmer. This animation
-  **is** disabled under `prefers-reduced-motion` (explicit
-  `animation-name: none !important` override, since the text would
-  otherwise strobe under the site's global near-zero-duration rule).
-  A separate `.hero__headline-ripple` layer (inside
-  `.hero__headline-wrap`) reflects the shine beneath the H1 — a thin
-  (≤16px), low-opacity (≤0.16) decorative band, not a mirror of the
-  glyphs — on its own 7.5s loop, phase-offset from the shine's 6.5s
-  loop (different periods) so the two very rarely peak together;
-  likewise force-disabled under `prefers-reduced-motion`.
+  autoplay, it stays active under `prefers-reduced-motion`.
 - **Water-reflection system:** a restrained, riverside-inspired layer
   on top of the existing glassmorphism, applied selectively — never to
   nav, mobile menu, popup, or body copy:

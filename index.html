@@ -8,14 +8,16 @@
 
 <!--
   NOTE FOR PRODUCTION:
-  Headings use "Playfair Display", body/navigation uses "Gotham" / "SVN-Gotham".
+  Headings use "Playfair Display", the hero display type uses
+  "Cormorant Garamond", body/navigation uses "Gotham" / "SVN-Gotham".
   Gotham is not available on Google Fonts (licensed font) — swap in the
-  licensed SVN-Gotham / Gotham webfont files in production. Playfair Display
-  is loaded from Google Fonts here for prototype purposes only.
+  licensed SVN-Gotham / Gotham webfont files in production. Playfair
+  Display and Cormorant Garamond are loaded from Google Fonts here for
+  prototype purposes only.
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
 
 <!-- Preload hero image for LCP (see /assets — replace with approved final asset) -->
 <link rel="preload" as="image" href="assets/palm-city-hero.webp">
@@ -127,6 +129,18 @@
        HERO BANNER
        ========================================================= -->
   <section class="hero" id="top" aria-label="Palm City hero">
+    <!-- Hidden SVG filter for the hero headline's water-refraction layer
+         (Layer 3). Referenced by .hero__headline-text::before only —
+         never applied to the sharp base text. -->
+    <svg aria-hidden="true" focusable="false" style="position:absolute; width:0; height:0; overflow:hidden;">
+      <filter id="hero-water-turbulence" x="-20%" y="-30%" width="140%" height="160%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.035" numOctaves="2" seed="7" result="noise">
+          <animate attributeName="baseFrequency" values="0.012 0.035;0.017 0.045;0.012 0.035" dur="11s" repeatCount="indefinite" />
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+
     <div class="hero__media">
       <img src="assets/palm-city-hero.webp" alt="Phối cảnh dự án Palm City" class="hero__image"
            onerror="this.closest('.hero__media').classList.add('hero__media--fallback')">
@@ -138,18 +152,26 @@
 
     <div class="hero__content">
       <p class="hero__eyebrow hero__enter hero__enter--eyebrow">PALM CITY</p>
-      <div class="hero__headline-wrap hero__enter hero__enter--headline">
-        <!-- Headline copy is still awaiting final sign-off (see README §9);
-             kept unchanged here per current instructions — no visible
-             "draft" label is shown per the client's request. -->
-        <h1 class="hero__headline"
-            data-lang-vi="Nơi phồn hoa an cư bên dòng sông"
-            data-lang-en="Where prosperity meets riverside living">Nơi phồn hoa an cư bên dòng sông</h1>
-        <span class="hero__headline-ripple" aria-hidden="true"></span>
-      </div>
+
+      <!-- Headline copy is still awaiting final sign-off (see README §9);
+           kept unchanged here per current instructions — no visible
+           "draft" label is shown per the client's request. -->
+      <h1 class="hero__headline hero__enter hero__enter--headline">
+        <span class="hero__headline-text"
+              data-lang-vi="Nơi phồn hoa an cư bên dòng sông"
+              data-lang-en="Where prosperity meets riverside living"
+              data-text="Nơi phồn hoa an cư bên dòng sông">Nơi phồn hoa an cư bên dòng sông</span>
+        <span class="hero__sparkle" style="--sx:8%; --sy:28%; --sdelay:0ms" aria-hidden="true"></span>
+        <span class="hero__sparkle" style="--sx:30%; --sy:72%; --sdelay:110ms" aria-hidden="true"></span>
+        <span class="hero__sparkle" style="--sx:52%; --sy:18%; --sdelay:220ms" aria-hidden="true"></span>
+        <span class="hero__sparkle" style="--sx:74%; --sy:64%; --sdelay:330ms" aria-hidden="true"></span>
+        <span class="hero__sparkle" style="--sx:92%; --sy:34%; --sdelay:440ms" aria-hidden="true"></span>
+      </h1>
+
       <p class="hero__supporting hero__enter hero__enter--supporting"
          data-lang-vi="Palm City mang đến không gian sống cao cấp, hài hoà giữa thiên nhiên và tiện ích hiện đại."
-         data-lang-en="Palm City offers a refined living space where nature and modern convenience come together.">
+         data-lang-en="Palm City offers a refined living space where nature and modern convenience come together."
+         data-text="Palm City mang đến không gian sống cao cấp, hài hoà giữa thiên nhiên và tiện ích hiện đại.">
         Palm City mang đến không gian sống cao cấp, hài hoà giữa thiên nhiên và tiện ích hiện đại.
       </p>
       <a href="#overview" class="hero__explore-link hero__enter hero__enter--explore" data-smooth-scroll

@@ -419,7 +419,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
    ========================================================= */
 .hero {
   position: relative;
-  min-height: 90vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -519,14 +519,13 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 .hero__content {
   position: relative;
   z-index: 1;
-  width: 100%;
-  max-width: var(--content-max-width);
+  width: min(94vw, 1480px);
   margin: 0 auto;
-  padding: 0 64px;
-  padding-top: var(--header-height-top);
-}
-.hero__content > * {
-  max-width: 680px;
+  padding-top: calc(var(--header-height-top) + 48px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* One-shot entrance sequence — plays once on load, then stays put.
@@ -549,112 +548,210 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 .hero__enter--explore { animation-duration: 400ms; animation-delay: 270ms; }
 
 .hero__eyebrow {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
   color: var(--color-savills-yellow);
-  font-size: 13px;
-  letter-spacing: 0.18em;
-  font-weight: 600;
-  margin-bottom: 16px;
+  font-size: 15px;
+  letter-spacing: 0.32em;
+  margin-bottom: 22px;
 }
-.hero__headline-wrap {
-  position: relative;
-  max-width: 680px;
-}
+
+/* =========================================================
+   HERO HEADLINE — full-width, centred, water-lit typography.
+   Three stacked layers on .hero__headline-text:
+     1. the element itself      — sharp, static icy-white/blue gradient
+     2. ::before (data-text)    — animated water texture + SVG refraction
+     3. ::after  (data-text)    — the light-sweep "bling"
+   Plus small four-point sparkle spans, siblings of the text, absolutely
+   positioned across the headline via --sx/--sy custom properties.
+   ========================================================= */
 .hero__headline {
-  color: var(--color-white);
-  font-size: clamp(32px, 4.2vw, 56px);
-  line-height: 1.15;
-  font-weight: 600;
-  margin-bottom: 12px;
+  position: relative;
+  isolation: isolate;
+  max-width: 1400px;
+  margin: 0 auto 20px;
 }
-/* Elegant, occasional shine sweep — not a continuous shimmer. A narrow
-   gold-white highlight band crosses the text once every few seconds and
-   rests; most of the cycle the text simply reads solid white. */
+.hero__headline-text {
+  position: relative;
+  display: inline-block;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(76px, 7.2vw, 118px);
+  line-height: 0.96;
+  text-wrap: balance;
+  color: #eaf6ff;
+}
 @supports (background-clip: text) or (-webkit-background-clip: text) {
-  .hero__headline {
-    background-image: linear-gradient(
-      115deg,
-      #ffffff 0%,
-      #ffffff 40%,
-      #fff6d8 46%,
-      var(--color-savills-yellow) 50%,
-      #fff6d8 54%,
-      #ffffff 60%,
-      #ffffff 100%
-    );
-    background-size: 300% 100%;
-    background-position: 200% 0;
+  .hero__headline-text {
+    background-image: linear-gradient(180deg, #ffffff 0%, #eaf6ff 45%, #cfe9fb 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
-    animation: hero-shine 6.5s ease-in-out infinite;
-    animation-delay: 1s;
+  }
+  /* Layer 2 — moving water texture, clipped inside the letters only.
+     Diagonal + horizontal drift; ease-in-out + alternate direction so
+     the loop reverses smoothly with no visible restart jump. */
+  .hero__headline-text::before {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(115deg, transparent 15%, rgba(255, 255, 255, 0.55) 34%, rgba(178, 230, 255, 0.5) 46%, transparent 62%),
+      radial-gradient(ellipse 60% 75% at 28% 22%, rgba(255, 255, 255, 0.38), transparent 60%),
+      radial-gradient(ellipse 55% 70% at 76% 74%, rgba(150, 220, 255, 0.32), transparent 58%);
+    background-size: 240% 240%, 170% 170%, 170% 170%;
+    background-position: 0% 0%, 15% 10%, 85% 90%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: url(#hero-water-turbulence);
+    animation: hero-water-move 6.2s ease-in-out infinite alternate;
+  }
+  /* Layer 4 — the "bling": a narrow white-cyan glint sweeping across
+     the letters, clipped the same way. Not continuous — a single pass
+     every 6s with a long, quiet rest between sweeps. */
+  .hero__headline-text::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(
+      100deg,
+      transparent 0%, transparent 42%,
+      rgba(255, 255, 255, 0.95) 48%,
+      rgba(190, 240, 255, 0.92) 51%,
+      rgba(255, 255, 255, 0.95) 54%,
+      transparent 60%, transparent 100%
+    );
+    background-size: 320% 100%;
+    background-position: 220% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: hero-bling-sweep 6s ease-in-out infinite;
+    animation-delay: 1.2s;
   }
 }
-@keyframes hero-shine {
-  0% { background-position: 200% 0; }
-  17% { background-position: -100% 0; }
-  100% { background-position: -100% 0; }
+@keyframes hero-water-move {
+  0% { background-position: 0% 0%, 15% 10%, 85% 90%; }
+  100% { background-position: -180% -140%, 85% 78%, 15% 22%; }
 }
-/* Ripple reflection beneath the H1 — a separate decorative layer, not
-   a mirror of the glyphs, offset in phase from the shine above so the
-   two never peak together. */
-.hero__headline-ripple {
+@keyframes hero-bling-sweep {
+  0% { background-position: 220% 0; }
+  22% { background-position: -120% 0; }
+  100% { background-position: -120% 0; }
+}
+
+.hero__sparkle {
+  position: absolute;
+  left: var(--sx, 50%);
+  top: var(--sy, 50%);
+  width: 15px;
+  height: 15px;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
+  transform-origin: center;
+  background: radial-gradient(circle, #ffffff 0%, #bfe9ff 45%, transparent 75%);
+  clip-path: polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%);
+  opacity: 0;
+  animation: hero-sparkle 6s ease-in-out infinite;
+  animation-delay: calc(1.2s + var(--sdelay, 0ms));
+}
+@keyframes hero-sparkle {
+  0%, 19% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+  23% { opacity: 0.85; transform: translate(-50%, -50%) scale(1); }
+  30% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+}
+
+.hero__supporting {
+  position: relative;
+  isolation: isolate;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
+  font-style: italic;
+  font-size: clamp(38px, 4.2vw, 66px);
+  line-height: 1.12;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 1100px;
+  text-wrap: balance;
+  margin: 0 auto 56px;
+}
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  /* A subtler echo of the headline's light sweep, delayed ~250ms behind it. */
+  .hero__supporting::before {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(100deg, transparent 38%, rgba(255, 255, 255, 0.8) 50%, transparent 62%);
+    background-size: 280% 100%;
+    background-position: 220% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: hero-bling-sweep 6s ease-in-out infinite;
+    animation-delay: 1.45s;
+  }
+}
+/* Restrained reflection — flipped, short, faded, offset just below the
+   supporting line; capped height keeps it clear of the CTA below. */
+.hero__supporting::after {
+  content: attr(data-text);
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -14px;
-  height: 16px;
+  top: 100%;
+  display: block;
+  height: 0.55em;
+  overflow: hidden;
   pointer-events: none;
-  opacity: 0;
-  mix-blend-mode: screen;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.5) 30%,
-    rgba(255, 223, 0, 0.32) 50%,
-    rgba(255, 255, 255, 0.5) 70%,
-    transparent
-  );
-  filter: blur(4px);
-  animation: hero-ripple 7.5s ease-in-out infinite;
-  animation-delay: 2.4s;
+  transform: scaleY(-1);
+  transform-origin: top;
+  color: rgba(205, 235, 255, 0.85);
+  opacity: 0.1;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent 100%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent 100%);
+  animation: hero-reflection-wave 8s ease-in-out infinite;
 }
-@keyframes hero-ripple {
-  0%, 81% { opacity: 0; transform: translateY(-2px) scaleX(0.9); }
-  86% { opacity: 0.16; transform: translateY(0) scaleX(1); }
-  100% { opacity: 0; transform: translateY(2px) scaleX(0.9); }
+@keyframes hero-reflection-wave {
+  0%, 100% { transform: scaleY(-1) translateX(0); }
+  50% { transform: scaleY(-1) translateX(5px); }
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .hero__headline {
-    animation-name: none !important;
-    background-image: none !important;
-    color: var(--color-white) !important;
-    -webkit-text-fill-color: currentColor !important;
+  /* Reduced motion: sharp icy-blue gradient text only — no shimmer,
+     displacement or sparkles. Using display:none (rather than the
+     duration trick used elsewhere) fully removes the SVG filter and
+     every infinite-iteration animation in one step. */
+  .hero__headline-text::before,
+  .hero__headline-text::after,
+  .hero__supporting::before,
+  .hero__supporting::after,
+  .hero__sparkle {
+    display: none !important;
   }
-  /* Infinite-loop water animations must be explicitly stopped, not just
-     sped up — the site-wide near-zero-duration override alone would
-     make an infinite-iteration animation strobe rather than freeze.
-     One-shot effects (panel entrance shine, card hover ripple) are left
-     to that global override since a single near-instant play is
-     harmless. Static low-opacity textures (::before layers) stay. */
+  /* Infinite-loop water animations elsewhere must be explicitly
+     stopped, not just sped up — the site-wide near-zero-duration
+     override alone would make an infinite-iteration animation strobe
+     rather than freeze. One-shot effects (project-intro entrance,
+     card hover ripple, USP count-up) are left to that global override
+     since a single near-instant play is harmless. Static low-opacity
+     textures (::before layers) stay. */
   .hero__water::before,
   .section-water-divider::before,
-  .hero__headline-ripple,
   .project-intro::after,
   .stat-card__value.is-counted {
     animation-name: none !important;
     transform: none !important;
     background-position: 0 0 !important;
   }
-  .hero__headline-ripple { opacity: 0 !important; }
   .stat-card__value.is-counted::after { opacity: 0 !important; }
-}
-.hero__supporting {
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 17px;
-  line-height: 1.6;
-  margin-bottom: 32px;
 }
 .hero__explore-link {
   display: inline-flex;
@@ -731,9 +828,10 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 /* =========================================================
    PROJECT OVERVIEW
    Reuses the same global container (var(--content-max-width)) and
-   horizontal gutters as .header-inner / .hero__content, so the
-   storytelling panel and USP grid align exactly with the hero and
-   top navigation above.
+   horizontal gutters as .header-inner, so the storytelling panel and
+   USP grid align exactly with the nav above. (.hero__content is now
+   its own full-width, self-centred composition — see the hero
+   typography section — and no longer shares this box model.)
    ========================================================= */
 .project-overview {
   background:
@@ -747,10 +845,10 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
      narrow viewports. */
   overflow-x: hidden;
 }
-/* Matches .header-inner / .hero__content exactly (max-width + padding
-   on the same box, not section-padding-then-inner) so the left/right
-   edges align pixel-for-pixel with the hero and nav at every
-   breakpoint, including the >=1440px max-width bump below. */
+/* Matches .header-inner exactly (max-width + padding on the same box,
+   not section-padding-then-inner) so the left/right edges align
+   pixel-for-pixel with the nav at every breakpoint, including the
+   >=1440px max-width bump below. */
 .project-overview__container {
   max-width: var(--content-max-width);
   margin: 0 auto;
@@ -1194,7 +1292,6 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   .main-nav__list { gap: 20px; }
   .main-nav__link { font-size: 13px; }
   .btn--register { padding: 8px 14px; font-size: 12px; }
-  .hero__content { padding: 0 32px; padding-top: var(--header-height-top); }
   .placeholder-section { padding: 64px 32px; }
 
   .project-overview { padding: 72px 0; }
@@ -1221,11 +1318,11 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
     min-height: 80svh;
   }
   .hero__content {
-    padding: 0 20px;
-    padding-top: calc(var(--header-height-top) + 12px);
+    width: 92vw;
+    padding-top: calc(var(--header-height-top) + 24px);
   }
-  .hero__headline { font-size: clamp(26px, 8vw, 36px); }
-  .hero__supporting { font-size: 15px; margin-bottom: 24px; }
+  .hero__headline-text { font-size: clamp(44px, 12vw, 62px); line-height: 1.02; }
+  .hero__supporting { font-size: clamp(28px, 8vw, 40px); margin-bottom: 32px; }
 
   /* Keep the water/shine textures visible but stop the continuous
      drift on mobile — cheap to leave as a static layer, not worth the
@@ -1236,6 +1333,10 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
     transform: none;
     background-position: 0 0;
   }
+  /* SVG turbulence/displacement is the most expensive part of the
+     headline water effect — drop it on mobile GPUs, keep the lighter
+     gradient sweep and glint animations running. */
+  .hero__headline-text::before { filter: none; }
 
   .placeholder-section { padding: 56px 20px; min-height: 50vh; }
 
@@ -1265,7 +1366,6 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 /* Large desktop */
 @media (min-width: 1440px) {
   .header-inner,
-  .hero__content,
   .placeholder-section__inner,
   .project-overview__container {
     max-width: 1360px;
