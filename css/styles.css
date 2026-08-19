@@ -451,6 +451,25 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
     rgba(0, 28, 61, 0.12) 100%
   );
 }
+/* Follows the pointer (desktop only, see js/main.js) — a soft warm glow
+   that tracks the cursor over the hero image. Purely decorative, driven
+   by direct user input rather than autoplay, so it stays on even under
+   prefers-reduced-motion. */
+.hero__spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    480px circle at var(--spot-x, 50%) var(--spot-y, 28%),
+    rgba(255, 223, 0, 0.16),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+.hero.hero--interactive:hover .hero__spotlight {
+  opacity: 1;
+}
 
 .hero__content {
   position: relative;
@@ -477,6 +496,44 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   line-height: 1.15;
   font-weight: 600;
   margin-bottom: 12px;
+}
+/* Elegant, occasional shine sweep — not a continuous shimmer. A narrow
+   gold-white highlight band crosses the text once every few seconds and
+   rests; most of the cycle the text simply reads solid white. */
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .hero__headline {
+    background-image: linear-gradient(
+      115deg,
+      #ffffff 0%,
+      #ffffff 40%,
+      #fff6d8 46%,
+      var(--color-savills-yellow) 50%,
+      #fff6d8 54%,
+      #ffffff 60%,
+      #ffffff 100%
+    );
+    background-size: 300% 100%;
+    background-position: 200% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: hero-shine 6.5s ease-in-out infinite;
+    animation-delay: 1s;
+  }
+}
+@keyframes hero-shine {
+  0% { background-position: 200% 0; }
+  42% { background-position: -100% 0; }
+  100% { background-position: -100% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__headline {
+    animation-name: none !important;
+    background-image: none !important;
+    color: var(--color-white) !important;
+    -webkit-text-fill-color: currentColor !important;
+  }
 }
 .hero__draft-flag {
   display: inline-block;

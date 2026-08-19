@@ -135,6 +135,19 @@ and update the `@font-face` / `font-family` stack accordingly.
 - Active nav item is tracked with `IntersectionObserver` against each
   `<section id="...">` in `<main>`, and marked with `aria-current="true"`
   (styled with an underline + yellow, never a background block).
+- **Hero interactivity:** on mouse/trackpad devices only (`(hover:
+  hover) and (pointer: fine)`, checked in `js/main.js`), a soft warm
+  glow (`.hero__spotlight`) tracks the cursor over the hero image via
+  `--spot-x`/`--spot-y` CSS custom properties updated on `mousemove`.
+  Since it's driven directly by the user's own pointer rather than
+  autoplay, it stays active under `prefers-reduced-motion`. The
+  headline (`.hero__headline`) gets a restrained gold-white shine: a
+  narrow highlight band sweeps across the text once every ~6.5s via a
+  `background-clip: text` gradient animation, resting as plain white
+  for most of the cycle — not a continuous shimmer. This animation
+  **is** disabled under `prefers-reduced-motion` (explicit
+  `animation-name: none !important` override, since the text would
+  otherwise strobe under the site's global near-zero-duration rule).
 
 ---
 

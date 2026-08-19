@@ -22,6 +22,23 @@
   window.addEventListener("scroll", updateHeaderState, { passive: true });
 
   /* -----------------------------------------------------
+     1b. HERO POINTER-FOLLOW SPOTLIGHT
+     Desktop/mouse only — driven directly by cursor movement, not
+     autoplay, so it's left on regardless of prefers-reduced-motion.
+     ----------------------------------------------------- */
+  var hero = document.querySelector(".hero");
+  if (hero && window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    hero.classList.add("hero--interactive");
+    hero.addEventListener("mousemove", function (e) {
+      var rect = hero.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width) * 100;
+      var y = ((e.clientY - rect.top) / rect.height) * 100;
+      hero.style.setProperty("--spot-x", x + "%");
+      hero.style.setProperty("--spot-y", y + "%");
+    });
+  }
+
+  /* -----------------------------------------------------
      2. SMOOTH SCROLL FOR ANCHOR LINKS
      ----------------------------------------------------- */
   function smoothScrollTo(targetId) {
