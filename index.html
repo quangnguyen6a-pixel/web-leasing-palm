@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palm City | Đại lý phân phối Savills</title>
+<meta name="description" content="Palm City — front-end prototype. Not a production website.">
+
+<!--
+  NOTE FOR PRODUCTION:
+  Headings use "Playfair Display", body/navigation uses "Gotham" / "SVN-Gotham".
+  Gotham is not available on Google Fonts (licensed font) — swap in the
+  licensed SVN-Gotham / Gotham webfont files in production. Playfair Display
+  is loaded from Google Fonts here for prototype purposes only.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+<!-- Preload hero image for LCP (see /assets — replace with approved final asset) -->
+<link rel="preload" as="image" href="assets/palm-city-hero.webp">
+
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main-content" data-lang-vi="Bỏ qua để đến nội dung chính" data-lang-en="Skip to main content">Bỏ qua để đến nội dung chính</a>
+
+<!-- =========================================================
+     HEADER / TOP NAVIGATION
+     ========================================================= -->
+<header class="site-header" id="site-header" data-state="top">
+  <div class="header-inner">
+
+    <!-- Brand group: Palm City leads, Savills is companion (Sales Agent) -->
+    <div class="brand-group">
+      <a href="#top" class="brand-primary" aria-label="Palm City — Trang chủ">
+        <img src="assets/palm-city-logo.svg" alt="Palm City" width="140" height="40"
+             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback logo-fallback--primary',textContent:'[PALM_CITY_LOGO]'}))">
+      </a>
+      <span class="brand-divider" aria-hidden="true"></span>
+      <div class="brand-secondary">
+        <img src="assets/savills-logo.svg" alt="Savills" width="84" height="24"
+             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback logo-fallback--secondary',textContent:'[SAVILLS_LOGO]'}))">
+        <span class="brand-secondary__label"
+              data-lang-vi="Đại lý phân phối" data-lang-en="Sales Agent">Đại lý phân phối</span>
+      </div>
+    </div>
+
+    <!-- Main navigation (desktop) -->
+    <nav class="main-nav" aria-label="Điều hướng chính">
+      <ul class="main-nav__list">
+        <li><a href="#overview" class="main-nav__link" data-lang-vi="Tổng quan" data-lang-en="Overview">Tổng quan</a></li>
+        <li><a href="#location" class="main-nav__link" data-lang-vi="Vị trí" data-lang-en="Location">Vị trí</a></li>
+        <li><a href="#amenities" class="main-nav__link" data-lang-vi="Tiện ích" data-lang-en="Amenities">Tiện ích</a></li>
+        <li><a href="#floor-plans" class="main-nav__link" data-lang-vi="Mặt bằng" data-lang-en="Floor Plans">Mặt bằng</a></li>
+        <li><a href="#gallery" class="main-nav__link" data-lang-vi="Thư viện" data-lang-en="Gallery">Thư viện</a></li>
+        <li><a href="#progress" class="main-nav__link" data-lang-vi="Tiến độ" data-lang-en="Progress">Tiến độ</a></li>
+      </ul>
+    </nav>
+
+    <!-- Utility group -->
+    <div class="utility-group">
+      <div class="lang-switcher" role="group" aria-label="Chọn ngôn ngữ / Language selector">
+        <button type="button" class="lang-switcher__btn" data-lang-set="vi" aria-pressed="true">VI</button>
+        <span class="lang-switcher__sep" aria-hidden="true">|</span>
+        <button type="button" class="lang-switcher__btn" data-lang-set="en" aria-pressed="false">EN</button>
+      </div>
+      <button type="button" class="btn btn--register" data-open-popup
+              data-lang-vi="Đăng ký quan tâm" data-lang-en="Register Interest">Đăng ký quan tâm</button>
+
+      <button type="button" class="hamburger" id="hamburger-btn"
+              aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span class="hamburger__bar"></span>
+        <span class="hamburger__bar"></span>
+        <span class="hamburger__bar"></span>
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<!-- =========================================================
+     MOBILE MENU (drawer / full-screen panel)
+     ========================================================= -->
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Menu điều hướng">
+    <div class="mobile-menu__header">
+      <div class="brand-group brand-group--mobile">
+        <img src="assets/palm-city-logo.svg" alt="Palm City" width="120" height="34"
+             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback logo-fallback--primary',textContent:'[PALM_CITY_LOGO]'}))">
+        <div class="brand-secondary">
+          <img src="assets/savills-logo.svg" alt="Savills" width="72" height="20"
+               onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback logo-fallback--secondary',textContent:'[SAVILLS_LOGO]'}))">
+          <span class="brand-secondary__label"
+                data-lang-vi="Đại lý phân phối" data-lang-en="Sales Agent">Đại lý phân phối</span>
+        </div>
+      </div>
+      <button type="button" class="mobile-menu__close" id="mobile-menu-close"
+              aria-label="Đóng menu" data-lang-vi-aria="Đóng menu" data-lang-en-aria="Close menu">&times;</button>
+    </div>
+
+    <nav class="mobile-menu__nav" aria-label="Điều hướng di động">
+      <ul>
+        <li><a href="#overview" class="mobile-menu__link" data-lang-vi="Tổng quan" data-lang-en="Overview">Tổng quan</a></li>
+        <li><a href="#location" class="mobile-menu__link" data-lang-vi="Vị trí" data-lang-en="Location">Vị trí</a></li>
+        <li><a href="#amenities" class="mobile-menu__link" data-lang-vi="Tiện ích" data-lang-en="Amenities">Tiện ích</a></li>
+        <li><a href="#floor-plans" class="mobile-menu__link" data-lang-vi="Mặt bằng" data-lang-en="Floor Plans">Mặt bằng</a></li>
+        <li><a href="#gallery" class="mobile-menu__link" data-lang-vi="Thư viện" data-lang-en="Gallery">Thư viện</a></li>
+        <li><a href="#progress" class="mobile-menu__link" data-lang-vi="Tiến độ" data-lang-en="Progress">Tiến độ</a></li>
+      </ul>
+    </nav>
+
+    <div class="mobile-menu__footer">
+      <div class="lang-switcher lang-switcher--mobile" role="group" aria-label="Chọn ngôn ngữ / Language selector">
+        <button type="button" class="lang-switcher__btn" data-lang-set="vi" aria-pressed="true">VI</button>
+        <span class="lang-switcher__sep" aria-hidden="true">|</span>
+        <button type="button" class="lang-switcher__btn" data-lang-set="en" aria-pressed="false">EN</button>
+      </div>
+      <button type="button" class="btn btn--register btn--block" data-open-popup
+              data-lang-vi="Đăng ký quan tâm" data-lang-en="Register Interest">Đăng ký quan tâm</button>
+    </div>
+  </div>
+  <div class="mobile-menu__overlay" data-close-mobile-menu></div>
+</div>
+
+<main id="main-content">
+
+  <!-- =========================================================
+       HERO BANNER
+       ========================================================= -->
+  <section class="hero" id="top" aria-label="Palm City hero">
+    <div class="hero__media">
+      <img src="assets/palm-city-hero.webp" alt="Phối cảnh dự án Palm City" class="hero__image"
+           onerror="this.closest('.hero__media').classList.add('hero__media--fallback')">
+      <div class="hero__image-fallback" aria-hidden="true">[APPROVED_HERO_IMAGE]</div>
+      <div class="hero__overlay" aria-hidden="true"></div>
+    </div>
+
+    <div class="hero__content">
+      <p class="hero__eyebrow">PALM CITY</p>
+      <h1 class="hero__headline"
+          data-lang-vi="Nơi phồn hoa an cư bên dòng sông"
+          data-lang-en="Where prosperity meets riverside living">Nơi phồn hoa an cư bên dòng sông</h1>
+      <p class="hero__draft-flag">Draft – Pending Approval</p>
+      <p class="hero__supporting"
+         data-lang-vi="Palm City mang đến không gian sống cao cấp, hài hoà giữa thiên nhiên và tiện ích hiện đại."
+         data-lang-en="Palm City offers a refined living space where nature and modern convenience come together.">
+        Palm City mang đến không gian sống cao cấp, hài hoà giữa thiên nhiên và tiện ích hiện đại.
+      </p>
+      <a href="#overview" class="hero__explore-link" data-smooth-scroll
+         data-lang-vi="Khám phá Palm City" data-lang-en="Explore Palm City">
+        <span data-lang-vi="Khám phá Palm City" data-lang-en="Explore Palm City">Khám phá Palm City</span>
+        <span class="hero__explore-arrow" aria-hidden="true">&darr;</span>
+      </a>
+    </div>
+
+    <div class="hero__scroll-indicator" aria-hidden="true">
+      <span class="hero__scroll-line"></span>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       PLACEHOLDER SECTIONS
+       For layout/scroll/anchor-navigation testing only.
+       Each will be replaced with fully designed sections in a
+       later phase — no project content should be assumed here.
+       ========================================================= -->
+  <section class="placeholder-section placeholder-section--light" id="overview">
+    <div class="placeholder-section__inner">
+      <p class="placeholder-section__tag" data-lang-vi="Placeholder for development" data-lang-en="Placeholder for development">Placeholder for development</p>
+      <h2 class="placeholder-section__heading" data-lang-vi="Tổng quan" data-lang-en="Overview">Tổng quan</h2>
+    </div>
+  </section>
+
+  <section class="placeholder-section placeholder-section--dark" id="location">
+    <div class="placeholder-section__inner">
+      <p class="placeholder-section__tag" data-lang-vi="Placeholder for development" data-lang-en="Placeholder for development">Placeholder for development</p>
+      <h2 class="placeholder-section__heading" data-lang-vi="Vị trí" data-lang-en="Location">Vị trí</h2>
+    </div>
+  </section>
+
+  <section class="placeholder-section placeholder-section--light" id="amenities">
+    <div class="placeholder-section__inner">
+      <p class="placeholder-section__tag" data-lang-vi="Placeholder for development" data-lang-en="Placeholder for development">Placeholder for development</p>
+      <h2 class="placeholder-section__heading" data-lang-vi="Tiện ích" data-lang-en="Amenities">Tiện ích</h2>
+    </div>
+  </section>
+
+  <section class="placeholder-section placeholder-section--dark" id="floor-plans">
+    <div class="placeholder-section__inner">
+      <p class="placeholder-section__tag" data-lang-vi="Placeholder for development" data-lang-en="Placeholder for development">Placeholder for development</p>
+      <h2 class="placeholder-section__heading" data-lang-vi="Mặt bằng" data-lang-en="Floor Plans">Mặt bằng</h2>
+    </div>
+  </section>
+
+  <section class="placeholder-section placeholder-section--light" id="gallery">
+    <div class="placeholder-section__inner">
+      <p class="placeholder-section__tag" data-lang-vi="Placeholder for development" data-lang-en="Placeholder for development">Placeholder for development</p>
+      <h2 class="placeholder-section__heading" data-lang-vi="Thư viện" data-lang-en="Gallery">Thư viện</h2>
+    </div>
+  </section>
+
+  <section class="placeholder-section placeholder-section--dark" id="progress">
+    <div class="placeholder-section__inner">
+      <p class="placeholder-section__tag" data-lang-vi="Placeholder for development" data-lang-en="Placeholder for development">Placeholder for development</p>
+      <h2 class="placeholder-section__heading" data-lang-vi="Tiến độ" data-lang-en="Progress">Tiến độ</h2>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p data-lang-vi="Palm City — Prototype giao diện, chưa phải website chính thức."
+     data-lang-en="Palm City — Front-end prototype, not the final production website.">
+     Palm City — Prototype giao diện, chưa phải website chính thức.
+  </p>
+</footer>
+
+<!-- =========================================================
+     POPUP — REGISTER INTEREST
+     Opens only on explicit user click. No auto-open, no
+     exit-intent, no timer. Prototype only: no data submission.
+     ========================================================= -->
+<div class="popup" id="register-popup" aria-hidden="true">
+  <div class="popup__overlay" data-close-popup></div>
+  <div class="popup__dialog" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+    <button type="button" class="popup__close" id="popup-close"
+            aria-label="Đóng" data-lang-vi-aria="Đóng" data-lang-en-aria="Close">&times;</button>
+
+    <h2 id="popup-title" class="popup__title"
+        data-lang-vi="Đăng ký nhận thông tin Palm City"
+        data-lang-en="Register for Palm City Updates">Đăng ký nhận thông tin Palm City</h2>
+
+    <!-- Prototype only. Backend submission and validation will be implemented in production. -->
+    <form novalidate id="register-form" class="popup__form">
+      <div class="form-field">
+        <label for="field-name" data-lang-vi="Họ và tên" data-lang-en="Full name">Họ và tên</label>
+        <input type="text" id="field-name" name="fullname" autocomplete="name">
+      </div>
+      <div class="form-field">
+        <label for="field-phone" data-lang-vi="Số điện thoại" data-lang-en="Phone number">Số điện thoại</label>
+        <input type="tel" id="field-phone" name="phone" autocomplete="tel">
+      </div>
+      <div class="form-field">
+        <label for="field-email" data-lang-vi="Email" data-lang-en="Email">Email</label>
+        <input type="email" id="field-email" name="email" autocomplete="email">
+      </div>
+      <div class="form-field form-field--checkbox">
+        <input type="checkbox" id="field-consent" name="consent">
+        <label for="field-consent"
+               data-lang-vi="Tôi đồng ý với chính sách bảo mật"
+               data-lang-en="I agree to the privacy policy">Tôi đồng ý với chính sách bảo mật</label>
+      </div>
+      <button type="submit" class="btn btn--submit btn--block"
+              data-lang-vi="Gửi thông tin" data-lang-en="Submit Details">Gửi thông tin</button>
+      <p class="popup__note"
+         data-lang-vi="Prototype giao diện — biểu mẫu chưa gửi dữ liệu thực."
+         data-lang-en="Interface prototype — this form does not submit real data.">
+         Prototype giao diện — biểu mẫu chưa gửi dữ liệu thực.
+      </p>
+    </form>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
