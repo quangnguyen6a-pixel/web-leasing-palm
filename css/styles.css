@@ -173,14 +173,15 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 /* Main navigation (desktop) */
 .main-nav__list {
   display: flex;
-  gap: 8px;
+  gap: 2px;
 }
 .main-nav__link {
   position: relative;
   display: inline-block;
-  font-size: 14px;
-  letter-spacing: 0.02em;
-  padding: 8px 12px;
+  white-space: nowrap;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  padding: 8px 9px;
   border-radius: 6px;
   transition: color 200ms ease, background-color 200ms ease;
 }
@@ -217,7 +218,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 .utility-group {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
 }
 .lang-switcher {
   display: flex;
@@ -1302,10 +1303,14 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 
 /* Tablet */
 @media (min-width: 768px) and (max-width: 1023px) {
-  .header-inner { padding: 0 32px; }
-  .main-nav__list { gap: 20px; }
-  .main-nav__link { font-size: 13px; }
-  .btn--register { padding: 8px 14px; font-size: 12px; }
+  .header-inner { padding: 0 16px; gap: 8px; }
+  /* Nine nav items (added alongside the new sections below Overview)
+     need a tighter fit than the original six did at this breakpoint. */
+  .main-nav__list { gap: 0; }
+  .main-nav__link { font-size: 11.5px; padding: 6px 5px; }
+  .utility-group { gap: 8px; }
+  .header-inner .brand-secondary__label { display: none; }
+  .btn--register { padding: 7px 10px; font-size: 11.5px; white-space: nowrap; }
   .placeholder-section { padding: 64px 32px; }
 
   .project-overview { padding: 72px 0; }
@@ -1313,6 +1318,17 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   .project-overview__stats { gap: var(--space-sm); }
   .stat-card { min-height: 300px; }
   .stat-card__value { font-size: clamp(82px, 8vw, 108px); }
+}
+
+/* Low desktop — nine nav items are still tight here even with the
+   base-rule tightening above; ease it further until the >=1280px
+   breakpoint has room to spare. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .header-inner { padding: 0 32px; }
+  .header-inner .brand-secondary__label { display: none; }
+  .main-nav__link { font-size: 12px; padding: 7px 6px; }
+  .btn--register { padding: 8px 12px; font-size: 12px; white-space: nowrap; }
+  .utility-group { gap: 10px; }
 }
 
 /* Mobile */

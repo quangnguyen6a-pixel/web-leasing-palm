@@ -60,9 +60,12 @@ Then visit `http://localhost:8080`.
 palm-city-prototype/
 ├── index.html
 ├── css/
-│   └── styles.css
+│   ├── styles.css      (Hero / Overview / USP — approved, do not rebuild)
+│   └── sections.css    (everything below USP — see §9b)
 ├── js/
-│   └── main.js
+│   ├── main.js         (approved nav/menu/popup/language/USP logic)
+│   ├── config.js        (projectConfig + data objects for §9b)
+│   └── sections.js      (renders/wires the §9b sections)
 ├── assets/
 │   ├── palm-city-logo.svg     (placeholder — see assets/README.md)
 │   ├── savills-logo.svg       (placeholder)
@@ -357,12 +360,76 @@ booking amount / incentive).
   near-zero-duration override alone would make an infinite-iteration
   animation strobe rather than freeze).
 
-`#location`, `#amenities`, `#floor-plans`, `#gallery`, `#progress`
-remain intentionally minimal placeholders — just a bilingual heading,
-no body copy — used only to validate sticky header behaviour, smooth
-scrolling, active-menu state, anchor links, and responsive layout.
-**They are not final section designs** and carry no assumed project
-content.
+---
+
+## 9b. Sections below Overview/USP — interface framework
+
+Everything from the mid-page CTA through the final form and floating
+contact controls (`css/sections.css`, `js/config.js`, `js/sections.js`)
+is a working **interface framework**, not final content. It was built
+against the approved "Section outline chuẩn" without touching Hero,
+Overview/USP, navigation structure, the popup, or the language switcher
+— those stay exactly as already approved.
+
+- **`js/config.js`** is the single source of truth for the project
+  name/logo (`projectConfig`) and every data-driven section (project
+  details, connectivity, amenities slides, floor-plan types, progress
+  milestones, Savills news). Sections read from here instead of
+  hard-coding copy, so re-skinning or updating content means editing
+  one file.
+- **Brand rule:** the source outline mixes "Palm City"/"Palm River".
+  Nothing here auto-renames the project — `projectConfig.projectName`
+  is Palm City throughout. The two Savills news URLs keep a
+  `palm-river` slug because they're real external links, not because
+  the project was renamed.
+- **No invented data.** Any field without an approved source value
+  (e.g. "Chủ đầu tư phát triển", "Đơn vị phân phối", per-type floor
+  plan areas, construction milestones, news headlines/excerpts) renders
+  a shared "Đang cập nhật" / "Being updated" placeholder rather than a
+  fabricated figure. `window.progressMilestones` is deliberately empty
+  until real dates are approved.
+- **Missing imagery.** No amenity photos, floor-plan renders, location
+  map/video, Savills-Residential team photo, or per-type show-unit
+  images exist in `/assets` yet. Each spot renders a neutral dashed
+  frame with a "being updated" note and an HTML/JS comment naming the
+  expected asset path (e.g. `assets/amenities/amenity-01.jpg`) — never
+  lorem ipsum or a "demo" label.
+- **Language:** dynamic sections (details, connectivity, amenities,
+  news) are rendered by `sections.js`, which runs after `main.js`'s
+  language-switch snapshot is taken. `main.js` now dispatches a
+  `palmcity:langchange` `CustomEvent` after applying VI/EN so
+  `sections.js` can re-render those sections in the new language —
+  this is the only functional change made to `main.js` for this pass,
+  alongside switching the popup-open trigger to event delegation
+  (`document.addEventListener("click", …)` instead of a static
+  `querySelectorAll` snapshot) so CTAs rendered later by `sections.js`
+  (e.g. the floor-plan panel button) still open the existing popup.
+- **Interactive widgets:** location category tabs, the amenities
+  drag/swipe/keyboard carousel, floor-plan type tabs + image zoom
+  modal, the payment-policy step tabs, and the final form's inline
+  validation/loading/success states are all vanilla JS, no library.
+  The final form does not submit anywhere or store data (prototype
+  scope only).
+- **Colour rhythm:** new sections alternate deep-navy
+  (`.details/.amenities/.policy/.savills-section/.final-form`) and
+  warm-ivory (`.location/.floorplans/.progress-section/.residential`)
+  backgrounds; headings use `"Noto Serif Display"` and body/labels use
+  `"Manrope"` (with the existing Gotham fallback chain) — kept separate
+  from the approved Hero/Overview typography via a dedicated
+  `--font-heading-alt` / `--font-body-alt` pair in `css/sections.css`,
+  so nothing in `styles.css` changes.
+- **Nav fit:** the header now carries 9 links (added Chi tiết dự án /
+  Chính sách / Về Savills / Liên hệ). `styles.css` gained tighter
+  nav gap/padding at the base, tablet (768–1023px), and a new
+  1024–1279px breakpoint, plus hiding the "Đại lý phân phối" label
+  earlier, so the nav stays on one line with no overflow through
+  1024px–1440px+.
+- **Floating contacts:** hotline (`tel:0969696201`) is live; Zalo/
+  WhatsApp render disabled (no invented URLs) until
+  `projectConfig.zaloUrl`/`whatsappUrl` are supplied, at which point
+  `sections.js` swaps them to live links automatically. Desktop shows
+  a vertical hover-to-reveal stack; mobile shows a sticky bottom bar
+  respecting `env(safe-area-inset-*)`.
 
 ---
 

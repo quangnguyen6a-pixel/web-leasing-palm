@@ -254,7 +254,6 @@
   var popup = document.getElementById("register-popup");
   var popupDialog = popup.querySelector(".popup__dialog");
   var popupCloseBtn = document.getElementById("popup-close");
-  var openPopupTriggers = document.querySelectorAll("[data-open-popup]");
   var registerForm = document.getElementById("register-form");
   var lastFocusedBeforePopup = null;
 
@@ -276,10 +275,12 @@
     if (lastFocusedBeforePopup) lastFocusedBeforePopup.focus();
   }
 
-  openPopupTriggers.forEach(function (trigger) {
-    trigger.addEventListener("click", function () {
-      openPopup(trigger);
-    });
+  // Delegated (not a static NodeList snapshot) so any [data-open-popup]
+  // trigger works, including ones sections.js renders dynamically after
+  // this script runs (e.g. the floor-plan panel CTA).
+  document.addEventListener("click", function (e) {
+    var trigger = e.target.closest && e.target.closest("[data-open-popup]");
+    if (trigger) openPopup(trigger);
   });
   popupCloseBtn.addEventListener("click", closePopup);
   popup.querySelectorAll("[data-close-popup]").forEach(function (el) {
@@ -379,6 +380,12 @@
     } catch (err) {
       /* localStorage unavailable — ignore in prototype */
     }
+
+    // sections.js renders some content (project details, connectivity,
+    // amenities, news) from JS data objects after this script runs, so
+    // it can't be caught by the langTextEls snapshot above — it listens
+    // for this event to re-render in the new language instead.
+    document.dispatchEvent(new CustomEvent("palmcity:langchange", { detail: { lang: lang } }));
   }
 
   langButtons.forEach(function (btn) {
