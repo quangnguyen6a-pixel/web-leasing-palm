@@ -39,7 +39,7 @@
          carried by the page <title>, hero, and footer. -->
     <a href="#top" class="brand-group" aria-label="Về đầu trang">
       <div class="brand-secondary">
-        <img src="assets/savills-logo.png" alt="Savills" width="26" height="26"
+        <img src="assets/savills-logo.png" alt="Savills" class="savills-logo" width="44" height="44"
              onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback logo-fallback--secondary',textContent:'[SAVILLS_LOGO]'}))">
         <span class="brand-secondary__label"
               data-lang-vi="Đại lý phân phối" data-lang-en="Sales Agent">Đại lý phân phối</span>
@@ -87,7 +87,7 @@
     <div class="mobile-menu__header">
       <div class="brand-group brand-group--mobile">
         <div class="brand-secondary">
-          <img src="assets/savills-logo.png" alt="Savills" width="24" height="24"
+          <img src="assets/savills-logo.png" alt="Savills" class="savills-logo" width="34" height="34"
                onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback logo-fallback--secondary',textContent:'[SAVILLS_LOGO]'}))">
           <span class="brand-secondary__label"
                 data-lang-vi="Đại lý phân phối" data-lang-en="Sales Agent">Đại lý phân phối</span>
@@ -137,17 +137,22 @@
     </div>
 
     <div class="hero__content">
-      <p class="hero__eyebrow">PALM CITY</p>
-      <h1 class="hero__headline"
-          data-lang-vi="Nơi phồn hoa an cư bên dòng sông"
-          data-lang-en="Where prosperity meets riverside living">Nơi phồn hoa an cư bên dòng sông</h1>
-      <p class="hero__draft-flag">Draft – Pending Approval</p>
-      <p class="hero__supporting"
+      <p class="hero__eyebrow hero__enter hero__enter--eyebrow">PALM CITY</p>
+      <div class="hero__headline-wrap hero__enter hero__enter--headline">
+        <!-- Headline copy is still awaiting final sign-off (see README §9);
+             kept unchanged here per current instructions — no visible
+             "draft" label is shown per the client's request. -->
+        <h1 class="hero__headline"
+            data-lang-vi="Nơi phồn hoa an cư bên dòng sông"
+            data-lang-en="Where prosperity meets riverside living">Nơi phồn hoa an cư bên dòng sông</h1>
+        <span class="hero__headline-ripple" aria-hidden="true"></span>
+      </div>
+      <p class="hero__supporting hero__enter hero__enter--supporting"
          data-lang-vi="Palm City mang đến không gian sống cao cấp, hài hoà giữa thiên nhiên và tiện ích hiện đại."
          data-lang-en="Palm City offers a refined living space where nature and modern convenience come together.">
         Palm City mang đến không gian sống cao cấp, hài hoà giữa thiên nhiên và tiện ích hiện đại.
       </p>
-      <a href="#overview" class="hero__explore-link" data-smooth-scroll
+      <a href="#overview" class="hero__explore-link hero__enter hero__enter--explore" data-smooth-scroll
          data-lang-vi="Khám phá Palm City" data-lang-en="Explore Palm City">
         <span data-lang-vi="Khám phá Palm City" data-lang-en="Explore Palm City">Khám phá Palm City</span>
         <span class="hero__explore-arrow" aria-hidden="true">&darr;</span>
@@ -163,11 +168,9 @@
 
   <!-- =========================================================
        PROJECT OVERVIEW
-       Storytelling panel + USP stat cards. Copy and figures below
-       are drafts pending approval — see project-overview__copy-flag
-       and project-overview__stats-note. Replace with approved
-       content when available; layout/structure should not need to
-       change.
+       Introduction copy and USP figures are approved content
+       (client-supplied). Layout/structure should not need to change
+       if either is revised later.
        ========================================================= -->
   <section class="project-overview" id="overview" aria-labelledby="project-overview-title">
     <div class="project-overview__container">
@@ -178,54 +181,50 @@
             data-lang-vi="Tổng quan dự án" data-lang-en="Project Overview">Tổng quan dự án</h2>
       </header>
 
-      <div class="project-overview__panel" data-reveal>
-        <span class="project-overview__quote-mark" aria-hidden="true">&ldquo;</span>
-        <p class="project-overview__copy"
-           data-lang-vi="Palm City được hoạch định như một không gian sống ven sông trọn vẹn — nơi kiến trúc, cảnh quan và tiện ích được sắp đặt hài hoà để mang lại nhịp sống thong thả, riêng tư và bền vững cho cư dân."
-           data-lang-en="Palm City is envisioned as a complete riverside living space — where architecture, landscape and amenities are composed in harmony to offer residents an unhurried, private and sustainable rhythm of life.">
-          Palm City được hoạch định như một không gian sống ven sông trọn vẹn — nơi kiến trúc, cảnh quan và tiện ích được sắp đặt hài hoà để mang lại nhịp sống thong thả, riêng tư và bền vững cho cư dân.
+      <div class="project-intro" data-reveal>
+        <p class="project-intro__paragraph"
+           data-lang-vi="Giữa nhịp sống đô thị không ngừng chuyển động, khả năng tái tạo năng lượng trở thành nền tảng của một cuộc sống cân bằng. Tại Palm City, thiên nhiên, mặt nước và hệ tiện ích chú trọng sức khỏe được quy hoạch như một phần của trải nghiệm thường nhật, hỗ trợ cả thể chất lẫn tinh thần và tạo nên giá trị sống bền vững theo thời gian."
+           data-lang-en="Amid the constant pace of urban life, the ability to restore energy has become central to a balanced way of living. At Palm City, nature, water and wellness-focused amenities are planned as part of everyday life, supporting physical and mental wellbeing while creating enduring value over time.">
+          Giữa nhịp sống đô thị không ngừng chuyển động, khả năng tái tạo năng lượng trở thành nền tảng của một cuộc sống cân bằng. Tại Palm City, thiên nhiên, mặt nước và hệ tiện ích chú trọng sức khỏe được quy hoạch như một phần của trải nghiệm thường nhật, hỗ trợ cả thể chất lẫn tinh thần và tạo nên giá trị sống bền vững theo thời gian.
         </p>
-        <p class="project-overview__copy-flag"
-           data-lang-vi="Nội dung minh hoạ — chờ duyệt" data-lang-en="Draft copy — pending approval">Nội dung minh hoạ — chờ duyệt</p>
+        <p class="project-intro__paragraph"
+           data-lang-vi="Không chỉ là nơi ở, Palm City hướng đến một môi trường sống nơi kết nối, nghỉ dưỡng và nhịp sống đô thị cùng hiện diện hài hòa – một đô thị nghỉ dưỡng giữa lòng thành phố."
+           data-lang-en="More than a place to live, Palm City is envisioned as an environment where connection, restoration and urban convenience come together – a resort-inspired urban destination in the heart of the city.">
+          Không chỉ là nơi ở, Palm City hướng đến một môi trường sống nơi kết nối, nghỉ dưỡng và nhịp sống đô thị cùng hiện diện hài hòa – một đô thị nghỉ dưỡng giữa lòng thành phố.
+        </p>
       </div>
 
       <div class="project-overview__stats">
-        <div class="stat-card" data-reveal style="--reveal-delay: 60ms">
+        <div class="stat-card" data-reveal style="--reveal-delay: 60ms; --shine-delay: 0ms">
           <span class="stat-card__accent" aria-hidden="true"></span>
-          <p class="stat-card__label" data-lang-vi="Giá tham khảo" data-lang-en="Reference price">Giá tham khảo</p>
+          <p class="stat-card__label" data-lang-vi="Giá tham khảo" data-lang-en="Indicative price">Giá tham khảo</p>
           <p class="stat-card__prefix" data-lang-vi="Từ" data-lang-en="From">Từ</p>
           <div class="stat-card__value-row">
-            <span class="stat-card__value stat-card__value--placeholder">—</span>
-            <span class="stat-card__unit" data-lang-vi="triệu/m²" data-lang-en="million/m²">triệu/m²</span>
+            <span class="stat-card__value" data-value="168" data-decimals="0">168</span>
+            <span class="stat-card__unit" data-lang-vi="triệu/m²" data-lang-en="VND million/m²">triệu/m²</span>
           </div>
         </div>
 
-        <div class="stat-card" data-reveal style="--reveal-delay: 120ms">
+        <div class="stat-card" data-reveal style="--reveal-delay: 120ms; --shine-delay: 300ms">
           <span class="stat-card__accent" aria-hidden="true"></span>
-          <p class="stat-card__label" data-lang-vi="Giá trị booking" data-lang-en="Booking value">Giá trị booking</p>
+          <p class="stat-card__label" data-lang-vi="Giá trị booking" data-lang-en="Booking amount">Giá trị booking</p>
           <p class="stat-card__prefix" data-lang-vi="Từ" data-lang-en="From">Từ</p>
           <div class="stat-card__value-row">
-            <span class="stat-card__value stat-card__value--placeholder">—</span>
-            <span class="stat-card__unit" data-lang-vi="triệu" data-lang-en="million">triệu</span>
+            <span class="stat-card__value" data-value="100" data-decimals="0">100</span>
+            <span class="stat-card__unit" data-lang-vi="triệu" data-lang-en="VND million">triệu</span>
           </div>
         </div>
 
-        <div class="stat-card" data-reveal style="--reveal-delay: 180ms">
+        <div class="stat-card" data-reveal style="--reveal-delay: 180ms; --shine-delay: 600ms">
           <span class="stat-card__accent" aria-hidden="true"></span>
-          <p class="stat-card__label" data-lang-vi="Mức ưu đãi" data-lang-en="Incentive level">Mức ưu đãi</p>
+          <p class="stat-card__label" data-lang-vi="Mức ưu đãi" data-lang-en="Incentive">Mức ưu đãi</p>
           <p class="stat-card__prefix" data-lang-vi="Đến" data-lang-en="Up to">Đến</p>
           <div class="stat-card__value-row">
-            <span class="stat-card__value stat-card__value--placeholder">—</span>
+            <span class="stat-card__value" data-value="16.5" data-decimals="1">16,5</span>
             <span class="stat-card__unit">%</span>
           </div>
         </div>
       </div>
-
-      <p class="project-overview__stats-note"
-         data-lang-vi="Số liệu minh hoạ — chờ xác nhận từ đội dự án và chính sách bán hàng hiện hành."
-         data-lang-en="Illustrative figures — pending confirmation from the project team and current sales policy.">
-        Số liệu minh hoạ — chờ xác nhận từ đội dự án và chính sách bán hàng hiện hành.
-      </p>
 
     </div>
   </section>
@@ -238,35 +237,30 @@
        ========================================================= -->
   <section class="placeholder-section placeholder-section--dark" id="location">
     <div class="placeholder-section__inner">
-      <p class="placeholder-section__tag" data-lang-vi="Placeholder for development" data-lang-en="Placeholder for development">Placeholder for development</p>
       <h2 class="placeholder-section__heading" data-lang-vi="Vị trí" data-lang-en="Location">Vị trí</h2>
     </div>
   </section>
 
   <section class="placeholder-section placeholder-section--light" id="amenities">
     <div class="placeholder-section__inner">
-      <p class="placeholder-section__tag" data-lang-vi="Placeholder for development" data-lang-en="Placeholder for development">Placeholder for development</p>
       <h2 class="placeholder-section__heading" data-lang-vi="Tiện ích" data-lang-en="Amenities">Tiện ích</h2>
     </div>
   </section>
 
   <section class="placeholder-section placeholder-section--dark" id="floor-plans">
     <div class="placeholder-section__inner">
-      <p class="placeholder-section__tag" data-lang-vi="Placeholder for development" data-lang-en="Placeholder for development">Placeholder for development</p>
       <h2 class="placeholder-section__heading" data-lang-vi="Mặt bằng" data-lang-en="Floor Plans">Mặt bằng</h2>
     </div>
   </section>
 
   <section class="placeholder-section placeholder-section--light" id="gallery">
     <div class="placeholder-section__inner">
-      <p class="placeholder-section__tag" data-lang-vi="Placeholder for development" data-lang-en="Placeholder for development">Placeholder for development</p>
       <h2 class="placeholder-section__heading" data-lang-vi="Thư viện" data-lang-en="Gallery">Thư viện</h2>
     </div>
   </section>
 
   <section class="placeholder-section placeholder-section--dark" id="progress">
     <div class="placeholder-section__inner">
-      <p class="placeholder-section__tag" data-lang-vi="Placeholder for development" data-lang-en="Placeholder for development">Placeholder for development</p>
       <h2 class="placeholder-section__heading" data-lang-vi="Tiến độ" data-lang-en="Progress">Tiến độ</h2>
     </div>
   </section>
@@ -274,9 +268,9 @@
 </main>
 
 <footer class="site-footer">
-  <p data-lang-vi="Palm City — Prototype giao diện, chưa phải website chính thức."
-     data-lang-en="Palm City — Front-end prototype, not the final production website.">
-     Palm City — Prototype giao diện, chưa phải website chính thức.
+  <p data-lang-vi="Palm City — Đại lý phân phối chính thức: Savills."
+     data-lang-en="Palm City — Official sales agent: Savills.">
+     Palm City — Đại lý phân phối chính thức: Savills.
   </p>
 </footer>
 
@@ -317,11 +311,6 @@
       </div>
       <button type="submit" class="btn btn--submit btn--block"
               data-lang-vi="Gửi thông tin" data-lang-en="Submit Details">Gửi thông tin</button>
-      <p class="popup__note"
-         data-lang-vi="Prototype giao diện — biểu mẫu chưa gửi dữ liệu thực."
-         data-lang-en="Interface prototype — this form does not submit real data.">
-         Prototype giao diện — biểu mẫu chưa gửi dữ liệu thực.
-      </p>
     </form>
   </div>
 </div>

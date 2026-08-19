@@ -121,6 +121,66 @@
   }
 
   /* -----------------------------------------------------
+     3c. USP COUNT-UP + POST-COUNT SHIMMER
+     Values are already final numbers in the HTML (visible with no JS,
+     see index.html). Only once this script runs do we blank them to
+     "0" and count up when the card first scrolls into view; the
+     shimmer/glint (.is-counted, styled in styles.css) is purely CSS
+     and only starts once counting finishes.
+     ----------------------------------------------------- */
+  function formatStatValue(num, decimals) {
+    var isEn = document.documentElement.getAttribute("lang") === "en";
+    var fixed = num.toFixed(decimals);
+    return isEn ? fixed : fixed.replace(".", ",");
+  }
+
+  var prefersReducedMotion =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var statValues = document.querySelectorAll(".stat-card__value[data-value]");
+  if (statValues.length && "IntersectionObserver" in window && !prefersReducedMotion) {
+    statValues.forEach(function (el) {
+      var decimals = parseInt(el.getAttribute("data-decimals") || "0", 10);
+      el.textContent = formatStatValue(0, decimals);
+    });
+
+    var statObserver = new IntersectionObserver(
+      function (entries, obs) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          obs.unobserve(el);
+
+          var target = parseFloat(el.getAttribute("data-value"));
+          var decimals = parseInt(el.getAttribute("data-decimals") || "0", 10);
+          var duration = 1000;
+          var start = null;
+
+          el.classList.add("is-counting");
+          function step(timestamp) {
+            if (!start) start = timestamp;
+            var progress = Math.min((timestamp - start) / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = formatStatValue(target * eased, decimals);
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            } else {
+              el.textContent = formatStatValue(target, decimals);
+              el.classList.remove("is-counting");
+              el.classList.add("is-counted");
+            }
+          }
+          requestAnimationFrame(step);
+        });
+      },
+      { threshold: 0.4 }
+    );
+    statValues.forEach(function (el) {
+      statObserver.observe(el);
+    });
+  }
+
+  /* -----------------------------------------------------
      4. MOBILE MENU
      ----------------------------------------------------- */
   var mobileMenu = document.getElementById("mobile-menu");
@@ -291,6 +351,23 @@
     });
 
     hamburgerBtn.setAttribute("aria-label", lang === "en" ? "Open menu" : "Mở menu");
+
+    // Re-render the decimal separator (16,5 vs 16.5) on any USP value.
+    // Mid-count-up values are left alone (the animation's own next
+    // frame already uses the new language via formatStatValue()). If
+    // reduced motion is on, or IntersectionObserver isn't supported,
+    // the count-up system never zeroed the value in the first place —
+    // it's always "final" and safe to reformat with the real number.
+    document.querySelectorAll(".stat-card__value[data-value]").forEach(function (el) {
+      if (el.classList.contains("is-counting")) return;
+      var decimals = parseInt(el.getAttribute("data-decimals") || "0", 10);
+      var isFinal =
+        prefersReducedMotion ||
+        !("IntersectionObserver" in window) ||
+        el.classList.contains("is-counted");
+      var value = isFinal ? parseFloat(el.getAttribute("data-value")) : 0;
+      el.textContent = formatStatValue(value, decimals);
+    });
 
     try {
       window.localStorage.setItem(LANG_STORAGE_KEY, lang);

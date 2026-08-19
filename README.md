@@ -24,6 +24,14 @@ never as the developer or investor.
 > Palm City identity is still carried by the page title, hero, and
 > footer. See the comment above the brand mark in `index.html` for the
 > same note in code. Revisit if stakeholders flag it during review.
+>
+> The Savills mark itself was later enlarged on request
+> (`.savills-logo`, `height: clamp(38px, 3vw, 46px)` desktop /
+> `32px` mobile, aspect ratio preserved via `width: auto`). Since the
+> header no longer carries a Palm City logo to compare against, Palm
+> City's visual lead is maintained elsewhere on the page (page title,
+> hero eyebrow/headline, footer) rather than by a side-by-side size
+> comparison in the header.
 
 ---
 
@@ -135,6 +143,20 @@ and update the `@font-face` / `font-family` stack accordingly.
 - Active nav item is tracked with `IntersectionObserver` against each
   `<section id="...">` in `<main>`, and marked with `aria-current="true"`
   (styled with an underline + yellow, never a background block).
+- **Hero entrance sequence:** on load, the eyebrow, headline, supporting
+  copy and explore link fade/lift in once (`.hero__enter`, `opacity`
+  0→1 + `translateY(14px)→0`, `cubic-bezier(0.22, 1, 0.36, 1)`,
+  `animation-fill-mode: forwards`, `animation-iteration-count: 1`) with
+  a 90ms stagger and per-element durations (450/650/500/400ms) — the
+  whole sequence resolves well under 2s. The entrance classes are on
+  `.hero__headline-wrap` (not the `<h1>` itself), because the `<h1>`
+  already carries its own infinite shine `animation` — putting both on
+  one element means whichever rule's `animation` shorthand comes later
+  in the cascade silently replaces the other's (this is what caused an
+  earlier build to render the headline permanently invisible: the
+  shine rule's shorthand clobbered the entrance animation, leaving
+  `opacity: 0` with nothing left to animate it to `1`). Splitting the
+  two onto wrapper vs. heading avoids that trap entirely.
 - **Hero interactivity:** on mouse/trackpad devices only (`(hover:
   hover) and (pointer: fine)`, checked in `js/main.js`), a soft warm
   glow (`.hero__spotlight`) tracks the cursor over the hero image via
@@ -148,6 +170,12 @@ and update the `@font-face` / `font-family` stack accordingly.
   **is** disabled under `prefers-reduced-motion` (explicit
   `animation-name: none !important` override, since the text would
   otherwise strobe under the site's global near-zero-duration rule).
+  A separate `.hero__headline-ripple` layer (inside
+  `.hero__headline-wrap`) reflects the shine beneath the H1 — a thin
+  (≤16px), low-opacity (≤0.16) decorative band, not a mirror of the
+  glyphs — on its own 7.5s loop, phase-offset from the shine's 6.5s
+  loop (different periods) so the two very rarely peak together;
+  likewise force-disabled under `prefers-reduced-motion`.
 - **Water-reflection system:** a restrained, riverside-inspired layer
   on top of the existing glassmorphism, applied selectively — never to
   nav, mobile menu, popup, or body copy:
@@ -155,11 +183,9 @@ and update the `@font-face` / `font-family` stack accordingly.
     fades the top edge) drifts very slowly (`water-drift`, 19s,
     `translate3d`+`scale` only) via its `::before`, opacity ~0.1,
     `mix-blend-mode: screen`, `pointer-events: none`.
-  - **Storytelling panel:** `.project-overview__panel::before` is a
-    static, low-opacity refraction glow in the upper-left/lower-right
-    corners (no motion); `::after` plays a single 2.6s entrance shine
-    the first time the panel scrolls into view, piggy-backing on the
-    existing `.is-visible` scroll-reveal class — it does not loop.
+  - **Project introduction:** superseded by the borderless
+    `.project-intro` treatment described in full in §9 (glass wash +
+    ripple, replacing the earlier boxed storytelling panel).
   - **USP cards:** `.stat-card::before` is a static idle water texture
     identical on all three cards; `::after` is a one-shot light ripple
     that plays only while a given card is `:hover` (never more than
@@ -244,10 +270,10 @@ acceptable SEO solution in production.
 
 ## 9. Project Overview section
 
-`#overview` (`.project-overview` in `index.html`) is a fully designed
-section, not a placeholder: a bilingual eyebrow/heading, a restrained
-glassmorphism storytelling panel, and a 3-column USP stat-card grid
-(reference price / booking value / incentive level).
+`#overview` (`.project-overview` in `index.html`) is a fully designed,
+approved-content section: a bilingual eyebrow/heading, a borderless
+introduction, and a 3-column USP stat-card grid (indicative price /
+booking amount / incentive).
 
 - **Container/alignment:** reuses the exact same box model as
   `.header-inner` and `.hero__content` — `.project-overview__container`
@@ -256,27 +282,51 @@ glassmorphism storytelling panel, and a 3-column USP stat-card grid
   `.placeholder-section` uses). This keeps its left/right edges
   pixel-identical to the hero and nav at every breakpoint, including
   the ≥1440px max-width bump to 1360px.
-- **Copy and figures are drafts.** The storytelling paragraph carries
-  a "Nội dung minh hoạ — chờ duyệt / Draft copy — pending approval"
-  flag; the three stat cards show a dimmed "—" placeholder value
-  (`.stat-card__value--placeholder`) with a note below the grid
-  ("Số liệu minh hoạ — chờ xác nhận…"). Swap in approved copy/figures
-  by editing the `data-lang-vi`/`data-lang-en` text and replacing the
-  `—` — no structural changes needed.
-- **Scroll reveal:** the panel and cards fade/slide in on scroll via
+- **`.project-intro` (introduction copy):** two approved paragraphs,
+  left-aligned, `max-width: 880px`, **not** a boxed card — no border,
+  radius, box-shadow, or fixed height. `::before` is a borderless glass
+  wash (`backdrop-filter: blur(7px)`, masked so it fades into the navy
+  section background rather than reading as a UI element — see the
+  literal CSS in the section's comment block). `::after` is a slow
+  water ripple behind the copy (8s loop, ~1.4s visible, opacity capped
+  ≤0.15, `mix-blend-mode: screen`, `pointer-events: none`); the centre
+  behind the text stays calm. `.project-overview` itself carries
+  `overflow-x: hidden` so the wash's intentional horizontal bleed
+  (`inset: -20px -40px`) never causes page-level horizontal scroll on
+  narrow viewports.
+- **USP figures are final, client-approved values** (168 / 100 / 16.5),
+  written directly in the HTML (`data-value`, `data-decimals`) so they
+  render correctly with no JS. `js/main.js` progressively enhances
+  them: once the section scrolls into view, each number counts up from
+  0 over ~1s (`IntersectionObserver`, `requestAnimationFrame`, ease-out
+  cubic), then gets a `.is-counted` class that triggers a repeating
+  gold/white shine + a tiny glint near the number's upper-right corner
+  (CSS only, 4.4s loop, staggered ~300ms per card via `--shine-delay`).
+  The shine gradient's fallback (no `background-clip: text` support) is
+  the plain solid-yellow `color` already set on `.stat-card__value`.
+  VI numbers use a comma decimal (`16,5`); EN uses a dot (`16.5`) —
+  `formatStatValue()` reads `document.documentElement`'s `lang` on
+  every re-render, including on language switch.
+- **Scroll reveal:** the intro and cards fade/slide in on scroll via
   `[data-reveal]` + `IntersectionObserver` in `js/main.js`
   (`.reveal-pending` / `.is-visible` in `styles.css`). This is
   progressive enhancement — the JS only *adds* the hidden state, so
   content stays visible with JS disabled or no `IntersectionObserver`
   support. Respects `prefers-reduced-motion` via the existing global
   rule.
+- **Reduced motion:** count-up is skipped entirely (the HTML's final
+  numbers are left untouched — never zeroed), and the intro ripple /
+  USP shine+glint get an explicit `animation-name: none !important`
+  (same reasoning as the hero headline shine: the site's global
+  near-zero-duration override alone would make an infinite-iteration
+  animation strobe rather than freeze).
 
 `#location`, `#amenities`, `#floor-plans`, `#gallery`, `#progress`
-remain intentionally minimal placeholders — bilingual heading + a
-"Placeholder for development" label — used only to validate sticky
-header behaviour, smooth scrolling, active-menu state, anchor links,
-and responsive layout. **They are not final section designs** and
-carry no assumed project content.
+remain intentionally minimal placeholders — just a bilingual heading,
+no body copy — used only to validate sticky header behaviour, smooth
+scrolling, active-menu state, anchor links, and responsive layout.
+**They are not final section designs** and carry no assumed project
+content.
 
 ---
 
@@ -308,9 +358,12 @@ in this prototype as a stand-in). Also replace the Google Fonts
 Playfair Display link and the Gotham font stack with licensed,
 self-hosted webfont files.
 
-Hero copy (headline + supporting copy) in `index.html` is marked
-**Draft – Pending Approval** and must be confirmed by the project team
-before production use.
+Hero copy (headline + supporting copy) in `index.html` is still
+unapproved marketing copy — kept unchanged per current instructions,
+but there is no longer a visible "Draft – Pending Approval" flag on
+the page (removed along with all other demo/placeholder labels; see
+the code comment above the headline in `index.html`). Confirm with the
+project team before production use.
 
 ---
 
