@@ -339,15 +339,17 @@
         <p class="section-lead" data-lang-vi="Trung tâm kết nối mọi nhịp sống" data-lang-en="Connected at the centre of every rhythm of life">Trung tâm kết nối mọi nhịp sống</p>
       </header>
 
-      <!-- Expected asset: assets/location-map.mp4 or assets/location-map.jpg
-           (approved navy-blue connectivity map / motion asset). Neutral
-           frame with a restrained marker pulse shown until supplied. -->
-      <div class="location__map" role="img" aria-label="Bản đồ kết nối vùng Palm City (đang cập nhật)">
+      <!-- assets/palm-city-location-map.webp — approved navy-blue
+           connectivity map. Static image (no motion asset supplied);
+           the gold pulse below is a CSS overlay marking the project
+           pin already drawn on the map. -->
+      <div class="location__map" role="img" aria-label="Bản đồ kết nối vùng Palm City">
         <div class="location__map-frame">
-          <span class="location__map-marker" aria-hidden="true">
+          <img src="assets/palm-city-location-map.webp"
+               alt="Bản đồ kết nối vùng Palm City" class="location__map-image" loading="lazy">
+          <span class="location__map-marker" style="left: 56.5%; top: 48.5%;" aria-hidden="true">
             <span class="location__map-pulse"></span>
           </span>
-          <p class="location__map-note" data-lang-vi="Bản đồ kết nối đang được cập nhật" data-lang-en="Connectivity map is being updated">Bản đồ kết nối đang được cập nhật</p>
         </div>
       </div>
 

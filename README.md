@@ -534,6 +534,47 @@ Overview/USP, navigation structure, the popup, or the language switcher
 
 ---
 
+## 9e. Approved images connected
+
+Two approved images were supplied and are now wired in (both saved to
+`/assets` with clean filenames):
+
+- **`assets/palm-city-overview-riverside.jpg`** — the riverside towers
+  rendering with "Nơi tái tạo năng lượng mỗi ngày" and the Palm City
+  logo embedded in it. Used for **three** slots since it's the only
+  architectural/lifestyle rendering supplied so far:
+  - `#overview` — `object-fit: contain`, full image, nothing cropped.
+  - `#chi-tiet-du-an` (Project Details) — `object-fit: cover`,
+    `object-position: center 45%`, reused as the "aerial/architectural
+    overview" per this task's own explicit reuse-when-no-alternative
+    rule. This crop does cut off the embedded corner text/logo in that
+    one placement — acceptable there per the brief's own object-fit
+    rules for "architectural project images" (only the Overview
+    placement was required to stay fully uncropped).
+  - Amenities carousel, slide 1 only — labelled "Cảnh quan ven sông" /
+    "Riverside landscape" (a genuine fit for that category). Slides
+    2–4 keep the neutral placeholder rather than repeating the same
+    photo three more times, which would read as a bug, not content —
+    still need dedicated amenity photos (pool/gym/clubhouse/park).
+- **`assets/palm-city-location-map.webp`** — the approved connectivity
+  map, now the actual background of `.location__map-frame` (`object-fit:
+  cover`); the gold pulse marker is positioned via inline `left`/`top`
+  on `.location__map-marker` in `index.html` to sit over the Palm City
+  pin already drawn on the map (approximate — the map isn't an
+  interactive/coordinate-aware asset, just a static image).
+- **Fixed during this pass:** the amenities carousel's slide-number/
+  title overlay used to be plain text with only a drop-shadow, which
+  became unreadable once a slide's image itself carried embedded text
+  near the same corner. Both now sit on a small solid navy chip so
+  they stay legible regardless of what's under them.
+- **Still empty:** Project Details' "Chủ đầu tư phát triển"/"Đơn vị
+  phân phối" fields (unrelated to images), floor-plan images (6
+  types), amenity slides 2–4, progress milestones, Savills-Residential
+  team photo, and both Savills news article images — no approved files
+  exist yet for any of these.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

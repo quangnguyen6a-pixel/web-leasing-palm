@@ -32,7 +32,7 @@
   // stock/demo content). `fit` picks object-fit — "contain" for any
   // image that may carry embedded text/logos near its edges (must
   // never be cropped), "cover" for plain photography.
-  function renderDepthFrameImage(inner, src, alt, imgClassName, fit) {
+  function renderDepthFrameImage(inner, src, alt, imgClassName, fit, objectPosition) {
     if (!inner) return;
     inner.innerHTML = "";
     if (src) {
@@ -42,6 +42,7 @@
       img.alt = alt || "";
       img.loading = "lazy";
       img.style.objectFit = fit || "cover";
+      img.style.objectPosition = objectPosition || "center";
       inner.appendChild(img);
     } else {
       var note = document.createElement("p");
@@ -68,15 +69,20 @@
       window.projectConfig.overviewImage,
       overviewAlt,
       null,
-      "contain"
+      "contain",
+      "center"
     );
     var detailAlt = lang === "en" ? "Palm City project rendering" : "Phối cảnh dự án Palm City";
+    // object-fit: cover, focal point lower-of-centre — architectural
+    // shot, so the towers and riverside stay the visible subject even
+    // when the 4:5 frame crops the sky/edges.
     renderDepthFrameImage(
       document.getElementById("details-media-inner"),
       window.projectConfig.projectDetailImage,
       detailAlt,
       "details__image",
-      "cover"
+      "cover",
+      "center 45%"
     );
   }
 
@@ -202,6 +208,7 @@
         img.src = slide.image;
         img.alt = lang === "en" ? slide.titleEn : slide.titleVi;
         img.loading = "lazy";
+        img.style.objectPosition = slide.objectPosition || "center";
         inner.appendChild(img);
       } else {
         // Expected asset noted in js/config.js (slide.expectedAsset).

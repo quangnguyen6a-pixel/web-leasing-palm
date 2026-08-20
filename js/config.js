@@ -25,17 +25,24 @@ window.projectConfig = {
   whatsappUrl: null,
 
   /* -----------------------------------------------------
-     IMAGE SLOTS — left empty until the approved final files are
-     supplied. Each renders a neutral, correctly-proportioned
-     placeholder frame (never a stock photo or "demo" label) until
-     then; set the path here and it renders automatically, no
-     layout/CSS changes needed. See the matching HTML comment next to
-     each slot in index.html for the exact expected path/ratio.
+     IMAGE SLOTS — set the path here and it renders automatically, no
+     layout/CSS changes needed. A slot left "" renders a neutral,
+     correctly-proportioned placeholder frame (never a stock photo or
+     "demo" label) instead.
+
+     Only one approved rendering has been supplied so far
+     (assets/palm-city-overview-riverside.jpg — the riverside towers
+     shot with "Nơi tái tạo năng lượng mỗi ngày" and the Palm City
+     logo embedded in it). It's used for both slots below: Overview
+     shows it uncropped (object-fit: contain, so the embedded corner
+     copy/logo stay intact); Project Details reuses the same file as
+     an architectural overview shot (object-fit: cover, focal point
+     lower-centre to keep the towers and riverside visible) since no
+     second, dedicated rendering exists yet — reusing one confirmed
+     image beats inventing a second one or leaving the frame empty.
      ----------------------------------------------------- */
-  // <!-- Add approved Overview image here -->
-  overviewImage: "",
-  // <!-- Add approved Project Details rendering here -->
-  projectDetailImage: ""
+  overviewImage: "assets/palm-city-overview-riverside.jpg",
+  projectDetailImage: "assets/palm-city-overview-riverside.jpg"
 };
 
 /* -----------------------------------------------------
@@ -127,8 +134,16 @@ window.connectivityData = {
    next content handoff; the carousel renders a neutral frame
    (never "demo"/lorem) until an image is supplied here.
    ----------------------------------------------------- */
+/* Slot 1 uses the only approved lifestyle/riverside image supplied so
+   far (the same Overview rendering — a genuine riverside/landscape
+   shot, so it fits this category on its own merit, not just as a
+   generic fallback). Slots 2-4 have no distinct amenity photo yet
+   (pool/gym/clubhouse/park etc.) — duplicating the single available
+   image across the rest of the carousel would look like a bug rather
+   than real content, so they keep the neutral placeholder until
+   dedicated photos are supplied. */
 window.amenitiesSlides = [
-  { image: null, expectedAsset: "assets/amenities/amenity-01.jpg", titleVi: "Đang cập nhật", titleEn: "Being updated" },
+  { image: "assets/palm-city-overview-riverside.jpg", objectPosition: "center 55%", expectedAsset: "assets/amenities/amenity-01.jpg", titleVi: "Cảnh quan ven sông", titleEn: "Riverside landscape" },
   { image: null, expectedAsset: "assets/amenities/amenity-02.jpg", titleVi: "Đang cập nhật", titleEn: "Being updated" },
   { image: null, expectedAsset: "assets/amenities/amenity-03.jpg", titleVi: "Đang cập nhật", titleEn: "Being updated" },
   { image: null, expectedAsset: "assets/amenities/amenity-04.jpg", titleVi: "Đang cập nhật", titleEn: "Being updated" }
