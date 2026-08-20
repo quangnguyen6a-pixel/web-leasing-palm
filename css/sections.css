@@ -694,6 +694,59 @@
   color: var(--color-navy-primary);
 }
 
+/* Two main tabs: Palm City (shared master-community amenities,
+   existing carousel) vs. Palm River (in-residence, floor-grouped). */
+.amenities__main-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 36px;
+}
+.amenities__main-tab {
+  border-radius: 999px;
+  height: clamp(58px, 6vw, 64px);
+  padding: 0 clamp(28px, 3vw, 36px);
+  font-size: 13px;
+}
+.amenities__panel[hidden] { display: none; }
+
+/* Palm River in-residence amenities: floor tabs + numbered item list */
+.amenities__floor-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.amenities__floor-tab {
+  border-radius: 999px;
+  height: clamp(48px, 5vw, 54px);
+  padding: 0 clamp(22px, 2.4vw, 28px);
+  font-size: 13px;
+}
+.amenities__floor-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px 24px;
+}
+.amenities__floor-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: var(--font-body-alt);
+  font-size: 14px;
+}
+.amenities__floor-item-index {
+  flex: 0 0 auto;
+  font-weight: 700;
+  color: var(--color-savills-yellow);
+  min-width: 22px;
+}
+.amenities__floor-item-name {
+  color: rgba(255, 255, 255, 0.9);
+}
+
 /* =========================================================
    FLOOR PLANS AND SHOW UNITS
    ========================================================= */
@@ -819,13 +872,26 @@
   margin-bottom: 16px;
 }
 .floorplans__typical-points {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 40px;
   font-family: var(--font-body-alt);
   font-size: 14px;
   line-height: 1.6;
-  max-width: 70ch;
+}
+.floorplans__typical-point {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.floorplans__typical-point-title {
+  font-family: var(--font-heading-alt);
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--color-navy-primary);
+}
+.floorplans__typical-point-text {
+  color: rgba(0, 28, 61, 0.72);
 }
 
 /* Zoom modal */
@@ -1028,6 +1094,13 @@
   font-family: var(--font-body-alt);
   font-size: 15px;
   font-weight: 700;
+  margin-bottom: 8px;
+}
+.pillar__desc {
+  font-family: var(--font-body-alt);
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
 }
 .savills-section__news-head {
   margin-top: 8px;
@@ -1298,6 +1371,13 @@
   font-family: var(--font-heading-alt);
   font-weight: 400;
   font-size: clamp(24px, 2.6vw, 32px);
+  margin-bottom: 12px;
+}
+.final-form__paragraph {
+  font-family: var(--font-body-alt);
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
   margin-bottom: 24px;
 }
 .final-form__form {
@@ -1459,6 +1539,7 @@
   }
   .details__media { position: static; }
   .location__panel { grid-template-columns: 1fr; }
+  .amenities__floor-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .savills-section__pillars { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .savills-section__news { grid-template-columns: 1fr; }
 }
@@ -1511,7 +1592,31 @@
 
   .amenities__slide { width: 86vw; }
 
+  .amenities__main-tabs,
+  .amenities__floor-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    padding-bottom: 4px;
+    margin-inline: -4px;
+    padding-inline: 4px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .amenities__main-tabs::-webkit-scrollbar,
+  .amenities__floor-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .amenities__main-tab,
+  .amenities__floor-tab {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    min-height: 48px;
+  }
+  .amenities__floor-list { grid-template-columns: 1fr; }
+
   .floorplans__viewer { grid-template-columns: 1fr; gap: 24px; }
+  .floorplans__typical-points { grid-template-columns: 1fr; }
 
   .policy__timeline { flex-direction: column; }
   .policy__step { flex: 1 1 auto; }

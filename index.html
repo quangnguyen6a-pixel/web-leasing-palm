@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Palm City | Đại lý phân phối Savills</title>
-<meta name="description" content="Palm City — front-end prototype. Not a production website.">
+<title>Palm River | Đại lý phân phối Savills</title>
+<meta name="description" content="Palm River — front-end prototype. Not a production website.">
 
 <!--
   NOTE FOR PRODUCTION:
@@ -22,6 +22,8 @@
 <!-- Preload hero image for LCP (see /assets — replace with approved final asset) -->
 <link rel="preload" as="image" href="assets/palm-city-hero.webp">
 
+<link rel="icon" type="image/png" href="assets/savills-logo.png">
+
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/sections.css">
 </head>
@@ -37,10 +39,10 @@
 
     <!-- Brand mark: header shows Savills only, per explicit client request.
          NOTE: this departs from the brand-hierarchy rule in the project
-         brief (Palm City as lead brand, Savills as agent only) — flagged
-         to the client; kept as requested. Palm City identity is still
+         brief (Palm River as lead brand, Savills as agent only) — flagged
+         to the client; kept as requested. Palm River identity is still
          carried by the page <title>, hero, and footer. The "Đại lý phân
-         phối" text label was removed per the latest refinement pass —
+         phối" text label was removed per an earlier refinement pass —
          the same meaning is now carried by an aria-label only. -->
     <a href="#top" class="brand-group" aria-label="Savills Việt Nam – Đối tác phân phối">
       <img src="assets/savills-logo.png" alt="Savills" class="savills-logo" width="130" height="130"
@@ -129,7 +131,7 @@
   <!-- =========================================================
        HERO BANNER
        ========================================================= -->
-  <section class="hero" id="top" aria-label="Palm City hero">
+  <section class="hero" id="top" aria-label="Palm River hero">
     <!-- Hidden SVG filter for the hero headline's water-refraction layer
          (Layer 3). Referenced by .hero__headline-text::before only —
          never applied to the sharp base text. -->
@@ -143,7 +145,7 @@
     </svg>
 
     <div class="hero__media">
-      <img src="assets/palm-city-hero.webp" alt="Phối cảnh dự án Palm City" class="hero__image"
+      <img src="assets/palm-city-hero.webp" alt="Phối cảnh dự án Palm River" class="hero__image"
            onerror="this.closest('.hero__media').classList.add('hero__media--fallback')">
       <div class="hero__image-fallback" aria-hidden="true">[APPROVED_HERO_IMAGE]</div>
       <div class="hero__overlay" aria-hidden="true"></div>
@@ -152,16 +154,17 @@
     </div>
 
     <div class="hero__content">
-      <p class="hero__eyebrow hero__enter hero__enter--eyebrow">PALM CITY</p>
+      <p class="hero__eyebrow hero__enter hero__enter--eyebrow">PALM RIVER</p>
 
-      <!-- Headline copy is still awaiting final sign-off (see README §9);
-           kept unchanged here per current instructions — no visible
-           "draft" label is shown per the client's request. -->
+      <!-- Content source: Section outline chuẩn, row 2 (D2). Primary
+           heading = project name; secondary heading = positioning
+           statement; supporting copy = density statement — three
+           distinct visual levels, per the content-update brief. -->
       <h1 class="hero__headline hero__enter hero__enter--headline">
         <span class="hero__headline-text"
-              data-lang-vi="Nơi phồn hoa an cư bên dòng sông"
-              data-lang-en="Where prosperity meets riverside living"
-              data-text="Nơi phồn hoa an cư bên dòng sông">Nơi phồn hoa an cư bên dòng sông</span>
+              data-lang-vi="Palm River"
+              data-lang-en="Palm River"
+              data-text="Palm River">Palm River</span>
         <span class="hero__sparkle" style="--sx:8%; --sy:28%; --sdelay:0ms" aria-hidden="true"></span>
         <span class="hero__sparkle" style="--sx:30%; --sy:72%; --sdelay:110ms" aria-hidden="true"></span>
         <span class="hero__sparkle" style="--sx:52%; --sy:18%; --sdelay:220ms" aria-hidden="true"></span>
@@ -170,14 +173,19 @@
       </h1>
 
       <p class="hero__supporting hero__enter hero__enter--supporting"
-         data-lang-vi="Palm City mang đến không gian sống cao cấp, hài hoà giữa thiên nhiên và tiện ích hiện đại."
-         data-lang-en="Palm City offers a refined living space where nature and modern convenience come together."
-         data-text="Palm City mang đến không gian sống cao cấp, hài hoà giữa thiên nhiên và tiện ích hiện đại.">
-        Palm City mang đến không gian sống cao cấp, hài hoà giữa thiên nhiên và tiện ích hiện đại.
+         data-lang-vi="Đô thị nghỉ dưỡng giữa lòng thành phố, liền kề Trung tâm Tài chính Quốc tế Thủ Thiêm"
+         data-lang-en="A resort-inspired city in the heart of town, adjacent to the Thu Thiem International Financial Centre"
+         data-text="Đô thị nghỉ dưỡng giữa lòng thành phố, liền kề Trung tâm Tài chính Quốc tế Thủ Thiêm">
+        Đô thị nghỉ dưỡng giữa lòng thành phố, liền kề Trung tâm Tài chính Quốc tế Thủ Thiêm
+      </p>
+      <p class="hero__density hero__enter hero__enter--density"
+         data-lang-vi="Mật độ xây dựng chỉ 25%, giữ trọn không gian thở cho từng khoảnh khắc sống."
+         data-lang-en="With a building density of just 25%, every living moment keeps its room to breathe.">
+        Mật độ xây dựng chỉ 25%, giữ trọn không gian thở cho từng khoảnh khắc sống.
       </p>
       <a href="#overview" class="hero__explore-link hero__enter hero__enter--explore" data-smooth-scroll
-         data-lang-vi="Khám phá Palm City" data-lang-en="Explore Palm City">
-        <span data-lang-vi="Khám phá Palm City" data-lang-en="Explore Palm City">Khám phá Palm City</span>
+         data-lang-vi="Khám phá Palm River" data-lang-en="Explore Palm River">
+        <span data-lang-vi="Khám phá Palm River" data-lang-en="Explore Palm River">Khám phá Palm River</span>
         <span class="hero__explore-arrow" aria-hidden="true">&darr;</span>
       </a>
     </div>
@@ -199,28 +207,25 @@
     <div class="project-overview__container">
 
       <header class="project-overview__header">
-        <p class="project-overview__eyebrow">PALM CITY</p>
+        <p class="project-overview__eyebrow">PALM RIVER</p>
         <h2 class="project-overview__title" id="project-overview-title"
             data-lang-vi="Tổng quan dự án" data-lang-en="Project Overview">Tổng quan dự án</h2>
       </header>
 
       <div class="project-overview__body">
         <div class="project-intro" data-reveal>
+          <!-- Content source: Section outline chuẩn, row 3 (D3) — one
+               approved storytelling paragraph, punctuation preserved. -->
           <p class="project-intro__paragraph"
-             data-lang-vi="Giữa nhịp sống đô thị không ngừng chuyển động, khả năng tái tạo năng lượng trở thành nền tảng của một cuộc sống cân bằng. Tại Palm City, thiên nhiên, mặt nước và hệ tiện ích chú trọng sức khỏe được quy hoạch như một phần của trải nghiệm thường nhật, hỗ trợ cả thể chất lẫn tinh thần và tạo nên giá trị sống bền vững theo thời gian."
-             data-lang-en="Amid the constant pace of urban life, the ability to restore energy has become central to a balanced way of living. At Palm City, nature, water and wellness-focused amenities are planned as part of everyday life, supporting physical and mental wellbeing while creating enduring value over time.">
-            Giữa nhịp sống đô thị không ngừng chuyển động, khả năng tái tạo năng lượng trở thành nền tảng của một cuộc sống cân bằng. Tại Palm City, thiên nhiên, mặt nước và hệ tiện ích chú trọng sức khỏe được quy hoạch như một phần của trải nghiệm thường nhật, hỗ trợ cả thể chất lẫn tinh thần và tạo nên giá trị sống bền vững theo thời gian.
-          </p>
-          <p class="project-intro__paragraph"
-             data-lang-vi="Không chỉ là nơi ở, Palm City hướng đến một môi trường sống nơi kết nối, nghỉ dưỡng và nhịp sống đô thị cùng hiện diện hài hòa – một đô thị nghỉ dưỡng giữa lòng thành phố."
-             data-lang-en="More than a place to live, Palm City is envisioned as an environment where connection, restoration and urban convenience come together – a resort-inspired urban destination in the heart of the city.">
-            Không chỉ là nơi ở, Palm City hướng đến một môi trường sống nơi kết nối, nghỉ dưỡng và nhịp sống đô thị cùng hiện diện hài hòa – một đô thị nghỉ dưỡng giữa lòng thành phố.
+             data-lang-vi="Sở hữu địa thế vượng khí với 3 mặt giáp sông Giồng Ông Tố, dự án hội tụ trọn vẹn tinh hoa thiên nhiên, duy trì nền nhiệt luôn mát mẻ hơn khu vực trung tâm 1–2 độ C. Thoát khỏi sự ngột ngạt của phố thị, Palm River là bản hòa ca hoàn mỹ giữa cảnh quan thanh bình và tiện nghi đẳng cấp - nơi giới tinh hoa tái tạo năng lượng sống mỗi ngày và lưu giữ di sản truyền đời."
+             data-lang-en="With an auspicious setting bordered by the Giong Ong To river on three sides, the project captures the full essence of nature, keeping temperatures 1–2°C cooler than the city centre. Away from the congestion of the city, Palm River is a perfect harmony of tranquil scenery and refined amenities — where the elite renew their energy each day and preserve a legacy for generations.">
+            Sở hữu địa thế vượng khí với 3 mặt giáp sông Giồng Ông Tố, dự án hội tụ trọn vẹn tinh hoa thiên nhiên, duy trì nền nhiệt luôn mát mẻ hơn khu vực trung tâm 1–2 độ C. Thoát khỏi sự ngột ngạt của phố thị, Palm River là bản hòa ca hoàn mỹ giữa cảnh quan thanh bình và tiện nghi đẳng cấp - nơi giới tinh hoa tái tạo năng lượng sống mỗi ngày và lưu giữ di sản truyền đời.
           </p>
         </div>
 
         <!-- Add approved Overview image here (projectConfig.overviewImage
              in js/config.js) — the riverside rendering with embedded copy
-             "Nơi tái tạo năng lượng mỗi ngày" and the Palm City logo.
+             "Nơi tái tạo năng lượng mỗi ngày" and the Palm River logo.
              Renders automatically once that path is set; no CSS/layout
              changes needed. -->
         <div class="media-depth-frame media-depth-frame--dark project-overview__media" data-depth-frame>
@@ -232,34 +237,58 @@
         </div>
       </div>
 
-      <div class="project-overview__stats">
-        <div class="stat-card" data-reveal style="--reveal-delay: 60ms; --shine-delay: 0ms">
+      <!-- Content source: row 3 (D3) — 5 approved USP points. First
+           item is visually featured per the content-update brief;
+           desktop uses a balanced 5-item grid, tablet wraps 3+2,
+           mobile becomes a horizontally swipeable row. -->
+      <div class="project-overview__stats project-overview__stats--five">
+        <div class="stat-card stat-card--featured" data-reveal style="--reveal-delay: 60ms; --shine-delay: 0ms">
+          <span class="stat-card__accent" aria-hidden="true"></span>
+          <p class="stat-card__label" data-lang-vi="Chỗ đậu xe định danh" data-lang-en="Dedicated parking">Chỗ đậu xe định danh</p>
+          <p class="stat-card__prefix" data-lang-vi="Ít nhất" data-lang-en="At least">Ít nhất</p>
+          <div class="stat-card__value-row">
+            <span class="stat-card__value" data-value="1" data-decimals="0">1</span>
+            <span class="stat-card__unit" data-lang-vi="chỗ đậu ô tô định danh/căn" data-lang-en="identified car park per unit">chỗ đậu ô tô định danh/căn</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-reveal style="--reveal-delay: 100ms; --shine-delay: 150ms">
+          <span class="stat-card__accent" aria-hidden="true"></span>
+          <p class="stat-card__label" data-lang-vi="Mặt tiền sông" data-lang-en="River frontage">Mặt tiền sông</p>
+          <p class="stat-card__prefix" data-lang-vi="" data-lang-en=""></p>
+          <div class="stat-card__value-row">
+            <span class="stat-card__value" data-value="2.7" data-decimals="1">2,7</span>
+            <span class="stat-card__unit" data-lang-vi="km mặt tiền sông Giồng Ông Tố" data-lang-en="km of Giong Ong To riverfront">km mặt tiền sông Giồng Ông Tố</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-reveal style="--reveal-delay: 140ms; --shine-delay: 300ms">
+          <span class="stat-card__accent" aria-hidden="true"></span>
+          <p class="stat-card__label" data-lang-vi="Tiện ích nội khu" data-lang-en="In-residence amenities">Tiện ích nội khu</p>
+          <p class="stat-card__prefix" data-lang-vi="" data-lang-en=""></p>
+          <div class="stat-card__value-row">
+            <span class="stat-card__value" data-value="168" data-decimals="0">168</span>
+            <span class="stat-card__unit" data-lang-vi="+ tiện ích nội khu Palm City" data-lang-en="+ in-residence amenities at Palm City">+ tiện ích nội khu Palm City</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-reveal style="--reveal-delay: 180ms; --shine-delay: 450ms">
           <span class="stat-card__accent" aria-hidden="true"></span>
           <p class="stat-card__label" data-lang-vi="Giá tham khảo" data-lang-en="Indicative price">Giá tham khảo</p>
           <p class="stat-card__prefix" data-lang-vi="Từ" data-lang-en="From">Từ</p>
           <div class="stat-card__value-row">
             <span class="stat-card__value" data-value="168" data-decimals="0">168</span>
-            <span class="stat-card__unit" data-lang-vi="triệu/m²" data-lang-en="VND million/m²">triệu/m²</span>
+            <span class="stat-card__unit" data-lang-vi="triệu/m² thông thủy" data-lang-en="VND million/m² (carpet area)">triệu/m² thông thủy</span>
           </div>
         </div>
 
-        <div class="stat-card" data-reveal style="--reveal-delay: 120ms; --shine-delay: 250ms">
+        <div class="stat-card" data-reveal style="--reveal-delay: 220ms; --shine-delay: 600ms">
           <span class="stat-card__accent" aria-hidden="true"></span>
-          <p class="stat-card__label" data-lang-vi="Giá trị booking" data-lang-en="Booking amount">Giá trị booking</p>
-          <p class="stat-card__prefix" data-lang-vi="Từ" data-lang-en="From">Từ</p>
+          <p class="stat-card__label" data-lang-vi="Pháp lý dự án" data-lang-en="Project legal status">Pháp lý dự án</p>
+          <p class="stat-card__prefix" data-lang-vi="" data-lang-en=""></p>
           <div class="stat-card__value-row">
             <span class="stat-card__value" data-value="100" data-decimals="0">100</span>
-            <span class="stat-card__unit" data-lang-vi="triệu" data-lang-en="VND million">triệu</span>
-          </div>
-        </div>
-
-        <div class="stat-card" data-reveal style="--reveal-delay: 180ms; --shine-delay: 500ms">
-          <span class="stat-card__accent" aria-hidden="true"></span>
-          <p class="stat-card__label" data-lang-vi="Mức ưu đãi" data-lang-en="Incentive">Mức ưu đãi</p>
-          <p class="stat-card__prefix" data-lang-vi="Đến" data-lang-en="Up to">Đến</p>
-          <div class="stat-card__value-row">
-            <span class="stat-card__value" data-value="16.5" data-decimals="1">16,5</span>
-            <span class="stat-card__unit">%</span>
+            <span class="stat-card__unit" data-lang-vi="% pháp lý sạch" data-lang-en="% clear legal status">% pháp lý sạch</span>
           </div>
         </div>
       </div>
@@ -270,14 +299,14 @@
   <!-- =========================================================
        MID-PAGE PROJECT CTA
        ========================================================= -->
-  <section class="mid-cta" aria-label="Palm City — call to action">
+  <section class="mid-cta" aria-label="Palm River — call to action">
     <div class="mid-cta__media" aria-hidden="true">
       <img src="assets/palm-city-hero.webp" alt="" class="mid-cta__image">
       <div class="mid-cta__overlay"></div>
     </div>
     <div class="mid-cta__content">
-      <p class="mid-cta__eyebrow">PALM CITY</p>
-      <h2 class="mid-cta__heading" data-lang-vi="Khám phá không gian sống Palm City" data-lang-en="Discover life at Palm City">Khám phá không gian sống Palm City</h2>
+      <p class="mid-cta__eyebrow">PALM RIVER</p>
+      <h2 class="mid-cta__heading" data-lang-vi="Khám phá không gian sống Palm River" data-lang-en="Discover life at Palm River">Khám phá không gian sống Palm River</h2>
       <div class="mid-cta__actions">
         <a href="#chi-tiet-du-an" class="btn btn--cta-primary" data-smooth-scroll
            data-lang-vi="Xem chi tiết dự án" data-lang-en="Explore project details">Xem chi tiết dự án</a>
@@ -293,7 +322,7 @@
   <section class="details" id="chi-tiet-du-an" aria-labelledby="details-title">
     <div class="section-container details__container">
       <header class="section-head">
-        <p class="section-tag">PALM CITY</p>
+        <p class="section-tag">PALM RIVER</p>
         <h2 class="section-title" id="details-title" data-lang-vi="Thông tin dự án" data-lang-en="Project information">Thông tin dự án</h2>
       </header>
 
@@ -333,20 +362,25 @@
        ========================================================= -->
   <section class="location" id="vi-tri" aria-labelledby="location-title">
     <div class="section-container location__container">
+      <!-- Content source: row 6 (D6) — approved heading + paragraph. -->
       <header class="section-head">
-        <p class="section-tag">PALM CITY</p>
-        <h2 class="section-title" id="location-title" data-lang-vi="Giao điểm kết nối" data-lang-en="Connected at the centre">Giao điểm kết nối</h2>
-        <p class="section-lead" data-lang-vi="Trung tâm kết nối mọi nhịp sống" data-lang-en="Connected at the centre of every rhythm of life">Trung tâm kết nối mọi nhịp sống</p>
+        <p class="section-tag">PALM RIVER</p>
+        <h2 class="section-title" id="location-title" data-lang-vi="Vị trí kim cương – Kết nối 5 đại đô thị lớn nhất khu Đông" data-lang-en="A prime location – connecting the 5 largest urban hubs in the East">Vị trí kim cương – Kết nối 5 đại đô thị lớn nhất khu Đông</h2>
+        <p class="section-lead"
+           data-lang-vi="Tọa lạc tại tâm điểm giao thoa của 5 đại đô thị lớn phía Đông và hai sân bay quốc tế, Palm River sở hữu khả năng siêu kết nối nhờ hạ tầng bứt phá từ nút giao An Phú và tuyến cao tốc mở rộng. Tiên phong ứng dụng mô hình TOD, dự án cách trạm Metro Bình Trưng chỉ 1 phút đi bộ, giúp cư dân dễ dàng tiếp cận “siêu ga” và trung tâm tài chính Thủ Thiêm chỉ trong 5 phút di chuyển."
+           data-lang-en="Located at the intersection of five major urban hubs in the East and two international airports, Palm River enjoys exceptional connectivity thanks to breakthrough infrastructure from the An Phu interchange and the expanded expressway. Pioneering the TOD (transit-oriented development) model, the project is just a 1-minute walk from Binh Trung Metro Station, giving residents easy access to the “super station” and the Thu Thiem financial centre in just 5 minutes.">
+          Tọa lạc tại tâm điểm giao thoa của 5 đại đô thị lớn phía Đông và hai sân bay quốc tế, Palm River sở hữu khả năng siêu kết nối nhờ hạ tầng bứt phá từ nút giao An Phú và tuyến cao tốc mở rộng. Tiên phong ứng dụng mô hình TOD, dự án cách trạm Metro Bình Trưng chỉ 1 phút đi bộ, giúp cư dân dễ dàng tiếp cận “siêu ga” và trung tâm tài chính Thủ Thiêm chỉ trong 5 phút di chuyển.
+        </p>
       </header>
 
       <!-- assets/palm-city-location-map.webp — approved navy-blue
            connectivity map. Static image (no motion asset supplied);
            the gold pulse below is a CSS overlay marking the project
            pin already drawn on the map. -->
-      <div class="location__map" role="img" aria-label="Bản đồ kết nối vùng Palm City">
+      <div class="location__map" role="img" aria-label="Bản đồ kết nối vùng Palm River">
         <div class="location__map-frame">
           <img src="assets/palm-city-location-map.webp"
-               alt="Bản đồ kết nối vùng Palm City" class="location__map-image" loading="lazy">
+               alt="Bản đồ kết nối vùng Palm River" class="location__map-image" loading="lazy">
           <span class="location__map-marker" style="left: 56.5%; top: 48.5%;" aria-hidden="true">
             <span class="location__map-pulse"></span>
           </span>
@@ -363,17 +397,44 @@
   <section class="amenities" id="tien-ich" aria-labelledby="amenities-title">
     <div class="section-container amenities__container">
       <header class="section-head">
-        <p class="section-tag">PALM CITY</p>
+        <p class="section-tag">PALM RIVER</p>
         <h2 class="section-title" id="amenities-title" data-lang-vi="Hệ tiện ích cân bằng mọi nhịp sống" data-lang-en="A complete rhythm of living">Hệ tiện ích cân bằng mọi nhịp sống</h2>
       </header>
 
-      <div class="amenities__carousel" id="amenities-carousel">
-        <div class="amenities__track" id="amenities-track" tabindex="0"
-             role="region" aria-label="Thư viện tiện ích Palm City" aria-roledescription="carousel"></div>
-        <div class="amenities__controls">
-          <button type="button" class="amenities__btn amenities__btn--prev" id="amenities-prev" aria-label="Tiện ích trước" data-lang-vi-aria="Tiện ích trước" data-lang-en-aria="Previous amenity">&larr;</button>
-          <button type="button" class="amenities__btn amenities__btn--next" id="amenities-next" aria-label="Tiện ích tiếp theo" data-lang-vi-aria="Tiện ích tiếp theo" data-lang-en-aria="Next amenity">&rarr;</button>
+      <!-- Two tabs per the content-update brief: the shared Palm City
+           master-community amenity system, and Palm River's own
+           68-item in-residence amenity list (D7), grouped by floor. -->
+      <div class="amenities__main-tabs" id="amenities-main-tabs" role="tablist" aria-label="Nhóm tiện ích">
+        <button type="button" class="glass-tab glass-tab--dark amenities__main-tab is-active"
+                data-amenities-tab="palm-city" role="tab" aria-selected="true" aria-controls="amenities-panel-palm-city"
+                data-lang-vi="Tiện ích Palm City" data-lang-en="Palm City amenities">Tiện ích Palm City</button>
+        <button type="button" class="glass-tab glass-tab--dark amenities__main-tab"
+                data-amenities-tab="palm-river" role="tab" aria-selected="false" aria-controls="amenities-panel-palm-river"
+                data-lang-vi="Tiện ích nội khu Palm River" data-lang-en="Palm River in-residence amenities">Tiện ích nội khu Palm River</button>
+      </div>
+
+      <!-- Tab 1: Palm City. D7 points to a palmrivercity.com image for
+           this tab's copy — that host is blocked by this environment's
+           network policy and could not be read, so the existing
+           approved carousel content is kept here rather than invented
+           amenity names (reported in the final summary). -->
+      <div class="amenities__panel" id="amenities-panel-palm-city" data-amenities-panel="palm-city">
+        <div class="amenities__carousel" id="amenities-carousel">
+          <div class="amenities__track" id="amenities-track" tabindex="0"
+               role="region" aria-label="Thư viện tiện ích Palm City" aria-roledescription="carousel"></div>
+          <div class="amenities__controls">
+            <button type="button" class="amenities__btn amenities__btn--prev" id="amenities-prev" aria-label="Tiện ích trước" data-lang-vi-aria="Tiện ích trước" data-lang-en-aria="Previous amenity">&larr;</button>
+            <button type="button" class="amenities__btn amenities__btn--next" id="amenities-next" aria-label="Tiện ích tiếp theo" data-lang-vi-aria="Tiện ích tiếp theo" data-lang-en-aria="Next amenity">&rarr;</button>
+          </div>
         </div>
+      </div>
+
+      <!-- Tab 2: Palm River — full 68-item list from D7, grouped by
+           floor tabs (Tầng G / Tầng 1 / Tầng 2 / Tầng 20) so all 68
+           are never shown in one uninterrupted list. -->
+      <div class="amenities__panel" id="amenities-panel-palm-river" data-amenities-panel="palm-river" hidden>
+        <div class="amenities__floor-tabs" id="amenities-floor-tabs" role="tablist" aria-label="Tầng tiện ích Palm River"></div>
+        <div class="amenities__floor-list" id="amenities-floor-list"></div>
       </div>
     </div>
   </section>
@@ -384,7 +445,7 @@
   <section class="floorplans" id="mat-bang" aria-labelledby="floorplans-title">
     <div class="section-container floorplans__container">
       <header class="section-head">
-        <p class="section-tag">PALM CITY</p>
+        <p class="section-tag">PALM RIVER</p>
         <h2 class="section-title" id="floorplans-title" data-lang-vi="Mặt bằng và không gian sống" data-lang-en="Floor plans and residences">Mặt bằng và không gian sống</h2>
       </header>
 
@@ -408,11 +469,7 @@
 
       <div class="floorplans__typical">
         <h3 class="floorplans__typical-heading" data-lang-vi="Mặt bằng tầng điển hình" data-lang-en="Typical floor layout">Mặt bằng tầng điển hình</h3>
-        <ul class="floorplans__typical-points">
-          <li data-lang-vi="Bố trí căn hộ tối ưu tầm nhìn ra sông và mảng xanh nội khu" data-lang-en="Unit layout optimised for river and landscaped-green views">Bố trí căn hộ tối ưu tầm nhìn ra sông và mảng xanh nội khu</li>
-          <li data-lang-vi="Hành lang thông thoáng, hạn chế căn hộ đối diện trực tiếp" data-lang-en="Open-air corridors, minimising directly facing units">Hành lang thông thoáng, hạn chế căn hộ đối diện trực tiếp</li>
-          <li data-lang-vi="Khu vực sảnh và tiện ích riêng theo từng tầng/khối căn hộ" data-lang-en="Dedicated lobby and amenity zones per floor/block">Khu vực sảnh và tiện ích riêng theo từng tầng/khối căn hộ</li>
-        </ul>
+        <ul class="floorplans__typical-points" id="floorplans-typical-points"></ul>
       </div>
     </div>
   </section>
@@ -423,7 +480,7 @@
   <section class="policy" id="chinh-sach" aria-labelledby="policy-title">
     <div class="section-container policy__container">
       <header class="section-head">
-        <p class="section-tag">PALM CITY</p>
+        <p class="section-tag">PALM RIVER</p>
         <h2 class="section-title" id="policy-title" data-lang-vi="Chính sách thanh toán" data-lang-en="Payment policy">Chính sách thanh toán</h2>
       </header>
 
@@ -468,7 +525,7 @@
   <section class="progress-section" id="tien-do" aria-labelledby="progress-title">
     <div class="section-container progress-section__container">
       <header class="section-head">
-        <p class="section-tag">PALM CITY</p>
+        <p class="section-tag">PALM RIVER</p>
         <h2 class="section-title" id="progress-title" data-lang-vi="Tiến độ dự án" data-lang-en="Project progress">Tiến độ dự án</h2>
       </header>
 
@@ -483,31 +540,42 @@
     <div class="section-container savills-section__container">
       <header class="section-head">
         <p class="section-tag">SAVILLS VIỆT NAM</p>
-        <h2 class="section-title" id="savills-title" data-lang-vi="Đồng hành cùng Savills Việt Nam" data-lang-en="In partnership with Savills Vietnam">Đồng hành cùng Savills Việt Nam</h2>
+        <h2 class="section-title" id="savills-title"
+            data-lang-vi="Savills – Thương hiệu bất động sản toàn cầu hơn 165 năm"
+            data-lang-en="Savills – A Global Real Estate Brand for Over 165 Years">Savills – Thương hiệu bất động sản toàn cầu hơn 165 năm</h2>
       </header>
 
       <div class="savills-section__intro">
         <img src="assets/savills-logo.png" alt="Savills" class="savills-section__logo" width="120" height="120"
              onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback',textContent:'[SAVILLS_LOGO]'}))">
         <p class="savills-section__lede"
-           data-lang-vi="Là đơn vị phân phối chính thức, Savills Việt Nam đồng hành cùng khách hàng trong suốt quá trình tìm hiểu Palm City — từ thông tin thị trường đến quy trình tư vấn minh bạch."
-           data-lang-en="As the official distribution partner, Savills Vietnam accompanies customers throughout the journey of exploring Palm City — from market insight to a transparent advisory process.">
-          Là đơn vị phân phối chính thức, Savills Việt Nam đồng hành cùng khách hàng trong suốt quá trình tìm hiểu Palm City — từ thông tin thị trường đến quy trình tư vấn minh bạch.
+           data-lang-vi="Thành lập năm 1855 tại Vương quốc Anh, Savills hiện là một trong những tập đoàn tư vấn và quản lý bất động sản hàng đầu thế giới với mạng lưới hơn 700 văn phòng tại Châu Mỹ, Châu Âu, Châu Á – Thái Bình Dương, Châu Phi và Trung Đông. Có mặt từ năm 1995 tại Việt Nam, Savills là công ty tư vấn BĐS quốc tế lâu đời và quy mô hàng đầu, liên tục được vinh danh tại các giải thưởng danh giá."
+           data-lang-en="Founded in 1855 in the United Kingdom, Savills is now one of the world's leading real estate consultancy and management groups, with a network of more than 700 offices across the Americas, Europe, Asia-Pacific, Africa and the Middle East. Present in Vietnam since 1995, Savills is one of the country's longest-established and largest international real estate consultancies, consistently recognised at prestigious industry awards.">
+          Thành lập năm 1855 tại Vương quốc Anh, Savills hiện là một trong những tập đoàn tư vấn và quản lý bất động sản hàng đầu thế giới với mạng lưới hơn 700 văn phòng tại Châu Mỹ, Châu Âu, Châu Á – Thái Bình Dương, Châu Phi và Trung Đông. Có mặt từ năm 1995 tại Việt Nam, Savills là công ty tư vấn BĐS quốc tế lâu đời và quy mô hàng đầu, liên tục được vinh danh tại các giải thưởng danh giá.
         </p>
       </div>
 
       <ul class="savills-section__pillars">
         <li class="pillar">
           <span class="pillar__index">01</span>
-          <p class="pillar__label" data-lang-vi="Tư vấn minh bạch" data-lang-en="Transparent advisory">Tư vấn minh bạch</p>
+          <p class="pillar__label" data-lang-vi="Thông tin chính thống &amp; Minh bạch" data-lang-en="Official &amp; Transparent Information">Thông tin chính thống &amp; Minh bạch</p>
+          <p class="pillar__desc"
+             data-lang-vi="Đảm bảo 100% rổ hàng, chính sách bán hàng, bảng giá và ưu đãi chiết khấu trực tiếp từ Chủ đầu tư Hướng Việt Properties."
+             data-lang-en="A 100% guarantee that unit inventory, sales policy, price list and discount incentives come directly from developer Huong Viet Properties.">Đảm bảo 100% rổ hàng, chính sách bán hàng, bảng giá và ưu đãi chiết khấu trực tiếp từ Chủ đầu tư Hướng Việt Properties.</p>
         </li>
         <li class="pillar">
           <span class="pillar__index">02</span>
-          <p class="pillar__label" data-lang-vi="Thông tin thị trường" data-lang-en="Market insight">Thông tin thị trường</p>
+          <p class="pillar__label" data-lang-vi="Đặc quyền giỏ hàng đẹp nhất" data-lang-en="Priority Access to the Best Units">Đặc quyền giỏ hàng đẹp nhất</p>
+          <p class="pillar__desc"
+             data-lang-vi="Khách hàng được tiếp cận sớm nhất với các quỹ căn view sông, căn góc và vị trí tầng đẹp nhất dự án."
+             data-lang-en="Customers get first access to river-view units, corner units and the best floor positions in the project.">Khách hàng được tiếp cận sớm nhất với các quỹ căn view sông, căn góc và vị trí tầng đẹp nhất dự án.</p>
         </li>
         <li class="pillar">
           <span class="pillar__index">03</span>
-          <p class="pillar__label" data-lang-vi="Đồng hành trong quá trình tìm hiểu dự án" data-lang-en="Support throughout your project research">Đồng hành trong quá trình tìm hiểu dự án</p>
+          <p class="pillar__label" data-lang-vi="Đồng hành chuyên nghiệp 1:1" data-lang-en="Professional 1:1 Support">Đồng hành chuyên nghiệp 1:1</p>
+          <p class="pillar__desc"
+             data-lang-vi="Đội ngũ chuyên viên tư vấn được đào tạo chuyên sâu, bảo mật thông tin tuyệt đối và hỗ trợ xuyên suốt toàn bộ quy trình giao dịch."
+             data-lang-en="A highly trained advisory team, with absolute confidentiality and support throughout the entire transaction process.">Đội ngũ chuyên viên tư vấn được đào tạo chuyên sâu, bảo mật thông tin tuyệt đối và hỗ trợ xuyên suốt toàn bộ quy trình giao dịch.</p>
         </li>
       </ul>
 
@@ -540,11 +608,13 @@
       </div>
       <div class="residential__content">
         <p class="section-tag">SAVILLS RESIDENTIAL</p>
-        <h2 class="section-title" id="residential-title" data-lang-vi="Đội ngũ Savills Residential" data-lang-en="The Savills Residential team">Đội ngũ Savills Residential</h2>
+        <h2 class="section-title" id="residential-title"
+            data-lang-vi="Savills Residential – Chuyên gia bất động sản nhà ở cao cấp"
+            data-lang-en="Savills Residential – Premium Residential Real Estate Experts">Savills Residential – Chuyên gia bất động sản nhà ở cao cấp</h2>
         <p class="section-lead"
-           data-lang-vi="Đội ngũ tư vấn chuyên trách của Savills Residential hỗ trợ khách hàng tìm hiểu Palm City với thông tin cập nhật và quy trình tư vấn rõ ràng."
-           data-lang-en="Savills Residential's dedicated advisory team supports customers exploring Palm City with up-to-date information and a clear advisory process.">
-          Đội ngũ tư vấn chuyên trách của Savills Residential hỗ trợ khách hàng tìm hiểu Palm City với thông tin cập nhật và quy trình tư vấn rõ ràng.
+           data-lang-vi="Bộ phận Bất động sản Nhà ở của Savills là cầu nối tin cậy giữa các chủ đầu tư danh tiếng và cộng đồng khách hàng. Chúng tôi cung cấp giải pháp toàn diện từ tư vấn chọn căn, chiến lược tài chính, pháp lý minh bạch cho đến hỗ trợ thủ tục chuyển nhượng và quản lý tài sản sau bán hàng."
+           data-lang-en="Savills' Residential division is a trusted bridge between reputable developers and the customer community. We provide end-to-end solutions — from unit-selection advisory and financial strategy to transparent legal guidance, transfer support and post-sale asset management.">
+          Bộ phận Bất động sản Nhà ở của Savills là cầu nối tin cậy giữa các chủ đầu tư danh tiếng và cộng đồng khách hàng. Chúng tôi cung cấp giải pháp toàn diện từ tư vấn chọn căn, chiến lược tài chính, pháp lý minh bạch cho đến hỗ trợ thủ tục chuyển nhượng và quản lý tài sản sau bán hàng.
         </p>
         <ul class="residential__points">
           <li data-lang-vi="Tư vấn 1-1 theo nhu cầu khách hàng" data-lang-en="One-on-one advisory tailored to your needs">Tư vấn 1-1 theo nhu cầu khách hàng</li>
@@ -563,7 +633,7 @@
   <section class="final-form" id="lien-he" aria-labelledby="final-form-title">
     <div class="section-container final-form__container">
       <div class="final-form__media">
-        <img src="assets/palm-city-hero.webp" alt="Phối cảnh dự án Palm City" class="final-form__image">
+        <img src="assets/palm-city-hero.webp" alt="Phối cảnh dự án Palm River" class="final-form__image">
         <ul class="final-form__benefits">
           <li data-lang-vi="Giá tham khảo từ 168 triệu/m²" data-lang-en="Indicative price from VND 168 million/m²">Giá tham khảo từ 168 triệu/m²</li>
           <li data-lang-vi="Booking giữ chỗ từ 100 triệu VNĐ" data-lang-en="Booking from VND 100 million">Booking giữ chỗ từ 100 triệu VNĐ</li>
@@ -572,7 +642,12 @@
       </div>
 
       <div class="final-form__panel">
-        <h2 class="final-form__title" id="final-form-title" data-lang-vi="Nhận thông tin dự án" data-lang-en="Request project information">Nhận thông tin dự án</h2>
+        <h2 class="final-form__title" id="final-form-title"
+            data-lang-vi="Đăng ký tư vấn cùng chuyên gia Savills"
+            data-lang-en="Register for Consultation with a Savills Expert">Đăng ký tư vấn cùng chuyên gia Savills</h2>
+        <p class="final-form__paragraph"
+           data-lang-vi="Đăng ký để được tư vấn bảng giá dự kiến, layout chi tiết và chính sách bán hàng đợt 1 trực tiếp từ Chủ đầu tư Hướng Việt và Savills Việt Nam."
+           data-lang-en="Register to receive advice on the indicative price list, detailed layouts and the first sales policy directly from developer Huong Viet and Savills Vietnam.">Đăng ký để được tư vấn bảng giá dự kiến, layout chi tiết và chính sách bán hàng đợt 1 trực tiếp từ Chủ đầu tư Hướng Việt và Savills Việt Nam.</p>
 
         <form novalidate id="final-form" class="final-form__form">
           <div class="form-field">
@@ -591,15 +666,38 @@
             <span class="form-field__error" data-lang-vi="Vui lòng nhập email hợp lệ" data-lang-en="Please enter a valid email"></span>
           </div>
           <div class="form-field">
-            <label for="final-type" data-lang-vi="Loại hình quan tâm" data-lang-en="Product type of interest">Loại hình quan tâm</label>
+            <label for="final-area" data-lang-vi="Khu vực sinh sống hiện tại" data-lang-en="Current area of residence">Khu vực sinh sống hiện tại</label>
+            <input type="text" id="final-area" name="current-area" autocomplete="address-level2">
+          </div>
+          <div class="form-field">
+            <label for="final-purpose" data-lang-vi="Mục đích mua" data-lang-en="Purpose of purchase">Mục đích mua</label>
+            <select id="final-purpose" name="purpose">
+              <option value="" data-lang-vi="Chọn mục đích" data-lang-en="Select a purpose">Chọn mục đích</option>
+              <option value="o-de-o" data-lang-vi="Mua để ở" data-lang-en="Live-in">Mua để ở</option>
+              <option value="dau-tu" data-lang-vi="Đầu tư" data-lang-en="Investment">Đầu tư</option>
+              <option value="second-home" data-lang-vi="Second home" data-lang-en="Second home">Second home</option>
+              <option value="cho-thue" data-lang-vi="Cho thuê" data-lang-en="Rental">Cho thuê</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="final-type" data-lang-vi="Loại sản phẩm quan tâm" data-lang-en="Product type of interest">Loại sản phẩm quan tâm</label>
             <select id="final-type" name="unit-type">
-              <option value="" data-lang-vi="Chọn loại hình" data-lang-en="Select a type">Chọn loại hình</option>
-              <option value="studio">Studio</option>
-              <option value="1pn">1PN</option>
-              <option value="2pn">2PN</option>
-              <option value="2pn-dac-biet" data-lang-vi="2PN đặc biệt" data-lang-en="2BR Deluxe">2PN đặc biệt</option>
-              <option value="3pn">3PN</option>
-              <option value="3pn-dac-biet" data-lang-vi="3PN đặc biệt" data-lang-en="3BR Deluxe">3PN đặc biệt</option>
+              <option value="" data-lang-vi="Chọn loại sản phẩm" data-lang-en="Select a product type">Chọn loại sản phẩm</option>
+              <option value="1pn" data-lang-vi="1 phòng ngủ (1PN)" data-lang-en="1 bedroom (1BR)">1 phòng ngủ (1PN)</option>
+              <option value="2pn" data-lang-vi="2 phòng ngủ (2PN)" data-lang-en="2 bedrooms (2BR)">2 phòng ngủ (2PN)</option>
+              <option value="3pn" data-lang-vi="3 phòng ngủ (3PN)" data-lang-en="3 bedrooms (3BR)">3 phòng ngủ (3PN)</option>
+              <option value="duplex-penthouse">Duplex/Penthouse</option>
+              <option value="shophouse">Shophouse</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="final-budget" data-lang-vi="Ngân sách dự kiến" data-lang-en="Expected budget">Ngân sách dự kiến</label>
+            <select id="final-budget" name="budget">
+              <option value="" data-lang-vi="Chọn ngân sách" data-lang-en="Select a budget">Chọn ngân sách</option>
+              <option value="duoi-15" data-lang-vi="Dưới 15 tỷ" data-lang-en="Under VND 15 billion">Dưới 15 tỷ</option>
+              <option value="15-20" data-lang-vi="15 – 20 tỷ" data-lang-en="VND 15–20 billion">15 – 20 tỷ</option>
+              <option value="20-25" data-lang-vi="20 – 25 tỷ" data-lang-en="VND 20–25 billion">20 – 25 tỷ</option>
+              <option value="tren-25" data-lang-vi="Trên 25 tỷ" data-lang-en="Over VND 25 billion">Trên 25 tỷ</option>
             </select>
           </div>
           <div class="form-field form-field--checkbox">
@@ -613,9 +711,9 @@
             <span class="btn__spinner" aria-hidden="true"></span>
           </button>
           <p class="final-form__privacy"
-             data-lang-vi="Thông tin của bạn chỉ được sử dụng để liên hệ tư vấn về Palm City."
-             data-lang-en="Your information is used only to contact you about Palm City.">
-            Thông tin của bạn chỉ được sử dụng để liên hệ tư vấn về Palm City.
+             data-lang-vi="Thông tin của bạn chỉ được sử dụng để liên hệ tư vấn về Palm River."
+             data-lang-en="Your information is used only to contact you about Palm River.">
+            Thông tin của bạn chỉ được sử dụng để liên hệ tư vấn về Palm River.
           </p>
         </form>
 
@@ -631,9 +729,9 @@
 
 
 <footer class="site-footer">
-  <p data-lang-vi="Palm City — Đại lý phân phối chính thức: Savills."
-     data-lang-en="Palm City — Official sales agent: Savills.">
-     Palm City — Đại lý phân phối chính thức: Savills.
+  <p data-lang-vi="Palm River — Đại lý phân phối chính thức: Savills."
+     data-lang-en="Palm River — Official sales agent: Savills.">
+     Palm River — Đại lý phân phối chính thức: Savills.
   </p>
 </footer>
 
@@ -649,8 +747,11 @@
             aria-label="Đóng" data-lang-vi-aria="Đóng" data-lang-en-aria="Close">&times;</button>
 
     <h2 id="popup-title" class="popup__title"
-        data-lang-vi="Đăng ký nhận thông tin Palm City"
-        data-lang-en="Register for Palm City Updates">Đăng ký nhận thông tin Palm City</h2>
+        data-lang-vi="Đăng ký tư vấn cùng chuyên gia Savills"
+        data-lang-en="Register for Consultation with a Savills Expert">Đăng ký tư vấn cùng chuyên gia Savills</h2>
+    <p class="popup__paragraph"
+       data-lang-vi="Đăng ký để được tư vấn bảng giá dự kiến, layout chi tiết và chính sách bán hàng đợt 1 trực tiếp từ Chủ đầu tư Hướng Việt và Savills Việt Nam."
+       data-lang-en="Register to receive advice on the indicative price list, detailed layouts and the first sales policy directly from developer Huong Viet and Savills Vietnam.">Đăng ký để được tư vấn bảng giá dự kiến, layout chi tiết và chính sách bán hàng đợt 1 trực tiếp từ Chủ đầu tư Hướng Việt và Savills Việt Nam.</p>
 
     <!-- Prototype only. Backend submission and validation will be implemented in production. -->
     <form novalidate id="register-form" class="popup__form">
@@ -665,6 +766,41 @@
       <div class="form-field">
         <label for="field-email" data-lang-vi="Email" data-lang-en="Email">Email</label>
         <input type="email" id="field-email" name="email" autocomplete="email">
+      </div>
+      <div class="form-field">
+        <label for="field-area" data-lang-vi="Khu vực sinh sống hiện tại" data-lang-en="Current area of residence">Khu vực sinh sống hiện tại</label>
+        <input type="text" id="field-area" name="current-area" autocomplete="address-level2">
+      </div>
+      <div class="form-field">
+        <label for="field-purpose" data-lang-vi="Mục đích mua" data-lang-en="Purpose of purchase">Mục đích mua</label>
+        <select id="field-purpose" name="purpose">
+          <option value="" data-lang-vi="Chọn mục đích" data-lang-en="Select a purpose">Chọn mục đích</option>
+          <option value="o-de-o" data-lang-vi="Mua để ở" data-lang-en="Live-in">Mua để ở</option>
+          <option value="dau-tu" data-lang-vi="Đầu tư" data-lang-en="Investment">Đầu tư</option>
+          <option value="second-home" data-lang-vi="Second home" data-lang-en="Second home">Second home</option>
+          <option value="cho-thue" data-lang-vi="Cho thuê" data-lang-en="Rental">Cho thuê</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="field-type" data-lang-vi="Loại sản phẩm quan tâm" data-lang-en="Product type of interest">Loại sản phẩm quan tâm</label>
+        <select id="field-type" name="unit-type">
+          <option value="" data-lang-vi="Chọn loại sản phẩm" data-lang-en="Select a product type">Chọn loại sản phẩm</option>
+          <option value="1pn" data-lang-vi="1 phòng ngủ (1PN)" data-lang-en="1 bedroom (1BR)">1 phòng ngủ (1PN)</option>
+          <option value="2pn" data-lang-vi="2 phòng ngủ (2PN)" data-lang-en="2 bedrooms (2BR)">2 phòng ngủ (2PN)</option>
+          <option value="3pn" data-lang-vi="3 phòng ngủ (3PN)" data-lang-en="3 bedrooms (3BR)">3 phòng ngủ (3PN)</option>
+          <option value="duplex-penthouse">Duplex/Penthouse</option>
+          <option value="shophouse">Shophouse</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="field-budget" data-lang-vi="Ngân sách dự kiến" data-lang-en="Expected budget">Ngân sách dự kiến</label>
+        <select id="field-budget" name="budget">
+          <option value="" data-lang-vi="Chọn ngân sách" data-lang-en="Select a budget">Chọn ngân sách</option>
+          <option value="duoi-15" data-lang-vi="Dưới 15 tỷ" data-lang-en="Under VND 15 billion">Dưới 15 tỷ</option>
+          <option value="15-20" data-lang-vi="15 – 20 tỷ" data-lang-en="VND 15–20 billion">15 – 20 tỷ</option>
+          <option value="20-25" data-lang-vi="20 – 25 tỷ" data-lang-en="VND 20–25 billion">20 – 25 tỷ</option>
+          <option value="tren-25" data-lang-vi="Trên 25 tỷ" data-lang-en="Over VND 25 billion">Trên 25 tỷ</option>
+        </select>
       </div>
       <div class="form-field form-field--checkbox">
         <input type="checkbox" id="field-consent" name="consent">

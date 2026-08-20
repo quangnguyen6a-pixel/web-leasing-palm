@@ -575,6 +575,68 @@ Two approved images were supplied and are now wired in (both saved to
 
 ---
 
+## 9f. Content-update pass — Palm River rebrand from source workbook
+
+This pass replaced placeholder/interim copy across the whole page with
+approved content from the client-supplied workbook ("Landing page Palm
+River (2).xlsx", sheet "Section outline chuẩn"). **No layout,
+interaction, or design-system change was made** — only copy, data, and
+the minimum new markup needed to display it (the amenities two-tab
+system, the floor-plan benefit lists, and four new form fields).
+
+- **Project renamed Palm City → Palm River** everywhere the workbook's
+  approved copy uses "Palm River" as the project name (hero, page
+  title, footer, image alt text, form privacy copy). "Palm City" is
+  kept only where the approved copy itself uses it to mean the larger
+  shared master-community/amenity system (e.g. "168+ tiện ích nội khu
+  Palm City", the "Tiện ích Palm City" tab) — this distinction is
+  intentional, not a missed rename.
+- **`js/config.js`** is now the single source of truth for all content:
+  `projectConfig`, `projectDetails` (14 fields), `connectivityData` (5
+  categories), `palmRiverAmenities` (68 items in 4 floor groups),
+  `floorPlanTypical` (4 points), `floorPlanTypes` (6 types with area +
+  3 benefits each), `savillsAbout` (corporate/Residential intros + 3
+  commitments), `savillsNews`, and `registrationForm` (select option
+  sets shared by both the final-page form and the popup).
+- **Density resolved to 25%** everywhere (the Project Details table was
+  treated as the authoritative source over the Hero's older 26%,
+  per the workbook's own source-priority rule).
+- **Amenities section** now has two main tabs: "Tiện ích Palm City"
+  (unchanged shared-carousel interface) and "Tiện ích nội khu Palm
+  River" (new — floor tabs across Tầng G/1/2/20, each rendering its
+  own numbered item list; `setupAmenitiesMainTabs()` /
+  `renderPalmRiverAmenities()` in `js/sections.js`).
+- **Floor plans** typical-floor points and each of the 6 product types'
+  area + 3 benefit points now come from `config.js` instead of
+  hardcoded placeholder text.
+- **Savills section** now carries the workbook's corporate intro
+  (165-year/1855 heading + paragraph) and the 3 named commitments as
+  pillar descriptions; the Residential section carries its own
+  workbook-sourced heading + paragraph.
+- **Final form and popup** were both extended with the same 4 new
+  fields (Khu vực sinh sống hiện tại, Mục đích mua, Loại sản phẩm quan
+  tâm, Ngân sách dự kiến) using identical option sets, so the two stay
+  in parity as before.
+- **Construction progress** empty-state copy is now the exact approved
+  string "Thông tin tiến độ đang được cập nhật." — the workbook itself
+  says more images are needed from Savills Residential before any
+  milestones can be shown.
+- **Sources reported inaccessible in this environment:**
+  `savills.sharepoint.com` (SharePoint-authenticated) and
+  `palmrivercity.com` (network-policy-blocked) both returned
+  `EGRESS_BLOCKED`. Any workbook row pointing at those hosts (e.g. the
+  Amenities-tab-1 and Payment-policy image sources) was left on its
+  existing placeholder/interface rather than guessed at, per the
+  workbook's own fallback instruction.
+- **Content conflict resolved:** the Project Details section's
+  heading was left as the existing "Thông tin dự án" rather than
+  renamed to "Tổng quan dự án" per the workbook's literal text for that
+  row, because `#overview` already legitimately owns that exact
+  heading — two identical `<h2>`s on the same page would have been a
+  worse outcome than the one-word divergence.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

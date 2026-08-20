@@ -552,6 +552,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 .hero__enter--eyebrow { animation-duration: 450ms; animation-delay: 0ms; }
 .hero__enter--headline { animation-duration: 650ms; animation-delay: 90ms; }
 .hero__enter--supporting { animation-duration: 500ms; animation-delay: 180ms; }
+.hero__enter--density { animation-duration: 450ms; animation-delay: 225ms; }
 .hero__enter--explore { animation-duration: 400ms; animation-delay: 270ms; }
 
 .hero__eyebrow {
@@ -686,7 +687,22 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   color: rgba(255, 255, 255, 0.92);
   max-width: 1100px;
   text-wrap: balance;
-  margin: 0 auto 56px;
+  margin: 0 auto 18px;
+}
+/* Third visual tier — supporting copy beneath the secondary heading
+   above, clearly smaller/quieter than both .hero__headline and
+   .hero__supporting so the three lines from D2 (project name /
+   positioning statement / density statement) don't read as the same
+   level. */
+.hero__density {
+  font-family: "Manrope", "Gotham", "SVN-Gotham", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(15px, 1.4vw, 19px);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 640px;
+  text-wrap: balance;
+  margin: 0 auto 40px;
 }
 @supports (background-clip: text) or (-webkit-background-clip: text) {
   /* A subtler echo of the headline's light sweep, delayed ~250ms behind it. */
@@ -965,6 +981,13 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   gap: var(--space-md);
   margin-top: 36px;
 }
+/* Five-item USP grid: first card featured (spans 2 columns) on
+   desktop; the remaining four naturally wrap 3+2 under a 3-column
+   grid. Tablet drops the span so all five sit in an even 3+2 wrap;
+   mobile becomes a horizontally swipeable row (see breakpoints). */
+.project-overview__stats--five .stat-card--featured {
+  grid-column: span 2;
+}
 .stat-card {
   position: relative;
   overflow: hidden;
@@ -1052,6 +1075,9 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.92);
   margin-bottom: 32px;
+}
+.stat-card__prefix:empty {
+  display: none;
 }
 .stat-card__prefix {
   font-family: "Manrope", "Gotham", "SVN-Gotham", Arial, sans-serif;
@@ -1263,9 +1289,17 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 }
 .popup__title {
   font-size: 22px;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   padding-right: 20px;
   color: var(--color-navy-primary);
+}
+.popup__paragraph {
+  font-family: "Manrope", "Gotham", "SVN-Gotham", Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(0, 28, 61, 0.7);
+  margin-bottom: 20px;
+  padding-right: 20px;
 }
 .popup__form {
   display: flex;
@@ -1339,6 +1373,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   .project-overview { padding: 72px 0; }
   .project-overview__container { padding: 0 32px; }
   .project-overview__stats { gap: var(--space-sm); }
+  .project-overview__stats--five .stat-card--featured { grid-column: auto; }
   .stat-card { min-height: 300px; }
   .stat-card__value { font-size: clamp(82px, 8vw, 108px); }
 }

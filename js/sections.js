@@ -61,7 +61,7 @@
      ----------------------------------------------------- */
   function renderConfiguredImages(lang) {
     if (!window.projectConfig) return;
-    var overviewAlt = lang === "en" ? "Riverside perspective of Palm City" : "Phối cảnh Palm City bên sông Giồng Ông Tố";
+    var overviewAlt = lang === "en" ? "Riverside perspective of Palm River" : "Phối cảnh Palm River bên sông Giồng Ông Tố";
     // object-fit: contain — the approved Overview rendering has
     // embedded copy/logo near its edges that must never be cropped.
     renderDepthFrameImage(
@@ -72,7 +72,7 @@
       "contain",
       "center"
     );
-    var detailAlt = lang === "en" ? "Palm City project rendering" : "Phối cảnh dự án Palm City";
+    var detailAlt = lang === "en" ? "Palm River project rendering" : "Phối cảnh dự án Palm River";
     // object-fit: cover, focal point lower-of-centre — architectural
     // shot, so the towers and riverside stay the visible subject even
     // when the 4:5 frame crops the sky/edges.
@@ -236,6 +236,72 @@
     setupAmenitiesInteraction(track);
   }
 
+  /* Two main tabs: "Tiện ích Palm City" (shared master-community
+     amenities, existing carousel) vs. "Tiện ích nội khu Palm River"
+     (in-residence, floor-grouped — see renderPalmRiverAmenities). */
+  var amenitiesMainTabsSetup = false;
+  function setupAmenitiesMainTabs() {
+    if (amenitiesMainTabsSetup) return;
+    amenitiesMainTabsSetup = true;
+    var tabs = document.querySelectorAll(".amenities__main-tab");
+    var panels = document.querySelectorAll(".amenities__panel");
+    tabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        var target = tab.getAttribute("data-amenities-tab");
+        tabs.forEach(function (t) {
+          var isActive = t === tab;
+          t.classList.toggle("is-active", isActive);
+          t.setAttribute("aria-selected", isActive ? "true" : "false");
+        });
+        panels.forEach(function (panel) {
+          panel.hidden = panel.getAttribute("data-amenities-panel") !== target;
+        });
+      });
+    });
+  }
+
+  var activeAmenitiesFloorIndex = 0;
+  function renderPalmRiverAmenities(lang) {
+    var tabsHost = document.getElementById("amenities-floor-tabs");
+    var listHost = document.getElementById("amenities-floor-list");
+    if (!tabsHost || !listHost || !window.palmRiverAmenities) return;
+
+    tabsHost.innerHTML = "";
+    window.palmRiverAmenities.forEach(function (group, index) {
+      var isActive = index === activeAmenitiesFloorIndex;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "glass-tab glass-tab--dark amenities__floor-tab" + (isActive ? " is-active" : "");
+      btn.setAttribute("role", "tab");
+      btn.setAttribute("aria-selected", isActive ? "true" : "false");
+      btn.textContent = lang === "en" ? group.floorEn : group.floorVi;
+      btn.addEventListener("click", function () {
+        activeAmenitiesFloorIndex = index;
+        renderPalmRiverAmenities(currentLang());
+      });
+      if (isActive) {
+        requestAnimationFrame(function () { scrollTabIntoView(btn); });
+      }
+      tabsHost.appendChild(btn);
+    });
+
+    listHost.innerHTML = "";
+    var activeGroup = window.palmRiverAmenities[activeAmenitiesFloorIndex];
+    activeGroup.items.forEach(function (item) {
+      var row = document.createElement("div");
+      row.className = "amenities__floor-item";
+      var index = document.createElement("span");
+      index.className = "amenities__floor-item-index";
+      index.textContent = String(item.n).padStart(2, "0");
+      var name = document.createElement("span");
+      name.className = "amenities__floor-item-name";
+      name.textContent = lang === "en" ? item.en : item.vi;
+      row.appendChild(index);
+      row.appendChild(name);
+      listHost.appendChild(row);
+    });
+  }
+
   var amenitiesSetup = false;
   function setupAmenitiesInteraction(track) {
     var prevBtn = document.getElementById("amenities-prev");
@@ -357,16 +423,14 @@
 
     var area = document.createElement("p");
     area.className = "floorplans__panel-area";
-    area.textContent = (lang === "en" ? "Carpet area: " : "Diện tích thông thủy: ") + PENDING_VI_EN(lang);
+    var areaValue = (lang === "en" ? activeType.areaEn : activeType.areaVi) || PENDING_VI_EN(lang);
+    area.textContent = (lang === "en" ? "Carpet area: " : "Diện tích thông thủy: ") + areaValue;
 
     var benefits = document.createElement("ul");
     benefits.className = "floorplans__panel-benefits";
-    var benefitTexts = lang === "en"
-      ? ["Layout optimised for practical everyday use", "Open, airy sightlines", "Well-proportioned living and bedroom zones"]
-      : ["Thiết kế tối ưu công năng sử dụng", "Tầm nhìn thoáng đãng", "Bố trí phòng khách và phòng ngủ hợp lý"];
-    benefitTexts.forEach(function (text) {
+    (activeType.benefits || []).forEach(function (b) {
       var li = document.createElement("li");
-      li.textContent = text;
+      li.textContent = lang === "en" ? b.en : b.vi;
       benefits.appendChild(li);
     });
 
@@ -391,8 +455,29 @@
       activeFloorplanIndex = (activeFloorplanIndex + 1) % window.floorPlanTypes.length;
       renderFloorplans(currentLang());
     };
+
+    renderFloorplanTypicalPoints(lang);
   }
   function PENDING_VI_EN(lang) { return lang === "en" ? PENDING_EN : PENDING_VI; }
+
+  function renderFloorplanTypicalPoints(lang) {
+    var host = document.getElementById("floorplans-typical-points");
+    if (!host || !window.floorPlanTypical) return;
+    host.innerHTML = "";
+    window.floorPlanTypical.points.forEach(function (point) {
+      var li = document.createElement("li");
+      li.className = "floorplans__typical-point";
+      var title = document.createElement("span");
+      title.className = "floorplans__typical-point-title";
+      title.textContent = lang === "en" ? point.titleEn : point.titleVi;
+      var text = document.createElement("span");
+      text.className = "floorplans__typical-point-text";
+      text.textContent = lang === "en" ? point.textEn : point.textVi;
+      li.appendChild(title);
+      li.appendChild(text);
+      host.appendChild(li);
+    });
+  }
 
   /* Simple image zoom modal, created once and reused. */
   var zoomModal;
@@ -462,7 +547,7 @@
     if (!milestones.length) {
       host.innerHTML =
         '<div class="progress-section__empty">' +
-        (lang === "en" ? "Progress information is being updated" : "Thông tin đang được cập nhật") +
+        (lang === "en" ? "Progress information is being updated." : "Thông tin tiến độ đang được cập nhật.") +
         "</div>";
       return;
     }
@@ -730,6 +815,7 @@
     renderDetails(lang);
     renderLocation(lang);
     renderAmenities(lang);
+    renderPalmRiverAmenities(lang);
     renderFloorplans(lang);
     renderProgress(lang);
     renderNews(lang);
@@ -737,6 +823,7 @@
 
   renderAll();
   setupPolicyTabs();
+  setupAmenitiesMainTabs();
   setupFloatingContacts();
   setupFinalForm();
   setupDepthFrames();
