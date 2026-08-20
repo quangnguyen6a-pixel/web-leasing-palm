@@ -176,203 +176,188 @@
   }
 
   /* -----------------------------------------------------
-     3. AMENITIES CAROUSEL (§6)
+     3. AMENITIES — image + interactive list (§6)
+     Two-level tabs (main tab, then group/floor tab) both read from
+     window.amenityTabs / window.amenityGroups / window.amenityData
+     (js/config.js). Nothing here branches on a specific tab or group
+     key — the same render path serves Palm City's single flat group
+     and Palm River's four floor groups.
      ----------------------------------------------------- */
-  function renderAmenities(lang) {
-    var track = document.getElementById("amenities-track");
-    if (!track || !window.amenitiesSlides) return;
-    track.innerHTML = "";
-    var total = window.amenitiesSlides.length;
+  var activeAmenityTab = null;
+  var activeAmenityGroup = null;
+  var activeAmenityItemIndex = 0;
 
-    window.amenitiesSlides.forEach(function (slide, index) {
-      var el = document.createElement("div");
-      el.className = "amenities__slide" + (index === 0 ? " is-active" : "");
-      el.setAttribute("role", "group");
-      el.setAttribute("aria-roledescription", "slide");
-      el.setAttribute("aria-label", (index + 1) + " / " + total);
-
-      // Static glass chrome only (no [data-depth-frame] — the carousel's
-      // own active/inactive opacity+scale above already serves as this
-      // slide's entrance treatment, so it isn't gated behind a second,
-      // IntersectionObserver-driven opacity toggle).
-      var frame = document.createElement("div");
-      frame.className = "media-depth-frame media-depth-frame--dark";
-      frame.style.setProperty("--sweep-delay", (index * 900) + "ms");
-
-      var inner = document.createElement("div");
-      inner.className = "media-depth-frame__inner";
-
-      if (slide.image) {
-        var img = document.createElement("img");
-        img.className = "amenities__slide-image";
-        img.src = slide.image;
-        img.alt = lang === "en" ? slide.titleEn : slide.titleVi;
-        img.loading = "lazy";
-        img.style.objectPosition = slide.objectPosition || "center";
-        inner.appendChild(img);
-      } else {
-        // Expected asset noted in js/config.js (slide.expectedAsset).
-        var note = document.createElement("p");
-        note.className = "amenities__slide-note";
-        note.textContent = lang === "en" ? "Image being updated" : "Hình ảnh đang được cập nhật";
-        inner.appendChild(note);
-      }
-
-      var title = document.createElement("span");
-      title.className = "amenities__slide-title";
-      title.textContent = lang === "en" ? slide.titleEn : slide.titleVi;
-      inner.appendChild(title);
-
-      var count = document.createElement("span");
-      count.className = "amenities__slide-count";
-      count.textContent = String(index + 1).padStart(2, "0") + "/" + String(total).padStart(2, "0");
-      inner.appendChild(count);
-
-      frame.appendChild(inner);
-      el.appendChild(frame);
-      track.appendChild(el);
-    });
-
-    setupAmenitiesInteraction(track);
+  function currentAmenityItems() {
+    if (!activeAmenityTab || !activeAmenityGroup || !window.amenityData) return [];
+    var tabData = window.amenityData[activeAmenityTab] || {};
+    return tabData[activeAmenityGroup] || [];
   }
 
-  /* Two main tabs: "Tiện ích Palm City" (shared master-community
-     amenities, existing carousel) vs. "Tiện ích nội khu Palm River"
-     (in-residence, floor-grouped — see renderPalmRiverAmenities). */
-  var amenitiesMainTabsSetup = false;
-  function setupAmenitiesMainTabs() {
-    if (amenitiesMainTabsSetup) return;
-    amenitiesMainTabsSetup = true;
-    var tabs = document.querySelectorAll(".amenities__main-tab");
-    var panels = document.querySelectorAll(".amenities__panel");
-    tabs.forEach(function (tab) {
-      tab.addEventListener("click", function () {
-        var target = tab.getAttribute("data-amenities-tab");
-        tabs.forEach(function (t) {
-          var isActive = t === tab;
-          t.classList.toggle("is-active", isActive);
-          t.setAttribute("aria-selected", isActive ? "true" : "false");
-        });
-        panels.forEach(function (panel) {
-          panel.hidden = panel.getAttribute("data-amenities-panel") !== target;
-        });
+  function renderAmenitySection(lang) {
+    var mainTabsHost = document.getElementById("amenities-main-tabs");
+    var groupTabsHost = document.getElementById("amenities-floor-tabs");
+    if (!mainTabsHost || !groupTabsHost || !window.amenityTabs || !window.amenityGroups) return;
+
+    if (!activeAmenityTab) activeAmenityTab = window.amenityTabs[0].key;
+    var groups = window.amenityGroups[activeAmenityTab] || [];
+    if (!activeAmenityGroup || !groups.some(function (g) { return g.key === activeAmenityGroup; })) {
+      activeAmenityGroup = groups.length ? groups[0].key : null;
+      activeAmenityItemIndex = 0;
+    }
+
+    mainTabsHost.innerHTML = "";
+    window.amenityTabs.forEach(function (tab) {
+      var isActive = tab.key === activeAmenityTab;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "glass-tab glass-tab--dark amenities__main-tab" + (isActive ? " is-active" : "");
+      btn.setAttribute("role", "tab");
+      btn.setAttribute("aria-selected", isActive ? "true" : "false");
+      btn.textContent = lang === "en" ? tab.labelEn : tab.labelVi;
+      btn.addEventListener("click", function () {
+        if (activeAmenityTab === tab.key) return;
+        activeAmenityTab = tab.key;
+        activeAmenityGroup = null;
+        activeAmenityItemIndex = 0;
+        renderAmenitySection(currentLang());
       });
+      mainTabsHost.appendChild(btn);
     });
-  }
 
-  var activeAmenitiesFloorIndex = 0;
-  function renderPalmRiverAmenities(lang) {
-    var tabsHost = document.getElementById("amenities-floor-tabs");
-    var listHost = document.getElementById("amenities-floor-list");
-    if (!tabsHost || !listHost || !window.palmRiverAmenities) return;
-
-    tabsHost.innerHTML = "";
-    window.palmRiverAmenities.forEach(function (group, index) {
-      var isActive = index === activeAmenitiesFloorIndex;
+    // Group/floor tabs only make sense when a tab has more than one
+    // group (Palm River); Palm City's single flat list hides this row
+    // entirely rather than showing a redundant one-item tablist.
+    groupTabsHost.innerHTML = "";
+    groupTabsHost.hidden = groups.length <= 1;
+    groups.forEach(function (group) {
+      var isActive = group.key === activeAmenityGroup;
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "glass-tab glass-tab--dark amenities__floor-tab" + (isActive ? " is-active" : "");
       btn.setAttribute("role", "tab");
       btn.setAttribute("aria-selected", isActive ? "true" : "false");
-      btn.textContent = lang === "en" ? group.floorEn : group.floorVi;
+      btn.textContent = lang === "en" ? group.labelEn : group.labelVi;
       btn.addEventListener("click", function () {
-        activeAmenitiesFloorIndex = index;
-        renderPalmRiverAmenities(currentLang());
+        if (activeAmenityGroup === group.key) return;
+        activeAmenityGroup = group.key;
+        activeAmenityItemIndex = 0;
+        renderAmenitySection(currentLang());
       });
       if (isActive) {
         requestAnimationFrame(function () { scrollTabIntoView(btn); });
       }
-      tabsHost.appendChild(btn);
+      groupTabsHost.appendChild(btn);
     });
 
+    renderAmenityList(lang);
+    renderAmenityMedia(lang);
+  }
+
+  function renderAmenityList(lang) {
+    var listHost = document.getElementById("amenity-list");
+    if (!listHost) return;
     listHost.innerHTML = "";
-    var activeGroup = window.palmRiverAmenities[activeAmenitiesFloorIndex];
-    activeGroup.items.forEach(function (item) {
-      var row = document.createElement("div");
-      row.className = "amenities__floor-item";
-      var index = document.createElement("span");
-      index.className = "amenities__floor-item-index";
-      index.textContent = String(item.n).padStart(2, "0");
+    currentAmenityItems().forEach(function (item, index) {
+      var isActive = index === activeAmenityItemIndex;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "amenity-list__item" + (isActive ? " is-active" : "");
+      btn.setAttribute("role", "option");
+      btn.setAttribute("aria-selected", isActive ? "true" : "false");
+
+      var idx = document.createElement("span");
+      idx.className = "amenity-list__index";
+      idx.textContent = item.id;
       var name = document.createElement("span");
-      name.className = "amenities__floor-item-name";
-      name.textContent = lang === "en" ? item.en : item.vi;
-      row.appendChild(index);
-      row.appendChild(name);
-      listHost.appendChild(row);
+      name.className = "amenity-list__name";
+      name.textContent = lang === "en" ? item.titleEn : item.titleVi;
+      btn.appendChild(idx);
+      btn.appendChild(name);
+
+      btn.addEventListener("click", function () {
+        if (activeAmenityItemIndex === index) return;
+        activeAmenityItemIndex = index;
+        updateAmenityListActiveState();
+        renderAmenityMedia(currentLang());
+      });
+      listHost.appendChild(btn);
     });
   }
 
-  var amenitiesSetup = false;
-  function setupAmenitiesInteraction(track) {
-    var prevBtn = document.getElementById("amenities-prev");
-    var nextBtn = document.getElementById("amenities-next");
-    var slides = Array.prototype.slice.call(track.querySelectorAll(".amenities__slide"));
+  function updateAmenityListActiveState() {
+    var listHost = document.getElementById("amenity-list");
+    if (!listHost) return;
+    Array.prototype.forEach.call(listHost.children, function (btn, index) {
+      var isActive = index === activeAmenityItemIndex;
+      btn.classList.toggle("is-active", isActive);
+      btn.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+  }
 
-    function updateActive() {
-      var trackCenter = track.scrollLeft + track.clientWidth / 2;
-      var closest = null;
-      var closestDist = Infinity;
-      slides.forEach(function (slide) {
-        var center = slide.offsetLeft + slide.offsetWidth / 2;
-        var dist = Math.abs(center - trackCenter);
-        if (dist < closestDist) {
-          closestDist = dist;
-          closest = slide;
-        }
-      });
-      slides.forEach(function (slide) {
-        slide.classList.toggle("is-active", slide === closest);
-      });
+  // Cross-fade + slight scale between amenity images (350–500ms total,
+  // no page reload, no section height change — the frame keeps a
+  // fixed aspect ratio throughout via CSS).
+  var amenityMediaSwapTimer = null;
+  function renderAmenityMedia(lang) {
+    var wrap = document.getElementById("amenity-image-wrap");
+    var indexEl = document.getElementById("amenity-index");
+    var titleEl = document.getElementById("amenity-title");
+    var descEl = document.getElementById("amenity-description");
+    var expandBtn = document.getElementById("amenity-expand");
+    if (!wrap) return;
+
+    var item = currentAmenityItems()[activeAmenityItemIndex];
+    if (!item) {
+      wrap.innerHTML = "";
+      if (titleEl) titleEl.textContent = "";
+      if (descEl) { descEl.textContent = ""; descEl.hidden = true; }
+      return;
     }
 
-    function goTo(index) {
-      var target = slides[Math.max(0, Math.min(slides.length - 1, index))];
-      if (!target) return;
-      track.scrollTo({
-        left: target.offsetLeft - (track.clientWidth - target.offsetWidth) / 2,
-        behavior: "smooth"
-      });
+    var title = lang === "en" ? item.titleEn : item.titleVi;
+    var description = lang === "en" ? item.descriptionEn : item.descriptionVi;
+
+    if (indexEl) indexEl.textContent = item.id;
+    if (titleEl) titleEl.textContent = title;
+    if (descEl) {
+      descEl.textContent = description || "";
+      descEl.hidden = !description;
+    }
+    if (expandBtn) {
+      expandBtn.onclick = function () {
+        openZoomModal(item.image || null, title);
+      };
     }
 
-    function activeIndex() {
-      return slides.findIndex(function (s) { return s.classList.contains("is-active"); });
-    }
-
-    if (prevBtn) prevBtn.onclick = function () { goTo(activeIndex() - 1); };
-    if (nextBtn) nextBtn.onclick = function () { goTo(activeIndex() + 1); };
-
-    if (!amenitiesSetup) {
-      amenitiesSetup = true;
-      var scrollTimeout;
-      track.addEventListener("scroll", function () {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(updateActive, 80);
-      }, { passive: true });
-
-      track.addEventListener("keydown", function (e) {
-        if (e.key === "ArrowRight") { e.preventDefault(); goTo(activeIndex() + 1); }
-        if (e.key === "ArrowLeft") { e.preventDefault(); goTo(activeIndex() - 1); }
-      });
-
-      // Pointer-drag scroll (mouse); touch scroll uses native overflow.
-      var isDown = false, startX = 0, startScroll = 0;
-      track.addEventListener("pointerdown", function (e) {
-        if (e.pointerType === "touch") return;
-        isDown = true;
-        startX = e.clientX;
-        startScroll = track.scrollLeft;
-        track.setPointerCapture(e.pointerId);
-      });
-      track.addEventListener("pointermove", function (e) {
-        if (!isDown) return;
-        track.scrollLeft = startScroll - (e.clientX - startX);
-      });
-      ["pointerup", "pointercancel", "pointerleave"].forEach(function (evt) {
-        track.addEventListener(evt, function () { isDown = false; });
-      });
-    }
-
-    updateActive();
+    clearTimeout(amenityMediaSwapTimer);
+    wrap.classList.add("is-swapping");
+    amenityMediaSwapTimer = setTimeout(function () {
+      wrap.innerHTML = "";
+      if (item.image) {
+        var img = document.createElement("img");
+        img.src = item.image;
+        img.alt = title;
+        img.loading = "lazy";
+        if (item.objectPosition) img.style.objectPosition = item.objectPosition;
+        wrap.appendChild(img);
+      } else {
+        var placeholder = document.createElement("div");
+        placeholder.className = "amenity-image-wrap__placeholder";
+        var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        icon.setAttribute("viewBox", "0 0 24 24");
+        icon.setAttribute("aria-hidden", "true");
+        icon.innerHTML =
+          '<rect x="3" y="4.5" width="18" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/>' +
+          '<circle cx="9" cy="10" r="1.6" fill="none" stroke="currentColor" stroke-width="1.4"/>' +
+          '<path d="M4 17.5l5.5-5.5 3 3 3.5-4 4 4.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>';
+        placeholder.appendChild(icon);
+        var note = document.createElement("p");
+        note.textContent = lang === "en" ? "Add the amenity image here" : "Thêm ảnh tiện ích tại đây";
+        placeholder.appendChild(note);
+        wrap.appendChild(placeholder);
+      }
+      wrap.classList.remove("is-swapping");
+    }, 190);
   }
 
   /* -----------------------------------------------------
@@ -456,26 +441,64 @@
       renderFloorplans(currentLang());
     };
 
+    renderFloorplanTypicalMedia(lang);
     renderFloorplanTypicalPoints(lang);
   }
   function PENDING_VI_EN(lang) { return lang === "en" ? PENDING_EN : PENDING_VI; }
+
+  /* Wraps approved numeric callouts (unit counts, lift ratios, carpet-
+     area percentages) in .feature-stat so they read as highlighted
+     figures inside the feature-card body text — one shared pattern for
+     both languages rather than a duplicate VI/EN regex pair. */
+  var FEATURE_STAT_RE =
+    /\d+(?:[.,]\d+)?\s?(?:thang máy|lifts?)(?:\s*(?:cho|for|\/)\s*\d+\s*(?:căn\/tầng|units?\s+per\s+floor))?|\d+(?:[.,]\d+)?\s?%(?:\s?[–-]\s?\d+(?:[.,]\d+)?\s?%)?|\d+\s?(?:căn\/tầng|units?\s+per\s+floor)/gi;
+  function highlightFeatureStats(text) {
+    return text.replace(FEATURE_STAT_RE, function (m) {
+      return '<span class="feature-stat">' + m + "</span>";
+    });
+  }
+
+  function renderFloorplanTypicalMedia(lang) {
+    var wrap = document.getElementById("floorplan-typical-image-wrap");
+    var zoomBtn = document.getElementById("floorplan-typical-zoom");
+    if (!wrap || !window.floorPlanTypical) return;
+    var label = lang === "en" ? window.floorPlanTypical.headingEn : window.floorPlanTypical.headingVi;
+    wrap.innerHTML = "";
+    if (window.floorPlanTypical.image) {
+      var img = document.createElement("img");
+      img.src = window.floorPlanTypical.image;
+      img.alt = label;
+      img.loading = "lazy";
+      wrap.appendChild(img);
+    } else {
+      var note = document.createElement("p");
+      note.className = "floorplan-media-frame__note";
+      note.textContent = lang === "en" ? "Add the floor plan image here" : "Thêm ảnh mặt bằng tại đây";
+      wrap.appendChild(note);
+    }
+    if (zoomBtn) {
+      zoomBtn.onclick = function () {
+        openZoomModal(window.floorPlanTypical.image || null, label);
+      };
+    }
+  }
 
   function renderFloorplanTypicalPoints(lang) {
     var host = document.getElementById("floorplans-typical-points");
     if (!host || !window.floorPlanTypical) return;
     host.innerHTML = "";
     window.floorPlanTypical.points.forEach(function (point) {
-      var li = document.createElement("li");
-      li.className = "floorplans__typical-point";
-      var title = document.createElement("span");
-      title.className = "floorplans__typical-point-title";
+      var card = document.createElement("div");
+      card.className = "feature-card";
+      var title = document.createElement("h4");
+      title.className = "feature-card__title";
       title.textContent = lang === "en" ? point.titleEn : point.titleVi;
-      var text = document.createElement("span");
-      text.className = "floorplans__typical-point-text";
-      text.textContent = lang === "en" ? point.textEn : point.textVi;
-      li.appendChild(title);
-      li.appendChild(text);
-      host.appendChild(li);
+      var text = document.createElement("p");
+      text.className = "feature-card__text";
+      text.innerHTML = highlightFeatureStats(lang === "en" ? point.textEn : point.textVi);
+      card.appendChild(title);
+      card.appendChild(text);
+      host.appendChild(card);
     });
   }
 
@@ -814,8 +837,7 @@
     renderConfiguredImages(lang);
     renderDetails(lang);
     renderLocation(lang);
-    renderAmenities(lang);
-    renderPalmRiverAmenities(lang);
+    renderAmenitySection(lang);
     renderFloorplans(lang);
     renderProgress(lang);
     renderNews(lang);
@@ -823,7 +845,6 @@
 
   renderAll();
   setupPolicyTabs();
-  setupAmenitiesMainTabs();
   setupFloatingContacts();
   setupFinalForm();
   setupDepthFrames();

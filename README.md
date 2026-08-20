@@ -637,6 +637,84 @@ system, the floor-plan benefit lists, and four new form fields).
 
 ---
 
+## 9g. Visual redesign pass — USP grid, Typical floor plan, Amenities
+
+A design-only pass (no content, hero, header, or design-system change)
+covering exactly three areas that were flagged as visually broken or
+under-designed. All new/renamed classes are documented inline in
+`css/sections.css` and `css/styles.css`.
+
+- **USP grid** (`.usp-grid` / `.usp-card`, `css/styles.css`) — replaced
+  the old 3-column/featured-card layout with the requested 6-column
+  grid (`repeat(6, minmax(0, 1fr))`, first three cards `span 2`, the
+  last two centred at columns 2–3 and 4–5). Each card now has four
+  distinct elements — `__label`, `__prefix`, `__number-row`
+  (`__number` + `__unit`), `__description` — instead of one crowded
+  line; the count-up/shine JS in `js/main.js` was repointed from
+  `.stat-card__value` to `.usp-card__number` (same behaviour, just the
+  new class name). Glass navy/cyan surface, no yellow border. Tablet:
+  2 columns with the 5th card centred and spanning both; mobile: 1
+  column. No `overflow-x: hidden` was used to paper over the layout —
+  the grid math itself is correct at every width (verified: 1440,
+  1280, 1024, 768, 430, 390px, zero horizontal overflow).
+- **Typical floor plan** (`.floorplan-media-frame` / `.floorplan-features`,
+  `css/sections.css`) — replaced the flat two-column text grid with an
+  image frame (left, 58%) + 2×2 feature-card grid (right, 42%). The
+  frame reuses the existing `.media-depth-frame` component (glass
+  chrome, hover lift, scroll-entrance, light sweep) rather than a
+  parallel implementation, and adds a new shared `.glass-depth-layer`
+  utility (two offset translucent layers behind the card) for the
+  requested sense of depth. `object-fit: contain` — the plan drawing
+  is never cropped. A "Xem chi tiết" button opens the same zoom
+  lightbox already used by the floor-type viewer above it (Escape,
+  backdrop, and × all close it; scroll is never locked so there's
+  nothing to fail to unlock). Numeric callouts inside the four feature
+  cards' body text (`6 căn/tầng`, `89%–92%`, `5 thang máy cho 6
+  căn/tầng`, `100%`) are auto-highlighted via `.feature-stat` using one
+  shared regex for both languages (`highlightFeatureStats()` in
+  `js/sections.js`) rather than hand-tagging each card. No floor-plan
+  image is supplied yet — `window.floorPlanTypical.image` is empty by
+  default and renders the "Thêm ảnh mặt bằng tại đây" placeholder.
+- **Amenities** (`.amenity-media-frame` / `.amenity-list`,
+  `css/sections.css` + `js/sections.js`) — replaced the old carousel
+  (Palm City tab) and numbered-list-only layout (Palm River tab) with
+  one unified image + interactive-list layout used by both tabs. A new
+  `window.amenityData` object (`js/config.js`) is the single source for
+  both tabs' images/captions/descriptions — `palmCity.all` and
+  `palmRiver.{ground,floor1,floor2,floor20}` — built from the existing
+  `amenitiesSlides`/`palmRiverAmenities` arrays rather than duplicating
+  their approved copy a second time. `window.amenityGroups` supplies
+  the level-2 (floor) tab labels; the level-2 tab row hides itself
+  automatically when a tab has only one group (Palm City), so nothing
+  in `renderAmenitySection()` branches on which tab or group is active.
+  Clicking any list item cross-fades the image (~380ms total,
+  `.is-swapping`) and updates the index/title/description with no
+  page reload and no section-height change (the frame keeps a fixed
+  4:3 aspect ratio throughout). Every list row is a real `<button>`
+  with `role="option"`/`aria-selected`, so it's keyboard- and
+  focus-visible-accessible without extra ARIA plumbing. No amenity
+  photo is supplied yet for any of the 68 Palm River items or the 3
+  placeholder Palm City slides — each renders a glass placeholder
+  ("Thêm ảnh tiện ích tại đây") with an inline SVG picture icon rather
+  than a stock photo or a broken `<img>`; setting `image` on the
+  source array in `js/config.js` makes it appear automatically.
+- **Shared glass/water language** — all three components reuse
+  `backdrop-filter: blur(14px) saturate(120–125%)`, navy/cyan/white
+  low-opacity borders, and the existing 8s ambient light-sweep
+  (`.media-depth-frame__inner::after`) rather than introducing a
+  fourth visual system. Hover ripples stay one-shot and capped at
+  0.08–0.12 opacity; `prefers-reduced-motion: reduce` disables the USP
+  hover ripple, the amenity image cross-fade, and (already, pre-
+  existing) the `.media-depth-frame` scroll-entrance/parallax.
+- Verified at 1440/1280/1024/768/430/390px: no horizontal overflow, no
+  cropped numbers/units/headings/images, no layout shift when
+  switching tabs or amenity items, visible focus states on every new
+  interactive element (confirmed via real Tab-key focus, not just
+  `.focus()`), and the zoom lightbox opens/closes cleanly without
+  leaving scroll locked.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

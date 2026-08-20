@@ -237,59 +237,64 @@
         </div>
       </div>
 
-      <!-- Content source: row 3 (D3) — 5 approved USP points. First
-           item is visually featured per the content-update brief;
-           desktop uses a balanced 5-item grid, tablet wraps 3+2,
-           mobile becomes a horizontally swipeable row. -->
-      <div class="project-overview__stats project-overview__stats--five">
-        <div class="stat-card stat-card--featured" data-reveal style="--reveal-delay: 60ms; --shine-delay: 0ms">
-          <span class="stat-card__accent" aria-hidden="true"></span>
-          <p class="stat-card__label" data-lang-vi="Chỗ đậu xe định danh" data-lang-en="Dedicated parking">Chỗ đậu xe định danh</p>
-          <p class="stat-card__prefix" data-lang-vi="Ít nhất" data-lang-en="At least">Ít nhất</p>
-          <div class="stat-card__value-row">
-            <span class="stat-card__value" data-value="1" data-decimals="0">1</span>
-            <span class="stat-card__unit" data-lang-vi="chỗ đậu ô tô định danh/căn" data-lang-en="identified car park per unit">chỗ đậu ô tô định danh/căn</span>
+      <!-- Content source: row 3 (D3) — 5 approved USP points, laid out
+           on a 6-column balanced grid: row 1 three cards (2 columns
+           each), row 2 two cards centred (columns 2–3 and 4–5). See
+           .usp-grid / .usp-card in css/styles.css. -->
+      <div class="usp-grid">
+        <div class="usp-card" data-reveal style="--reveal-delay: 60ms; --shine-delay: 0ms">
+          <span class="usp-card__accent" aria-hidden="true"></span>
+          <p class="usp-card__label" data-lang-vi="Chỗ đậu xe định danh" data-lang-en="Dedicated parking">Chỗ đậu xe định danh</p>
+          <p class="usp-card__prefix" data-lang-vi="Ít nhất" data-lang-en="At least">Ít nhất</p>
+          <div class="usp-card__number-row">
+            <span class="usp-card__number" data-value="1" data-decimals="0">1</span>
+            <span class="usp-card__unit" data-lang-vi="chỗ/căn" data-lang-en="space/unit">chỗ/căn</span>
           </div>
+          <p class="usp-card__description" data-lang-vi="Chỗ đậu ô tô định danh" data-lang-en="Dedicated car parking space">Chỗ đậu ô tô định danh</p>
         </div>
 
-        <div class="stat-card" data-reveal style="--reveal-delay: 100ms; --shine-delay: 150ms">
-          <span class="stat-card__accent" aria-hidden="true"></span>
-          <p class="stat-card__label" data-lang-vi="Mặt tiền sông" data-lang-en="River frontage">Mặt tiền sông</p>
-          <p class="stat-card__prefix" data-lang-vi="" data-lang-en=""></p>
-          <div class="stat-card__value-row">
-            <span class="stat-card__value" data-value="2.7" data-decimals="1">2,7</span>
-            <span class="stat-card__unit" data-lang-vi="km mặt tiền sông Giồng Ông Tố" data-lang-en="km of Giong Ong To riverfront">km mặt tiền sông Giồng Ông Tố</span>
+        <div class="usp-card" data-reveal style="--reveal-delay: 100ms; --shine-delay: 150ms">
+          <span class="usp-card__accent" aria-hidden="true"></span>
+          <p class="usp-card__label" data-lang-vi="Mặt tiền sông" data-lang-en="River frontage">Mặt tiền sông</p>
+          <p class="usp-card__prefix" data-lang-vi="" data-lang-en=""></p>
+          <div class="usp-card__number-row">
+            <span class="usp-card__number" data-value="2.7" data-decimals="1">2,7</span>
+            <span class="usp-card__unit" data-lang-vi="km" data-lang-en="km">km</span>
           </div>
+          <p class="usp-card__description" data-lang-vi="Mặt tiền sông Giồng Ông Tố" data-lang-en="Giong Ong To riverfront">Mặt tiền sông Giồng Ông Tố</p>
         </div>
 
-        <div class="stat-card" data-reveal style="--reveal-delay: 140ms; --shine-delay: 300ms">
-          <span class="stat-card__accent" aria-hidden="true"></span>
-          <p class="stat-card__label" data-lang-vi="Tiện ích nội khu" data-lang-en="In-residence amenities">Tiện ích nội khu</p>
-          <p class="stat-card__prefix" data-lang-vi="" data-lang-en=""></p>
-          <div class="stat-card__value-row">
-            <span class="stat-card__value" data-value="168" data-decimals="0">168</span>
-            <span class="stat-card__unit" data-lang-vi="+ tiện ích nội khu Palm City" data-lang-en="+ in-residence amenities at Palm City">+ tiện ích nội khu Palm City</span>
+        <div class="usp-card" data-reveal style="--reveal-delay: 140ms; --shine-delay: 300ms">
+          <span class="usp-card__accent" aria-hidden="true"></span>
+          <p class="usp-card__label" data-lang-vi="Tiện ích nội khu" data-lang-en="In-residence amenities">Tiện ích nội khu</p>
+          <p class="usp-card__prefix" data-lang-vi="" data-lang-en=""></p>
+          <div class="usp-card__number-row">
+            <span class="usp-card__number" data-value="168" data-decimals="0">168</span>
+            <span class="usp-card__unit" data-lang-vi="+" data-lang-en="+">+</span>
           </div>
+          <p class="usp-card__description" data-lang-vi="Tiện ích nội khu Palm City" data-lang-en="In-residence amenities at Palm City">Tiện ích nội khu Palm City</p>
         </div>
 
-        <div class="stat-card" data-reveal style="--reveal-delay: 180ms; --shine-delay: 450ms">
-          <span class="stat-card__accent" aria-hidden="true"></span>
-          <p class="stat-card__label" data-lang-vi="Giá tham khảo" data-lang-en="Indicative price">Giá tham khảo</p>
-          <p class="stat-card__prefix" data-lang-vi="Từ" data-lang-en="From">Từ</p>
-          <div class="stat-card__value-row">
-            <span class="stat-card__value" data-value="168" data-decimals="0">168</span>
-            <span class="stat-card__unit" data-lang-vi="triệu/m² thông thủy" data-lang-en="VND million/m² (carpet area)">triệu/m² thông thủy</span>
+        <div class="usp-card" data-reveal style="--reveal-delay: 180ms; --shine-delay: 450ms">
+          <span class="usp-card__accent" aria-hidden="true"></span>
+          <p class="usp-card__label" data-lang-vi="Giá tham khảo" data-lang-en="Indicative price">Giá tham khảo</p>
+          <p class="usp-card__prefix" data-lang-vi="Từ" data-lang-en="From">Từ</p>
+          <div class="usp-card__number-row">
+            <span class="usp-card__number" data-value="168" data-decimals="0">168</span>
+            <span class="usp-card__unit" data-lang-vi="triệu/m²" data-lang-en="VND mil./m²">triệu/m²</span>
           </div>
+          <p class="usp-card__description" data-lang-vi="Theo diện tích thông thủy" data-lang-en="Based on carpet area">Theo diện tích thông thủy</p>
         </div>
 
-        <div class="stat-card" data-reveal style="--reveal-delay: 220ms; --shine-delay: 600ms">
-          <span class="stat-card__accent" aria-hidden="true"></span>
-          <p class="stat-card__label" data-lang-vi="Pháp lý dự án" data-lang-en="Project legal status">Pháp lý dự án</p>
-          <p class="stat-card__prefix" data-lang-vi="" data-lang-en=""></p>
-          <div class="stat-card__value-row">
-            <span class="stat-card__value" data-value="100" data-decimals="0">100</span>
-            <span class="stat-card__unit" data-lang-vi="% pháp lý sạch" data-lang-en="% clear legal status">% pháp lý sạch</span>
+        <div class="usp-card" data-reveal style="--reveal-delay: 220ms; --shine-delay: 600ms">
+          <span class="usp-card__accent" aria-hidden="true"></span>
+          <p class="usp-card__label" data-lang-vi="Pháp lý dự án" data-lang-en="Project legal status">Pháp lý dự án</p>
+          <p class="usp-card__prefix" data-lang-vi="" data-lang-en=""></p>
+          <div class="usp-card__number-row">
+            <span class="usp-card__number" data-value="100" data-decimals="0">100</span>
+            <span class="usp-card__unit" data-lang-vi="%" data-lang-en="%">%</span>
           </div>
+          <p class="usp-card__description" data-lang-vi="Pháp lý sạch" data-lang-en="Clear legal status">Pháp lý sạch</p>
         </div>
       </div>
 
@@ -401,40 +406,38 @@
         <h2 class="section-title" id="amenities-title" data-lang-vi="Hệ tiện ích cân bằng mọi nhịp sống" data-lang-en="A complete rhythm of living">Hệ tiện ích cân bằng mọi nhịp sống</h2>
       </header>
 
-      <!-- Two tabs per the content-update brief: the shared Palm City
-           master-community amenity system, and Palm River's own
-           68-item in-residence amenity list (D7), grouped by floor. -->
-      <div class="amenities__main-tabs" id="amenities-main-tabs" role="tablist" aria-label="Nhóm tiện ích">
-        <button type="button" class="glass-tab glass-tab--dark amenities__main-tab is-active"
-                data-amenities-tab="palm-city" role="tab" aria-selected="true" aria-controls="amenities-panel-palm-city"
-                data-lang-vi="Tiện ích Palm City" data-lang-en="Palm City amenities">Tiện ích Palm City</button>
-        <button type="button" class="glass-tab glass-tab--dark amenities__main-tab"
-                data-amenities-tab="palm-river" role="tab" aria-selected="false" aria-controls="amenities-panel-palm-river"
-                data-lang-vi="Tiện ích nội khu Palm River" data-lang-en="Palm River in-residence amenities">Tiện ích nội khu Palm River</button>
-      </div>
+      <!-- Two-level tabs: level 1 switches between the shared Palm
+           City master-community amenity system and Palm River's own
+           68-item in-residence list (D7); level 2 (only shown when a
+           tab has more than one group) switches Palm River's floor
+           groups (Tầng G / 1 / 2 / 20). Both levels, the image, and
+           the list are rendered from the single window.amenityData
+           source in js/config.js — see renderAmenitySection() in
+           js/sections.js, which never branches on a specific
+           tab/group key. -->
+      <div class="amenities__main-tabs" id="amenities-main-tabs" role="tablist" aria-label="Nhóm tiện ích"></div>
+      <div class="amenities__floor-tabs" id="amenities-floor-tabs" role="tablist" aria-label="Nhóm tiện ích theo tầng"></div>
 
-      <!-- Tab 1: Palm City. D7 points to a palmrivercity.com image for
-           this tab's copy — that host is blocked by this environment's
-           network policy and could not be read, so the existing
-           approved carousel content is kept here rather than invented
-           amenity names (reported in the final summary). -->
-      <div class="amenities__panel" id="amenities-panel-palm-city" data-amenities-panel="palm-city">
-        <div class="amenities__carousel" id="amenities-carousel">
-          <div class="amenities__track" id="amenities-track" tabindex="0"
-               role="region" aria-label="Thư viện tiện ích Palm City" aria-roledescription="carousel"></div>
-          <div class="amenities__controls">
-            <button type="button" class="amenities__btn amenities__btn--prev" id="amenities-prev" aria-label="Tiện ích trước" data-lang-vi-aria="Tiện ích trước" data-lang-en-aria="Previous amenity">&larr;</button>
-            <button type="button" class="amenities__btn amenities__btn--next" id="amenities-next" aria-label="Tiện ích tiếp theo" data-lang-vi-aria="Tiện ích tiếp theo" data-lang-en-aria="Next amenity">&rarr;</button>
-          </div>
+      <div class="amenities__layout">
+        <div class="amenity-media-frame">
+          <span class="glass-depth-layer glass-depth-layer--1" aria-hidden="true"></span>
+          <span class="glass-depth-layer glass-depth-layer--2" aria-hidden="true"></span>
+          <figure class="media-depth-frame amenity-media-frame__card" data-depth-frame>
+            <div class="media-depth-frame__inner amenity-image-wrap" id="amenity-image-wrap"></div>
+            <div class="amenity-media-caption">
+              <span class="amenity-index" id="amenity-index" aria-hidden="true">01</span>
+              <div>
+                <h3 id="amenity-title"></h3>
+                <p id="amenity-description"></p>
+              </div>
+            </div>
+            <button type="button" class="amenity-expand" id="amenity-expand"
+                    aria-label="Xem ảnh tiện ích" data-lang-vi-aria="Xem ảnh tiện ích" data-lang-en-aria="View amenity image"
+                    data-lang-vi="Xem ảnh" data-lang-en="View image">Xem ảnh</button>
+          </figure>
         </div>
-      </div>
 
-      <!-- Tab 2: Palm River — full 68-item list from D7, grouped by
-           floor tabs (Tầng G / Tầng 1 / Tầng 2 / Tầng 20) so all 68
-           are never shown in one uninterrupted list. -->
-      <div class="amenities__panel" id="amenities-panel-palm-river" data-amenities-panel="palm-river" hidden>
-        <div class="amenities__floor-tabs" id="amenities-floor-tabs" role="tablist" aria-label="Tầng tiện ích Palm River"></div>
-        <div class="amenities__floor-list" id="amenities-floor-list"></div>
+        <div class="amenity-list" id="amenity-list" role="listbox" aria-label="Danh sách tiện ích"></div>
       </div>
     </div>
   </section>
@@ -469,7 +472,32 @@
 
       <div class="floorplans__typical">
         <h3 class="floorplans__typical-heading" data-lang-vi="Mặt bằng tầng điển hình" data-lang-en="Typical floor layout">Mặt bằng tầng điển hình</h3>
-        <ul class="floorplans__typical-points" id="floorplans-typical-points"></ul>
+
+        <div class="floorplan-typical-layout">
+          <!-- Expected asset: assets/floor-plans/typical-floor.jpg (approved
+               typical-floor plan drawing). Renders automatically once
+               window.floorPlanTypical.image is set in js/config.js.
+               Reuses .media-depth-frame (see css/sections.css) for the
+               glass chrome/hover/sweep — .floorplan-media-frame only
+               adds the two offset background layers behind it. -->
+          <div class="floorplan-media-frame">
+            <span class="glass-depth-layer glass-depth-layer--1" aria-hidden="true"></span>
+            <span class="glass-depth-layer glass-depth-layer--2" aria-hidden="true"></span>
+            <figure class="media-depth-frame floorplan-media-frame__card" data-depth-frame>
+              <div class="media-depth-frame__inner floorplan-image-wrap" id="floorplan-typical-image-wrap">
+                <p class="media-depth-frame__note" data-lang-vi="Thêm ảnh mặt bằng tại đây" data-lang-en="Add the floor plan image here">Thêm ảnh mặt bằng tại đây</p>
+              </div>
+              <div class="floorplan-media-frame__footer">
+                <figcaption data-lang-vi="Mặt bằng tầng điển hình — hình ảnh minh họa" data-lang-en="Typical floor layout — illustrative image">Mặt bằng tầng điển hình — hình ảnh minh họa</figcaption>
+                <button type="button" class="floorplan-zoom" id="floorplan-typical-zoom"
+                        aria-label="Phóng to mặt bằng" data-lang-vi-aria="Phóng to mặt bằng" data-lang-en-aria="Zoom floor plan"
+                        data-lang-vi="Xem chi tiết" data-lang-en="View details">Xem chi tiết</button>
+              </div>
+            </figure>
+          </div>
+
+          <div class="floorplan-features" id="floorplans-typical-points"></div>
+        </div>
       </div>
     </div>
   </section>

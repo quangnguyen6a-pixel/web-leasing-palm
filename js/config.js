@@ -255,6 +255,72 @@ window.palmRiverAmenities = [
 ];
 
 /* -----------------------------------------------------
+   UNIFIED AMENITY DATA — feeds the interactive image+list amenities
+   layout (js/sections.js). Built here from the two canonical sources
+   above (amenitiesSlides / palmRiverAmenities) rather than duplicating
+   the approved copy a second time. To add a real photo, set `image`
+   on the source item in amenitiesSlides/palmRiverAmenities above (or
+   directly on the built object below) — it appears automatically, no
+   other code changes needed. Every item's `image` is empty by default
+   and renders the "Thêm ảnh tiện ích tại đây" placeholder.
+   ----------------------------------------------------- */
+function buildAmenityGroupItems(items) {
+  return items.map(function (item) {
+    return {
+      id: String(item.n).padStart(2, "0"),
+      titleVi: item.vi,
+      titleEn: item.en,
+      image: item.image || "",
+      descriptionVi: item.descriptionVi || "",
+      descriptionEn: item.descriptionEn || ""
+    };
+  });
+}
+
+window.amenityData = {
+  palmCity: {
+    all: window.amenitiesSlides.map(function (slide, index) {
+      return {
+        id: String(index + 1).padStart(2, "0"),
+        titleVi: slide.titleVi,
+        titleEn: slide.titleEn,
+        image: slide.image || "",
+        objectPosition: slide.objectPosition || "",
+        descriptionVi: "",
+        descriptionEn: ""
+      };
+    })
+  },
+  palmRiver: {
+    ground: buildAmenityGroupItems(window.palmRiverAmenities[0].items),
+    floor1: buildAmenityGroupItems(window.palmRiverAmenities[1].items),
+    floor2: buildAmenityGroupItems(window.palmRiverAmenities[2].items),
+    floor20: buildAmenityGroupItems(window.palmRiverAmenities[3].items)
+  }
+};
+
+/* Sub-group tabs per top-level amenity tab — Palm City has a single
+   flat list (no floor breakdown), Palm River has its four D7 floor
+   groups. Rendering logic in sections.js loops over these generically;
+   it never branches on the tab/group key itself. */
+window.amenityGroups = {
+  palmCity: [
+    { key: "all", labelVi: "Tiện ích Palm City", labelEn: "Palm City amenities" }
+  ],
+  palmRiver: [
+    { key: "ground", labelVi: "Tầng G", labelEn: "Ground Floor" },
+    { key: "floor1", labelVi: "Tầng 1", labelEn: "Floor 1" },
+    { key: "floor2", labelVi: "Tầng 2", labelEn: "Floor 2" },
+    { key: "floor20", labelVi: "Tầng 20", labelEn: "Floor 20" }
+  ]
+};
+
+window.amenityTabs = [
+  { key: "palmCity", labelVi: "Tiện ích Palm City", labelEn: "Palm City amenities" },
+  { key: "palmRiver", labelVi: "Tiện ích nội khu Palm River", labelEn: "Palm River in-residence amenities" }
+];
+
+/* -----------------------------------------------------
    FLOOR PLANS — Row 8 "Mặt bằng & Nhà mẫu" (D8)
    Area and the three approved benefit points per type come straight
    from D8 — nothing summarised, no direction/price/availability/
@@ -263,6 +329,10 @@ window.palmRiverAmenities = [
    ----------------------------------------------------- */
 window.floorPlanTypical = {
   headingVi: "Mặt bằng tầng điển hình", headingEn: "Typical floor layout",
+  /* Empty by default — renders the "Thêm ảnh mặt bằng tại đây"
+     placeholder in .floorplan-media-frame until an approved typical-
+     floor drawing is supplied. Expected path noted in index.html. */
+  image: "",
   points: [
     { titleVi: "Mật độ siêu riêng tư", titleEn: "Ultra-private density",
       textVi: "Chỉ 6 căn/tầng. Gần như 100% là căn góc (2 căn đơn lập tuyệt đối, 4 căn chỉ chung 1 vách tường).",
