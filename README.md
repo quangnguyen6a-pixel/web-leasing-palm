@@ -503,6 +503,37 @@ Overview/USP, navigation structure, the popup, or the language switcher
 
 ---
 
+## 9d. Follow-up pass — image config, yellow frame removed
+
+- **Image config fields:** the Overview and Project Details image
+  slots (previously static HTML, and in the Details case reusing the
+  hero photo as a stand-in) are now driven by
+  `projectConfig.overviewImage` / `projectConfig.projectDetailImage`
+  in `js/config.js` — both start `""` and render the neutral "being
+  updated" placeholder until a real path is set. `floorPlanTypes[i]`
+  gained an `image` field the same way. `amenitiesSlides[i].image` and
+  `progressMilestones` already followed this pattern from the previous
+  pass. Setting any of these fields is the only step needed — a shared
+  `renderDepthFrameImage()` helper in `sections.js` re-renders on load
+  and on every language switch, no CSS/markup change required. Each
+  slot's HTML comment names its exact config field and expected asset
+  path for the next handoff.
+- **`object-fit` choice matters here:** the Overview image (embedded
+  copy/logo baked into the corners) renders with `object-fit: contain`
+  so nothing is ever cropped; the Details image and floor-plan images
+  do the same (contain) since floor plans must never be cropped
+  either; the amenities carousel keeps `cover` since it's plain
+  photography, not text-bearing.
+- **Yellow offset frame removed:** `.media-depth-frame`'s `::before`
+  (the yellow-bordered rectangle behind each image) was deleted
+  outright per a later refinement — the component now uses a single
+  navy/cyan glass border only (see the component's own comment in
+  `css/sections.css`). Savills yellow was deliberately left everywhere
+  else it already appeared (buttons, `.glass-tab.is-active`'s
+  underline, USP numbers, section-tag accents).
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

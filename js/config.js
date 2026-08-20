@@ -22,7 +22,20 @@ window.projectConfig = {
   /* Not yet confirmed — kept null so the floating buttons render
      disabled instead of pointing at an invented URL. */
   zaloUrl: null,
-  whatsappUrl: null
+  whatsappUrl: null,
+
+  /* -----------------------------------------------------
+     IMAGE SLOTS — left empty until the approved final files are
+     supplied. Each renders a neutral, correctly-proportioned
+     placeholder frame (never a stock photo or "demo" label) until
+     then; set the path here and it renders automatically, no
+     layout/CSS changes needed. See the matching HTML comment next to
+     each slot in index.html for the exact expected path/ratio.
+     ----------------------------------------------------- */
+  // <!-- Add approved Overview image here -->
+  overviewImage: "",
+  // <!-- Add approved Project Details rendering here -->
+  projectDetailImage: ""
 };
 
 /* -----------------------------------------------------
@@ -124,22 +137,26 @@ window.amenitiesSlides = [
 /* -----------------------------------------------------
    FLOOR PLANS — §7
    Per-type imagery/areas are not yet approved; only the overall
-   carpet-area range and unit-type list from §4 are confirmed.
+   carpet-area range and unit-type list from §4 are confirmed. `image`
+   stays "" (renders the neutral placeholder frame) until an approved
+   plan/show-unit file is supplied per type.
    ----------------------------------------------------- */
 window.floorPlanTypes = [
-  { id: "studio", vi: "Studio", en: "Studio" },
-  { id: "1pn", vi: "1PN", en: "1BR" },
-  { id: "2pn", vi: "2PN", en: "2BR" },
-  { id: "2pn-dac-biet", vi: "2PN đặc biệt", en: "2BR Deluxe" },
-  { id: "3pn", vi: "3PN", en: "3BR" },
-  { id: "3pn-dac-biet", vi: "3PN đặc biệt", en: "3BR Deluxe" }
+  { id: "studio", vi: "Studio", en: "Studio", image: "", expectedAsset: "assets/floor-plans/studio.jpg" },
+  { id: "1pn", vi: "1PN", en: "1BR", image: "", expectedAsset: "assets/floor-plans/1pn.jpg" },
+  { id: "2pn", vi: "2PN", en: "2BR", image: "", expectedAsset: "assets/floor-plans/2pn.jpg" },
+  { id: "2pn-dac-biet", vi: "2PN đặc biệt", en: "2BR Deluxe", image: "", expectedAsset: "assets/floor-plans/2pn-dac-biet.jpg" },
+  { id: "3pn", vi: "3PN", en: "3BR", image: "", expectedAsset: "assets/floor-plans/3pn.jpg" },
+  { id: "3pn-dac-biet", vi: "3PN đặc biệt", en: "3BR Deluxe", image: "", expectedAsset: "assets/floor-plans/3pn-dac-biet.jpg" }
 ];
 
 /* -----------------------------------------------------
    CONSTRUCTION PROGRESS — §9
    No approved milestones exist yet. Kept as an empty array on
    purpose — the section renders its "being updated" state rather
-   than fabricated dates.
+   than fabricated dates. Once real milestones are approved, each
+   entry should follow this shape (image stays "" until supplied):
+   { labelVi, labelEn, image: "", expectedAsset, descriptionVi, descriptionEn }
    ----------------------------------------------------- */
 window.progressMilestones = [];
 

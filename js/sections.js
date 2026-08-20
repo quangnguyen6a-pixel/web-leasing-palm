@@ -26,6 +26,60 @@
     container.scrollLeft = Math.max(0, target);
   }
 
+  // Shared renderer for a .media-depth-frame__inner box: shows the
+  // image when a path is supplied, otherwise the neutral "being
+  // updated" note already sitting in the DOM (never replaced with
+  // stock/demo content). `fit` picks object-fit — "contain" for any
+  // image that may carry embedded text/logos near its edges (must
+  // never be cropped), "cover" for plain photography.
+  function renderDepthFrameImage(inner, src, alt, imgClassName, fit) {
+    if (!inner) return;
+    inner.innerHTML = "";
+    if (src) {
+      var img = document.createElement("img");
+      if (imgClassName) img.className = imgClassName;
+      img.src = src;
+      img.alt = alt || "";
+      img.loading = "lazy";
+      img.style.objectFit = fit || "cover";
+      inner.appendChild(img);
+    } else {
+      var note = document.createElement("p");
+      note.className = "media-depth-frame__note";
+      note.textContent = currentLang() === "en" ? "Image being updated" : "Hình ảnh đang được cập nhật";
+      inner.appendChild(note);
+    }
+  }
+
+  /* -----------------------------------------------------
+     0. OVERVIEW + PROJECT DETAILS IMAGES
+     Both slots are configured via projectConfig in js/config.js
+     (overviewImage / projectDetailImage) — empty by default, so they
+     render the placeholder frame already in the HTML until a path is
+     set there. No CSS/markup changes needed when one is added.
+     ----------------------------------------------------- */
+  function renderConfiguredImages(lang) {
+    if (!window.projectConfig) return;
+    var overviewAlt = lang === "en" ? "Riverside perspective of Palm City" : "Phối cảnh Palm City bên sông Giồng Ông Tố";
+    // object-fit: contain — the approved Overview rendering has
+    // embedded copy/logo near its edges that must never be cropped.
+    renderDepthFrameImage(
+      document.getElementById("overview-media-inner"),
+      window.projectConfig.overviewImage,
+      overviewAlt,
+      null,
+      "contain"
+    );
+    var detailAlt = lang === "en" ? "Palm City project rendering" : "Phối cảnh dự án Palm City";
+    renderDepthFrameImage(
+      document.getElementById("details-media-inner"),
+      window.projectConfig.projectDetailImage,
+      detailAlt,
+      "details__image",
+      "cover"
+    );
+  }
+
   /* -----------------------------------------------------
      1. PROJECT DETAILS (§4)
      ----------------------------------------------------- */
@@ -279,14 +333,14 @@
     });
 
     var activeType = window.floorPlanTypes[activeFloorplanIndex];
+    var typeLabel = lang === "en" ? activeType.en : activeType.vi;
 
-    // Expected asset noted in the HTML comment above this frame.
-    frameHost.innerHTML =
-      '<p class="floorplans__image-note">' +
-      (lang === "en" ? "Floor plan image is being updated" : "Hình ảnh mặt bằng đang được cập nhật") +
-      "</p>";
+    // Config field: window.floorPlanTypes[i].image (js/config.js) —
+    // empty by default, renders the neutral placeholder note until an
+    // approved plan/show-unit file is supplied per type.
+    renderDepthFrameImage(frameHost, activeType.image, typeLabel, null, "contain");
     frameHost.onclick = function () {
-      openZoomModal(null, lang === "en" ? activeType.en : activeType.vi);
+      openZoomModal(activeType.image || null, typeLabel);
     };
 
     panelHost.innerHTML = "";
@@ -665,6 +719,7 @@
      ----------------------------------------------------- */
   function renderAll() {
     var lang = currentLang();
+    renderConfiguredImages(lang);
     renderDetails(lang);
     renderLocation(lang);
     renderAmenities(lang);

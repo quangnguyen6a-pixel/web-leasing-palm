@@ -218,14 +218,13 @@
           </p>
         </div>
 
-        <!-- Expected asset: assets/palm-city-riverside-rendering.jpg — the
-             approved riverside rendering with embedded copy "Nơi tái tạo
-             năng lượng mỗi ngày" and the Palm City logo baked into the
-             image, referenced in this task's brief. It has not actually
-             been uploaded to /assets yet, so this renders a neutral frame
-             (never a stand-in photo) until the real file is supplied. -->
+        <!-- Add approved Overview image here (projectConfig.overviewImage
+             in js/config.js) — the riverside rendering with embedded copy
+             "Nơi tái tạo năng lượng mỗi ngày" and the Palm City logo.
+             Renders automatically once that path is set; no CSS/layout
+             changes needed. -->
         <div class="media-depth-frame media-depth-frame--dark project-overview__media" data-depth-frame>
-          <div class="media-depth-frame__inner">
+          <div class="media-depth-frame__inner" id="overview-media-inner">
             <p class="media-depth-frame__note"
                data-lang-vi="Hình ảnh phối cảnh đang được cập nhật"
                data-lang-en="Rendering image is being updated">Hình ảnh phối cảnh đang được cập nhật</p>
@@ -300,10 +299,14 @@
 
       <div class="details__grid">
         <div class="details__media">
-          <!-- Expected asset: assets/palm-city-rendering.jpg (approved project rendering, 3:4/4:5 ratio) -->
+          <!-- Add approved Project Details rendering here
+               (projectConfig.projectDetailImage in js/config.js), 3:4/4:5
+               ratio. Renders automatically once that path is set. -->
           <div class="media-depth-frame media-depth-frame--dark" data-depth-frame>
-            <div class="details__image-frame media-depth-frame__inner">
-              <img src="assets/palm-city-hero.webp" alt="Phối cảnh dự án Palm City" class="details__image" loading="lazy">
+            <div class="details__image-frame media-depth-frame__inner" id="details-media-inner">
+              <p class="media-depth-frame__note"
+                 data-lang-vi="Hình ảnh dự án đang được cập nhật"
+                 data-lang-en="Project image is being updated">Hình ảnh dự án đang được cập nhật</p>
             </div>
           </div>
         </div>
