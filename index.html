@@ -39,14 +39,12 @@
          NOTE: this departs from the brand-hierarchy rule in the project
          brief (Palm City as lead brand, Savills as agent only) — flagged
          to the client; kept as requested. Palm City identity is still
-         carried by the page <title>, hero, and footer. -->
-    <a href="#top" class="brand-group" aria-label="Về đầu trang">
-      <div class="brand-secondary">
-        <img src="assets/savills-logo.png" alt="Savills" class="savills-logo" width="44" height="44"
-             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback logo-fallback--secondary',textContent:'[SAVILLS_LOGO]'}))">
-        <span class="brand-secondary__label"
-              data-lang-vi="Đại lý phân phối" data-lang-en="Sales Agent">Đại lý phân phối</span>
-      </div>
+         carried by the page <title>, hero, and footer. The "Đại lý phân
+         phối" text label was removed per the latest refinement pass —
+         the same meaning is now carried by an aria-label only. -->
+    <a href="#top" class="brand-group" aria-label="Savills Việt Nam – Đối tác phân phối">
+      <img src="assets/savills-logo.png" alt="Savills" class="savills-logo" width="130" height="130"
+           onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback logo-fallback--secondary',textContent:'[SAVILLS_LOGO]'}))">
     </a>
 
     <!-- Main navigation (desktop) -->
@@ -91,13 +89,9 @@
 <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
   <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Menu điều hướng">
     <div class="mobile-menu__header">
-      <div class="brand-group brand-group--mobile">
-        <div class="brand-secondary">
-          <img src="assets/savills-logo.png" alt="Savills" class="savills-logo" width="34" height="34"
-               onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback logo-fallback--secondary',textContent:'[SAVILLS_LOGO]'}))">
-          <span class="brand-secondary__label"
-                data-lang-vi="Đại lý phân phối" data-lang-en="Sales Agent">Đại lý phân phối</span>
-        </div>
+      <div class="brand-group brand-group--mobile" aria-label="Savills Việt Nam – Đối tác phân phối">
+        <img src="assets/savills-logo.png" alt="Savills" class="savills-logo" width="90" height="90"
+             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback logo-fallback--secondary',textContent:'[SAVILLS_LOGO]'}))">
       </div>
       <button type="button" class="mobile-menu__close" id="mobile-menu-close"
               aria-label="Đóng menu" data-lang-vi-aria="Đóng menu" data-lang-en-aria="Close menu">&times;</button>
@@ -210,17 +204,33 @@
             data-lang-vi="Tổng quan dự án" data-lang-en="Project Overview">Tổng quan dự án</h2>
       </header>
 
-      <div class="project-intro" data-reveal>
-        <p class="project-intro__paragraph"
-           data-lang-vi="Giữa nhịp sống đô thị không ngừng chuyển động, khả năng tái tạo năng lượng trở thành nền tảng của một cuộc sống cân bằng. Tại Palm City, thiên nhiên, mặt nước và hệ tiện ích chú trọng sức khỏe được quy hoạch như một phần của trải nghiệm thường nhật, hỗ trợ cả thể chất lẫn tinh thần và tạo nên giá trị sống bền vững theo thời gian."
-           data-lang-en="Amid the constant pace of urban life, the ability to restore energy has become central to a balanced way of living. At Palm City, nature, water and wellness-focused amenities are planned as part of everyday life, supporting physical and mental wellbeing while creating enduring value over time.">
-          Giữa nhịp sống đô thị không ngừng chuyển động, khả năng tái tạo năng lượng trở thành nền tảng của một cuộc sống cân bằng. Tại Palm City, thiên nhiên, mặt nước và hệ tiện ích chú trọng sức khỏe được quy hoạch như một phần của trải nghiệm thường nhật, hỗ trợ cả thể chất lẫn tinh thần và tạo nên giá trị sống bền vững theo thời gian.
-        </p>
-        <p class="project-intro__paragraph"
-           data-lang-vi="Không chỉ là nơi ở, Palm City hướng đến một môi trường sống nơi kết nối, nghỉ dưỡng và nhịp sống đô thị cùng hiện diện hài hòa – một đô thị nghỉ dưỡng giữa lòng thành phố."
-           data-lang-en="More than a place to live, Palm City is envisioned as an environment where connection, restoration and urban convenience come together – a resort-inspired urban destination in the heart of the city.">
-          Không chỉ là nơi ở, Palm City hướng đến một môi trường sống nơi kết nối, nghỉ dưỡng và nhịp sống đô thị cùng hiện diện hài hòa – một đô thị nghỉ dưỡng giữa lòng thành phố.
-        </p>
+      <div class="project-overview__body">
+        <div class="project-intro" data-reveal>
+          <p class="project-intro__paragraph"
+             data-lang-vi="Giữa nhịp sống đô thị không ngừng chuyển động, khả năng tái tạo năng lượng trở thành nền tảng của một cuộc sống cân bằng. Tại Palm City, thiên nhiên, mặt nước và hệ tiện ích chú trọng sức khỏe được quy hoạch như một phần của trải nghiệm thường nhật, hỗ trợ cả thể chất lẫn tinh thần và tạo nên giá trị sống bền vững theo thời gian."
+             data-lang-en="Amid the constant pace of urban life, the ability to restore energy has become central to a balanced way of living. At Palm City, nature, water and wellness-focused amenities are planned as part of everyday life, supporting physical and mental wellbeing while creating enduring value over time.">
+            Giữa nhịp sống đô thị không ngừng chuyển động, khả năng tái tạo năng lượng trở thành nền tảng của một cuộc sống cân bằng. Tại Palm City, thiên nhiên, mặt nước và hệ tiện ích chú trọng sức khỏe được quy hoạch như một phần của trải nghiệm thường nhật, hỗ trợ cả thể chất lẫn tinh thần và tạo nên giá trị sống bền vững theo thời gian.
+          </p>
+          <p class="project-intro__paragraph"
+             data-lang-vi="Không chỉ là nơi ở, Palm City hướng đến một môi trường sống nơi kết nối, nghỉ dưỡng và nhịp sống đô thị cùng hiện diện hài hòa – một đô thị nghỉ dưỡng giữa lòng thành phố."
+             data-lang-en="More than a place to live, Palm City is envisioned as an environment where connection, restoration and urban convenience come together – a resort-inspired urban destination in the heart of the city.">
+            Không chỉ là nơi ở, Palm City hướng đến một môi trường sống nơi kết nối, nghỉ dưỡng và nhịp sống đô thị cùng hiện diện hài hòa – một đô thị nghỉ dưỡng giữa lòng thành phố.
+          </p>
+        </div>
+
+        <!-- Expected asset: assets/palm-city-riverside-rendering.jpg — the
+             approved riverside rendering with embedded copy "Nơi tái tạo
+             năng lượng mỗi ngày" and the Palm City logo baked into the
+             image, referenced in this task's brief. It has not actually
+             been uploaded to /assets yet, so this renders a neutral frame
+             (never a stand-in photo) until the real file is supplied. -->
+        <div class="media-depth-frame media-depth-frame--dark project-overview__media" data-depth-frame>
+          <div class="media-depth-frame__inner">
+            <p class="media-depth-frame__note"
+               data-lang-vi="Hình ảnh phối cảnh đang được cập nhật"
+               data-lang-en="Rendering image is being updated">Hình ảnh phối cảnh đang được cập nhật</p>
+          </div>
+        </div>
       </div>
 
       <div class="project-overview__stats">
@@ -291,9 +301,10 @@
       <div class="details__grid">
         <div class="details__media">
           <!-- Expected asset: assets/palm-city-rendering.jpg (approved project rendering, 3:4/4:5 ratio) -->
-          <div class="details__image-frame">
-            <img src="assets/palm-city-hero.webp" alt="Phối cảnh dự án Palm City" class="details__image">
-            <div class="details__image-sheen" aria-hidden="true"></div>
+          <div class="media-depth-frame media-depth-frame--dark" data-depth-frame>
+            <div class="details__image-frame media-depth-frame__inner">
+              <img src="assets/palm-city-hero.webp" alt="Phối cảnh dự án Palm City" class="details__image" loading="lazy">
+            </div>
           </div>
         </div>
 
@@ -377,8 +388,10 @@
       <div class="floorplans__viewer">
         <div class="floorplans__image-wrap">
           <!-- Expected asset: assets/floor-plans/{type-id}.jpg (approved plan or show-unit image per type) -->
-          <div class="floorplans__image-frame" id="floorplans-image-frame">
-            <p class="floorplans__image-note" data-lang-vi="Hình ảnh mặt bằng đang được cập nhật" data-lang-en="Floor plan image is being updated">Hình ảnh mặt bằng đang được cập nhật</p>
+          <div class="media-depth-frame media-depth-frame--light" data-depth-frame>
+            <div class="floorplans__image-frame media-depth-frame__inner" id="floorplans-image-frame">
+              <p class="floorplans__image-note" data-lang-vi="Hình ảnh mặt bằng đang được cập nhật" data-lang-en="Floor plan image is being updated">Hình ảnh mặt bằng đang được cập nhật</p>
+            </div>
           </div>
           <div class="floorplans__nav">
             <button type="button" class="floorplans__nav-btn" id="floorplans-prev" aria-label="Loại căn trước" data-lang-vi-aria="Loại căn trước" data-lang-en-aria="Previous unit type">&larr;</button>
@@ -493,7 +506,19 @@
         </li>
       </ul>
 
-      <div class="savills-section__news" id="savills-news"></div>
+      <header class="section-head savills-section__news-head">
+        <p class="section-tag" data-lang-vi="THÔNG TIN CHÍNH THỨC &amp; TRUYỀN THÔNG" data-lang-en="OFFICIAL UPDATES &amp; MEDIA">THÔNG TIN CHÍNH THỨC &amp; TRUYỀN THÔNG</p>
+        <h3 class="savills-section__news-title" id="savills-news-title"
+            data-lang-vi="Uy tín được củng cố qua những thông tin chính thống"
+            data-lang-en="Credibility reinforced through trusted sources">Uy tín được củng cố qua những thông tin chính thống</h3>
+        <p class="section-lead"
+           data-lang-vi="Cập nhật các thông tin chính thức về dự án và vai trò đồng hành của Savills Việt Nam từ Savills cùng các kênh báo chí, truyền thông uy tín."
+           data-lang-en="Official updates on the project and Savills Vietnam's role, published across Savills and trusted media channels.">
+          Cập nhật các thông tin chính thức về dự án và vai trò đồng hành của Savills Việt Nam từ Savills cùng các kênh báo chí, truyền thông uy tín.
+        </p>
+      </header>
+
+      <div class="savills-section__news" id="savills-news" aria-labelledby="savills-news-title"></div>
     </div>
   </section>
 

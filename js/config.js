@@ -144,22 +144,33 @@ window.floorPlanTypes = [
 window.progressMilestones = [];
 
 /* -----------------------------------------------------
-   SAVILLS NEWS — §10
-   Real source links only. No headline/excerpt copy was supplied
-   with these links, so those fields stay as the shared placeholder
-   rather than invented summaries of the linked articles.
+   SAVILLS NEWS / CREDIBILITY CARDS — §10
+   Real source links only. `publisher` is inferred from each URL's own
+   domain/owner (both links point to Savills-owned channels), and
+   `typeVi`/`typeEn` follow from that same fact — neither is invented.
+   `confirmed` is false for both because no headline, publish date, or
+   excerpt was supplied with these links: per this task's brief,
+   unconfirmed cards are hidden rather than shown with placeholder
+   copy. Flip `confirmed` to true and fill in date/title/excerpt once
+   those are supplied, and the card renders automatically.
    ----------------------------------------------------- */
 window.savillsNews = [
   {
     url: "https://vn.savills.com.vn/blog/article/238470/vietnam-viet/du-an-ven-song-sai-gon.aspx#palm-river",
-    dateVi: "Đang cập nhật", dateEn: "Being updated",
-    titleVi: "Đang cập nhật", titleEn: "Being updated",
-    excerptVi: "Đang cập nhật", excerptEn: "Being updated"
+    publisher: "Savills Việt Nam",
+    typeVi: "Thông cáo chính thức", typeEn: "Official announcement",
+    confirmed: false,
+    dateVi: null, dateEn: null,
+    titleVi: null, titleEn: null,
+    excerptVi: null, excerptEn: null
   },
   {
     url: "https://www.facebook.com/SavillsVietnam/posts/savills-vi%E1%BB%87t-nam-%C4%91%C6%B0%E1%BB%A3c-b%E1%BB%95-nhi%E1%BB%87m-l%C3%A0m-%C4%91%E1%BB%91i-t%C3%A1c-chi%E1%BA%BFn-l%C6%B0%E1%BB%A3c-qu%E1%BB%91c-t%E1%BA%BF-c%E1%BB%A7a-palm-river-d%E1%BB%B1-/1558683272966044/",
-    dateVi: "Đang cập nhật", dateEn: "Being updated",
-    titleVi: "Đang cập nhật", titleEn: "Being updated",
-    excerptVi: "Đang cập nhật", excerptEn: "Being updated"
+    publisher: "Savills Việt Nam",
+    typeVi: "Thông cáo chính thức", typeEn: "Official announcement",
+    confirmed: false,
+    dateVi: null, dateEn: null,
+    titleVi: null, titleEn: null,
+    excerptVi: null, excerptEn: null
   }
 ];

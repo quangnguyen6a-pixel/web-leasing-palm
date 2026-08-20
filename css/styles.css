@@ -16,8 +16,17 @@
   --font-heading: "Playfair Display", Georgia, serif;
   --font-body: "Gotham", "SVN-Gotham", Arial, sans-serif;
 
-  --header-height-top: 84px;
-  --header-height-scrolled: 70px;
+  /* The approved Savills asset (assets/savills-logo.png) is a square
+     mark, not a wide wordmark — enlarging its width per the latest
+     refinement pass enlarges its height by the same amount
+     (height:auto preserves its real ~1:1 ratio; see .savills-logo).
+     These two tokens were bumped so the bar comfortably contains the
+     bigger mark without visibly overflowing; the logo widths below
+     were correspondingly kept toward the lower half of the requested
+     124-136px desktop range rather than its top end, so the header
+     doesn't have to grow past a sensible size to fit it. */
+  --header-height-top: 128px;
+  --header-height-scrolled: 104px;
   --transition-header: 240ms ease;
   --content-max-width: 1280px;
 
@@ -136,26 +145,23 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
-.brand-secondary {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.brand-secondary img { width: auto; opacity: 0.96; }
 /* Savills is enlarged relative to the earlier size while Palm City
    stays the primary brand elsewhere (page title, hero eyebrow/headline,
    footer) — the header itself carries Savills only, per the client's
-   explicit request (see the comment above .brand-group in index.html). */
+   explicit request (see the comment above .brand-group in index.html).
+   The "Đại lý phân phối" text label was removed (see .brand-group's
+   aria-label in index.html for the accessible equivalent), so the logo
+   is now the header's only brand element — width-based per the latest
+   refinement pass, height auto to preserve its native aspect ratio. */
 .savills-logo {
-  width: auto;
-  height: clamp(38px, 3vw, 46px);
+  /* See the --header-height-top comment above: since the source file
+     is square, height:auto makes this value the mark's rendered
+     height too, so the width is kept toward the low end of the
+     requested 124-136px desktop range to keep the bar a sensible
+     size. */
+  width: clamp(104px, 8vw, 112px);
+  height: auto;
   opacity: 1;
-}
-.brand-secondary__label {
-  font-size: 11px;
-  letter-spacing: 0.03em;
-  white-space: nowrap;
-  opacity: 0.85;
 }
 
 .logo-fallback {
@@ -874,6 +880,23 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   text-wrap: balance;
 }
 
+/* Balanced copy/image layout added above the USP cards. Mobile keeps
+   the copy-then-image order already in the markup, so no explicit
+   reordering is needed at that breakpoint. */
+.project-overview__body {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  gap: var(--space-2xl);
+  align-items: center;
+  margin-top: var(--space-xl);
+}
+.project-overview__body .project-intro {
+  margin-top: 0;
+}
+.project-overview__media {
+  aspect-ratio: 4 / 3;
+}
+
 /* Project introduction — borderless. No card: no border, no
    corner-radius, no box-shadow, no fixed height, no boxed background.
    A soft glass wash + slow water ripple sit behind the copy instead
@@ -1309,7 +1332,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   .main-nav__list { gap: 0; }
   .main-nav__link { font-size: 11.5px; padding: 6px 5px; }
   .utility-group { gap: 8px; }
-  .header-inner .brand-secondary__label { display: none; }
+  .savills-logo { width: clamp(104px, 8vw, 108px); }
   .btn--register { padding: 7px 10px; font-size: 11.5px; white-space: nowrap; }
   .placeholder-section { padding: 64px 32px; }
 
@@ -1325,7 +1348,6 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
    breakpoint has room to spare. */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .header-inner { padding: 0 32px; }
-  .header-inner .brand-secondary__label { display: none; }
   .main-nav__link { font-size: 12px; padding: 7px 6px; }
   .btn--register { padding: 8px 12px; font-size: 12px; white-space: nowrap; }
   .utility-group { gap: 10px; }
@@ -1334,15 +1356,14 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 /* Mobile */
 @media (max-width: 767px) {
   :root {
-    --header-height-top: 72px;
-    --header-height-scrolled: 60px;
+    --header-height-top: 96px;
+    --header-height-scrolled: 76px;
   }
   .header-inner { padding: 0 20px; }
   .main-nav { display: none; }
   .utility-group .lang-switcher { display: none; }
   .utility-group .btn--register { display: none; }
   .hamburger { display: flex; }
-  .header-inner .brand-secondary__label { display: none; }
 
   .hero {
     min-height: 80svh;
@@ -1375,6 +1396,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   .project-overview { padding: 56px 0; }
   .project-overview__container { padding: 0 20px; }
   .project-overview__title { font-size: clamp(26px, 8vw, 34px); }
+  .project-overview__body { grid-template-columns: 1fr; gap: var(--space-lg); }
   .project-intro { padding: 20px 0 26px; margin-top: var(--space-lg); }
   .project-intro__paragraph { font-size: 15px; }
   .project-intro__paragraph + .project-intro__paragraph { margin-top: 18px; }
@@ -1389,7 +1411,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   .stat-card__value { font-size: clamp(68px, 18vw, 88px); }
   .stat-card__unit { font-size: clamp(15px, 4vw, 17px); }
 
-  .savills-logo { height: 32px; }
+  .savills-logo { width: clamp(78px, 16vw, 82px); }
 }
 
 /* Desktop */

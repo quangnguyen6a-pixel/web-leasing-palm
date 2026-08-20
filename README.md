@@ -433,6 +433,76 @@ Overview/USP, navigation structure, the popup, or the language switcher
 
 ---
 
+## 9c. Targeted refinement pass — logo, depth frames, glass tabs, news
+
+- **Savills logo:** the header's "Đại lý phân phối" text label was
+  removed (its wrapper too); `.brand-group` now carries an
+  `aria-label="Savills Việt Nam – Đối tác phân phối"` instead. The
+  approved logo file (`assets/savills-logo.png`) is a **square** mark,
+  not a wide wordmark — enlarging its `width` (per the brief's
+  124–136px desktop / 104–116px tablet / 82–96px mobile ranges) grows
+  its height by the same amount via `height: auto`. To keep the header
+  from growing past a sensible size, the logo widths were kept toward
+  the low end of each range (112 / 108 / 82px) and `--header-height-top`
+  / `--header-height-scrolled` were bumped a corresponding amount at
+  each breakpoint — both are flagged here as a deliberate reconciliation
+  of the brief's width targets against the real asset's proportions,
+  same as the header's other documented brand-hierarchy deviation.
+- **`.media-depth-frame`:** reusable glass/offset-border component
+  (see `css/sections.css`) applied to the new Overview image, the
+  project-details image, the amenities carousel, and the floor-plan
+  viewer. The static glass chrome (gradient background, border, inner
+  highlight, `::before` offset frame, `::after` cyan reflection) is
+  plain CSS — always on, no JS required. The scroll-entrance animation
+  (opacity/translateY/image-scale) is opt-in via `[data-depth-frame]`
+  + `.is-visible`, toggled by an `IntersectionObserver` in
+  `sections.js`, kept deliberately separate from the static chrome so
+  it never fights a host section's own reveal logic — the amenities
+  carousel gets the frame's visuals only, not this attribute, since
+  its own active/inactive slide state already serves as its entrance.
+  A `--light`/`--dark` modifier adapts the border/shadow to the host
+  section's background. Pointer parallax (±4px, image only) runs on
+  `[data-depth-frame]` elements only, on mouse/no-reduced-motion only.
+  **Specificity note:** `.details__image`/`.amenities__slide-image`
+  are single-class selectors that would otherwise lose their
+  `height: 100%` to the shared `.media-depth-frame__inner img` rule's
+  `height: auto` (a class+element compound selector outranks a bare
+  class, regardless of source order) — both are scoped with their
+  parent class (e.g. `.media-depth-frame__inner .details__image`) to
+  win that specificity fight, the same lesson as the hero's
+  `animation` shorthand note elsewhere in this file, just for
+  specificity instead of shorthand collision.
+- **`.glass-tab` system:** shared component for the Location category
+  buttons and Floor-plan type tabs (`--light`/`--dark` background
+  variants, `.is-active` state, a short yellow underline rather than a
+  full border). Shape (pill vs. rounded-rect, height, padding) layers
+  on top via `.location__tab`/`.floorplans__tab`. On mobile both tab
+  rows become a horizontally-snapping, scrollbar-hidden row; the
+  active tab is kept in view via a **horizontal-only** scroll helper
+  (`scrollTabIntoView()` in `sections.js`) — deliberately not
+  `Element.scrollIntoView()`, which was found to also scroll the
+  page's own vertical position when the tab wasn't yet on-screen (e.g.
+  immediately after page load), a real bug caught and fixed during
+  this pass.
+- **New Overview image:** `#overview` now has a balanced 6/6
+  copy/image layout above the USP cards. No new rendering was actually
+  supplied in `/assets` for this pass despite the brief referencing
+  one — it renders the same neutral "being updated" frame convention
+  as every other missing asset, with an HTML comment naming the
+  expected file (`assets/palm-city-riverside-rendering.jpg`).
+- **News / credibility cards:** `#savills` gained a second heading
+  block (eyebrow/heading/lead) directly above the news grid, and
+  `js/config.js`'s `savillsNews` entries gained `confirmed`,
+  `publisher`, and `typeVi`/`typeEn` fields. `publisher` is inferred
+  from each link's own domain (both are Savills-owned channels) —
+  headline/date/excerpt were never supplied, so `confirmed: false` and
+  `sections.js`'s `renderNews()` hides both cards entirely, showing one
+  calm empty-state message instead of placeholder copy. Flipping
+  `confirmed` to `true` and filling in the date/title/excerpt fields is
+  enough to make a card render.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

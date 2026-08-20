@@ -14,6 +14,18 @@
   var PENDING_VI = "Đang cập nhật";
   var PENDING_EN = "Being updated";
 
+  // Horizontal-only "keep visible" helper for the mobile tab scroll
+  // rows (§5/§6). Deliberately NOT Element.scrollIntoView(), which
+  // also scrolls the page's own vertical scroll container when the
+  // tab isn't currently on-screen (e.g. right after page load) —
+  // this only ever touches the tab row's own scrollLeft.
+  function scrollTabIntoView(tab) {
+    var container = tab.parentElement;
+    if (!container) return;
+    var target = tab.offsetLeft - (container.clientWidth - tab.offsetWidth) / 2;
+    container.scrollLeft = Math.max(0, target);
+  }
+
   /* -----------------------------------------------------
      1. PROJECT DETAILS (§4)
      ----------------------------------------------------- */
@@ -61,17 +73,23 @@
 
     keys.forEach(function (key) {
       var cat = window.connectivityData[key];
+      var isActive = key === activeLocationCategory;
       var btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "location__tab";
+      btn.className = "glass-tab glass-tab--light location__tab" + (isActive ? " is-active" : "");
       btn.setAttribute("role", "tab");
       btn.setAttribute("data-category", key);
-      btn.setAttribute("aria-selected", key === activeLocationCategory ? "true" : "false");
+      btn.setAttribute("aria-selected", isActive ? "true" : "false");
       btn.textContent = lang === "en" ? cat.en : cat.vi;
       btn.addEventListener("click", function () {
         activeLocationCategory = key;
         renderLocation(currentLang());
       });
+      if (isActive) {
+        // Keep the active tab visible on the mobile scroll row after
+        // a language switch re-render.
+        requestAnimationFrame(function () { scrollTabIntoView(btn); });
+      }
       tablist.appendChild(btn);
     });
 
@@ -113,30 +131,44 @@
       el.setAttribute("aria-roledescription", "slide");
       el.setAttribute("aria-label", (index + 1) + " / " + total);
 
+      // Static glass chrome only (no [data-depth-frame] — the carousel's
+      // own active/inactive opacity+scale above already serves as this
+      // slide's entrance treatment, so it isn't gated behind a second,
+      // IntersectionObserver-driven opacity toggle).
+      var frame = document.createElement("div");
+      frame.className = "media-depth-frame media-depth-frame--dark";
+      frame.style.setProperty("--sweep-delay", (index * 900) + "ms");
+
+      var inner = document.createElement("div");
+      inner.className = "media-depth-frame__inner";
+
       if (slide.image) {
         var img = document.createElement("img");
         img.className = "amenities__slide-image";
         img.src = slide.image;
         img.alt = lang === "en" ? slide.titleEn : slide.titleVi;
-        el.appendChild(img);
+        img.loading = "lazy";
+        inner.appendChild(img);
       } else {
         // Expected asset noted in js/config.js (slide.expectedAsset).
         var note = document.createElement("p");
         note.className = "amenities__slide-note";
         note.textContent = lang === "en" ? "Image being updated" : "Hình ảnh đang được cập nhật";
-        el.appendChild(note);
+        inner.appendChild(note);
       }
 
       var title = document.createElement("span");
       title.className = "amenities__slide-title";
       title.textContent = lang === "en" ? slide.titleEn : slide.titleVi;
-      el.appendChild(title);
+      inner.appendChild(title);
 
       var count = document.createElement("span");
       count.className = "amenities__slide-count";
       count.textContent = String(index + 1).padStart(2, "0") + "/" + String(total).padStart(2, "0");
-      el.appendChild(count);
+      inner.appendChild(count);
 
+      frame.appendChild(inner);
+      el.appendChild(frame);
       track.appendChild(el);
     });
 
@@ -229,16 +261,20 @@
 
     tabsHost.innerHTML = "";
     window.floorPlanTypes.forEach(function (type, index) {
+      var isActive = index === activeFloorplanIndex;
       var btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "floorplans__tab";
+      btn.className = "glass-tab glass-tab--light floorplans__tab" + (isActive ? " is-active" : "");
       btn.setAttribute("role", "tab");
-      btn.setAttribute("aria-selected", index === activeFloorplanIndex ? "true" : "false");
+      btn.setAttribute("aria-selected", isActive ? "true" : "false");
       btn.textContent = lang === "en" ? type.en : type.vi;
       btn.addEventListener("click", function () {
         activeFloorplanIndex = index;
         renderFloorplans(currentLang());
       });
+      if (isActive) {
+        requestAnimationFrame(function () { scrollTabIntoView(btn); });
+      }
       tabsHost.appendChild(btn);
     });
 
@@ -386,22 +422,80 @@
   }
 
   /* -----------------------------------------------------
-     7. SAVILLS NEWS (§10)
+     7. SAVILLS NEWS / CREDIBILITY CARDS (§10)
+     Only cards with confirmed source data render — an item with a
+     real URL but no confirmed headline/date/excerpt (see
+     js/config.js) is skipped rather than shown with placeholder
+     copy, per this task's "hide empty cards" instruction. If nothing
+     is confirmed yet, the grid shows one calm empty-state message
+     instead of an abrupt blank section.
      ----------------------------------------------------- */
   function renderNews(lang) {
     var host = document.getElementById("savills-news");
     if (!host || !window.savillsNews) return;
     host.innerHTML = "";
-    window.savillsNews.forEach(function (item) {
+
+    var confirmedItems = window.savillsNews.filter(function (item) { return item.confirmed; });
+
+    if (!confirmedItems.length) {
+      host.innerHTML =
+        '<div class="savills-section__news-empty">' +
+        (lang === "en"
+          ? "Official updates and media coverage are being confirmed"
+          : "Thông tin chính thức và tin tức truyền thông đang được xác nhận") +
+        "</div>";
+      return;
+    }
+
+    confirmedItems.forEach(function (item, index) {
       var a = document.createElement("a");
-      a.className = "news-card";
+      a.className = "news-card" + (index === 0 ? " news-card--featured" : "");
       a.href = item.url;
       a.target = "_blank";
       a.rel = "noopener noreferrer";
 
-      var date = document.createElement("p");
+      var media = document.createElement("div");
+      media.className = "news-card__media";
+      if (item.image) {
+        var img = document.createElement("img");
+        img.src = item.image;
+        img.alt = "";
+        img.loading = "lazy";
+        media.appendChild(img);
+      } else {
+        var note = document.createElement("p");
+        note.className = "news-card__media-note";
+        note.textContent = lang === "en" ? "Image being updated" : "Hình ảnh đang được cập nhật";
+        media.appendChild(note);
+      }
+
+      var body = document.createElement("div");
+      body.className = "news-card__body";
+
+      var badge = document.createElement("div");
+      badge.className = "news-card__badge";
+
+      var source = document.createElement("span");
+      source.className = "news-card__source";
+      if (item.publisherLogo) {
+        var logoImg = document.createElement("img");
+        logoImg.src = item.publisherLogo;
+        logoImg.alt = item.publisher;
+        source.appendChild(logoImg);
+      }
+      source.appendChild(document.createTextNode(item.publisher));
+
+      var type = document.createElement("span");
+      type.className = "news-card__type";
+      type.textContent = lang === "en" ? item.typeEn : item.typeVi;
+
+      var date = document.createElement("span");
       date.className = "news-card__date";
       date.textContent = lang === "en" ? item.dateEn : item.dateVi;
+
+      badge.appendChild(source);
+      badge.appendChild(type);
+      badge.appendChild(date);
 
       var title = document.createElement("p");
       title.className = "news-card__title";
@@ -416,10 +510,13 @@
       link.innerHTML = (lang === "en" ? "See details" : "Xem chi tiết") +
         ' <span class="news-card__arrow" aria-hidden="true">&rarr;</span>';
 
-      a.appendChild(date);
-      a.appendChild(title);
-      a.appendChild(excerpt);
-      a.appendChild(link);
+      body.appendChild(badge);
+      body.appendChild(title);
+      body.appendChild(excerpt);
+      body.appendChild(link);
+
+      a.appendChild(media);
+      a.appendChild(body);
       host.appendChild(a);
     });
   }
@@ -510,6 +607,60 @@
   }
 
   /* -----------------------------------------------------
+     10. MEDIA DEPTH FRAME — scroll-entrance + pointer parallax
+     The static glass chrome renders with plain CSS (see
+     .media-depth-frame in sections.css); this only adds the opt-in
+     entrance animation to elements carrying [data-depth-frame], and a
+     restrained pointer-parallax on desktop/mouse devices.
+     ----------------------------------------------------- */
+  function setupDepthFrames() {
+    var frames = document.querySelectorAll("[data-depth-frame]");
+    if (!frames.length) return;
+
+    var prefersReducedMotion =
+      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if ("IntersectionObserver" in window) {
+      var observer = new IntersectionObserver(
+        function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              obs.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.25 }
+      );
+      frames.forEach(function (el) { observer.observe(el); });
+    } else {
+      frames.forEach(function (el) { el.classList.add("is-visible"); });
+    }
+
+    var canParallax =
+      !prefersReducedMotion &&
+      window.matchMedia &&
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!canParallax) return;
+
+    var MAX_SHIFT = 4;
+    frames.forEach(function (frame) {
+      var img = frame.querySelector(".media-depth-frame__inner img");
+      if (!img) return;
+      frame.addEventListener("mousemove", function (e) {
+        var rect = frame.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width - 0.5;
+        var y = (e.clientY - rect.top) / rect.height - 0.5;
+        img.style.transform =
+          "translate(" + (x * MAX_SHIFT).toFixed(1) + "px, " + (y * MAX_SHIFT).toFixed(1) + "px) scale(1.018)";
+      });
+      frame.addEventListener("mouseleave", function () {
+        img.style.transform = "";
+      });
+    });
+  }
+
+  /* -----------------------------------------------------
      INIT
      ----------------------------------------------------- */
   function renderAll() {
@@ -526,6 +677,7 @@
   setupPolicyTabs();
   setupFloatingContacts();
   setupFinalForm();
+  setupDepthFrames();
 
   document.addEventListener("palmcity:langchange", function (e) {
     renderAll();
