@@ -853,6 +853,49 @@ inner mask), which is the "inconsistent dimensions" symptom.
 
 ---
 
+## 9j. Credibility section rebuilt — contained frame + press-article grid
+
+Replaced the full-viewport-width image + oversized display heading with
+a contained media frame and a compact, data-driven press-article grid,
+inside the same `.section-container` as every other section.
+
+- **Image frame**: now a tighter instance of the shared
+  `.glass-media-frame`/`.glass-media-inner` component (`.credibility-media-frame`)
+  instead of the removed `.credibility-fullscreen-media` (which broke
+  out to `100vw` and forced a `clamp(620px, 78svh, 900px)` height —
+  the actual source of the oversized empty gap around the placeholder
+  note). Padding is `clamp(8px, 0.8vw, 12px)` and the inner mask no
+  longer forces a fixed aspect-ratio, so the image (or the placeholder
+  note) sits 8–12px from the border on every side instead of inside a
+  multi-hundred-pixel box. Still one border, one highlight — no
+  separate offset layers were reintroduced.
+- **Oversized text block removed**: "Uy tín được củng cố qua những
+  thông tin chính thống" + its paragraph + `.credibility-heading` are
+  gone, along with the `credibility-zoom`/`credibility-sweep`
+  keyframes and the `--credibility-focus` custom property they used.
+  Replaced with a plain `<h2 class="press-section-title">` — "Tin tức
+  và truyền thông" / "News and media" — no large display type.
+- **Press-article grid**: new `window.pressArticles` (`js/config.js`)
+  replaces the unused `window.savillsNews`, reusing its two real D12
+  URLs (`publisher: "Savills Việt Nam"`) rather than inventing new
+  ones. `title`/`excerpt`/`logo`/`image`/`date` are un-translated,
+  per-article fields (a real headline isn't re-translated) and stay
+  empty since none were supplied — `renderPressArticles()`
+  (`js/sections.js`) renders an honest placeholder label for each
+  missing field ("Đang cập nhật tiêu đề bài viết", etc.) rather than a
+  broken image or an invented headline. Each card is the whole `<a>`
+  when a URL exists (`target="_blank" rel="noopener noreferrer"`),
+  equal height via `height: 100%` on a `display: flex` card with the
+  "Đọc bài viết" link pinned to the bottom via `margin-top: auto`, and
+  keyboard-focusable with a visible `:focus-visible` outline.
+- Verified: image-to-border gap measures ~12px on all sides, exactly
+  one `.credibility-media-frame` with no duplicate outlines, both
+  press cards render with real hrefs, and the grid is 3/2/1 columns at
+  desktop/tablet/mobile with zero horizontal overflow at
+  1440/1280/1024/768/430/390px.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

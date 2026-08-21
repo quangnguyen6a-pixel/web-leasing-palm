@@ -600,32 +600,38 @@
   </section>
 
   <!-- =========================================================
-       CREDIBILITY / MEDIA COVERAGE
-       No eyebrow per the design brief — the heading below already
-       states the section's subject. Replaces the old news-card grid
-       with a single full-viewport-width image (escapes
-       .section-container via the calc(50% - 50vw) trick). The two
-       D12 article links are no longer rendered anywhere on the page —
-       kept as data only in window.savillsNews (js/config.js) in case
-       a future pass wants to surface them again.
+       CREDIBILITY / MEDIA — contained image frame + press article grid
+       No eyebrow, no oversized display heading — the previous
+       full-viewport-width image and the large "Uy tín được củng cố…"
+       text block were replaced with the standard .glass-media-frame
+       component (see css/sections.css) and a compact press-article
+       grid. Both stay inside .section-container so their left/right
+       edges align with every other section on the page.
        ========================================================= -->
-  <section class="credibility-section" id="truyen-thong" aria-labelledby="credibility-title">
-    <div class="credibility-heading section-container">
-      <h2 class="section-title" id="credibility-title"
-          data-lang-vi="Uy tín được củng cố qua những thông tin chính thống"
-          data-lang-en="Credibility reinforced through trusted sources">Uy tín được củng cố qua những thông tin chính thống</h2>
-      <p class="section-lead"
-         data-lang-vi="Cập nhật các thông tin chính thức về dự án và vai trò đồng hành của Savills Việt Nam từ Savills cùng các kênh báo chí, truyền thông uy tín."
-         data-lang-en="Official updates on the project and Savills Vietnam's role, published across Savills and trusted media channels.">
-        Cập nhật các thông tin chính thức về dự án và vai trò đồng hành của Savills Việt Nam từ Savills cùng các kênh báo chí, truyền thông uy tín.
-      </p>
-    </div>
+  <section class="credibility-section" id="truyen-thong">
+    <div class="section-container">
+      <!-- Populated by renderCredibilityMedia() in js/sections.js from
+           window.credibilityMedia (js/config.js) — renders a real
+           <picture> once desktop/mobile paths are supplied, a compact
+           placeholder note until then (no forced height, so no large
+           empty gap either way). -->
+      <figure class="glass-media-frame credibility-media-frame" data-depth-frame>
+        <div class="glass-media-inner" id="credibility-media"></div>
+      </figure>
 
-    <!-- Populated by renderCredibilityMedia() in js/sections.js from
-         window.credibilityMedia (js/config.js) — renders a <picture>
-         once desktop/mobile paths are supplied, a fixed-height
-         placeholder until then (no layout shift either way). -->
-    <figure class="credibility-fullscreen-media" id="credibility-media"></figure>
+      <!-- Populated by renderPressArticles() in js/sections.js from
+           window.pressArticles (js/config.js). Each card renders
+           editable placeholder copy for any field that isn't
+           confirmed yet, rather than inventing a headline/publisher/
+           image — see the data comment in js/config.js. -->
+      <section class="press-section" aria-labelledby="press-section-title">
+        <div class="press-section-header">
+          <h2 class="press-section-title" id="press-section-title"
+              data-lang-vi="Tin tức và truyền thông" data-lang-en="News and media">Tin tức và truyền thông</h2>
+        </div>
+        <div class="press-grid" id="press-grid"></div>
+      </section>
+    </div>
   </section>
 
   <!-- =========================================================

@@ -401,39 +401,42 @@ window.savillsAbout = {
 };
 
 /* -----------------------------------------------------
-   SAVILLS NEWS LINKS — Row 12 (D12)
-   Not rendered on the page — the credibility section (see
-   window.credibilityMedia below) was redesigned to a heading +
-   full-width image and no longer shows a news-card grid. Kept here
-   as the two confirmed source URLs from D12 in case a future pass
-   wants to surface them again.
+   PRESS ARTICLES — Row 12 (D12)
+   One shared, un-translated record per article (a real published
+   headline/publisher isn't re-translated for the EN toggle — only the
+   surrounding UI labels are). The two entries below are the only
+   confirmed source URLs from D12; title/excerpt/date/logo/image were
+   never supplied for either, so they stay empty and render as an
+   honest editable-placeholder label (see renderPressArticles() in
+   js/sections.js) rather than an invented headline or a broken image.
+   Fill in any field here and it appears on the card automatically.
    ----------------------------------------------------- */
-window.savillsNews = [
+window.pressArticles = [
   {
-    url: "https://vn.savills.com.vn/blog/article/238470/vietnam-viet/du-an-ven-song-sai-gon.aspx#palm-river",
     publisher: "Savills Việt Nam",
-    typeVi: "Thông cáo chính thức", typeEn: "Official announcement",
-    confirmed: false,
-    dateVi: null, dateEn: null,
-    titleVi: null, titleEn: null,
-    excerptVi: null, excerptEn: null
+    logo: "",
+    title: "",
+    excerpt: "",
+    date: "",
+    url: "https://vn.savills.com.vn/blog/article/238470/vietnam-viet/du-an-ven-song-sai-gon.aspx#palm-river",
+    image: ""
   },
   {
-    url: "https://www.facebook.com/SavillsVietnam/posts/savills-vi%E1%BB%87t-nam-%C4%91%C6%B0%E1%BB%A3c-b%E1%BB%95-nhi%E1%BB%87m-l%C3%A0m-%C4%91%E1%BB%91i-t%C3%A1c-chi%E1%BA%BFn-l%C6%B0%E1%BB%A3c-qu%E1%BB%91c-t%E1%BA%BF-c%E1%BB%A7a-palm-river-d%E1%BB%B1-/1558683272966044/",
     publisher: "Savills Việt Nam",
-    typeVi: "Thông cáo chính thức", typeEn: "Official announcement",
-    confirmed: false,
-    dateVi: null, dateEn: null,
-    titleVi: null, titleEn: null,
-    excerptVi: null, excerptEn: null
+    logo: "",
+    title: "",
+    excerpt: "",
+    date: "",
+    url: "https://www.facebook.com/SavillsVietnam/posts/savills-vi%E1%BB%87t-nam-%C4%91%C6%B0%E1%BB%A3c-b%E1%BB%95-nhi%E1%BB%87m-l%C3%A0m-%C4%91%E1%BB%91i-t%C3%A1c-chi%E1%BA%BFn-l%C6%B0%E1%BB%A3c-qu%E1%BB%91c-t%E1%BA%BF-c%E1%BB%A7a-palm-river-d%E1%BB%B1-/1558683272966044/",
+    image: ""
   }
 ];
 
 /* -----------------------------------------------------
-   CREDIBILITY SECTION — full-width media
+   CREDIBILITY SECTION — contained media frame
    No approved credibility/media-coverage photo exists yet (not part
    of any D-row in the source sheet) — both paths stay empty and the
-   section renders its fixed-height placeholder until real assets are
+   frame renders its compact placeholder note until real assets are
    supplied. Expected paths noted below; drop files at those paths and
    set desktop/mobile and the image appears automatically.
    ----------------------------------------------------- */
@@ -441,9 +444,7 @@ window.credibilityMedia = {
   desktop: "", // expected: assets/media/credibility-desktop.jpg
   mobile: "", // expected: assets/media/credibility-mobile.jpg
   alt: "Thông tin chính thức và truyền thông về dự án Palm River",
-  altEn: "Official information and media coverage on the Palm River project",
-  focalPointDesktop: "center",
-  focalPointMobile: "58% center"
+  altEn: "Official information and media coverage on the Palm River project"
 };
 
 /* -----------------------------------------------------
