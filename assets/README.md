@@ -2,9 +2,19 @@
 
 ```
 assets/
-├── palm-city-logo.png     # Palm City logo, as supplied (dark icon + wordmark, transparent background)
-├── savills-logo.png       # Savills logo, as supplied (yellow square tile)
-└── palm-city-hero.webp    # Hero perspective image, cropped to remove the marketing text/stat panel baked into the source file
+├── palm-city-logo.png              # Palm City logo, as supplied (dark icon + wordmark, transparent background)
+├── savills-logo.png                # Savills logo, as supplied (yellow square tile)
+├── palm-city-hero.webp             # Hero perspective image, cropped to remove the marketing text/stat panel baked into the source file
+├── palm-city-overview-riverside.jpg # Reused for both the Overview intro and the Project-details table media slot
+├── palm-city-location-map.webp     # Official location map (Location section only — see root README §6)
+├── floorplan-tower3-typical.jpg    # Typical-floor plan, Tower 3 (window.floorPlanTypical.image)
+├── floorplan-2pn-corner.jpg        # 2PN unit-type card, 84.9/75.8 m² (floorPlanTypes "2pn")
+├── floorplan-2pn.jpg               # 2PN unit-type card, 85.9/76.9 m² (downloaded, not currently wired — see root README asset-mapping report)
+├── floorplan-3pn.jpg               # 3PN unit-type card, 126.1/115.2 m² (floorPlanTypes "3pn")
+├── floorplan-3pn-corner.jpg        # 3PN corner-unit card, 125.3/115.3 m² (downloaded, unassigned — no matching floorPlanTypes id; see report)
+└── media/
+    ├── palm-river-savills-partnership-event.jpg  # pressArticles[1].image
+    └── savills-partner-certificate.png           # downloaded, unassigned alternate for the same article
 ```
 
 These are the raster files as supplied by the client (not SVGs). If a

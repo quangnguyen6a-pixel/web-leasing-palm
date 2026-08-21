@@ -1091,6 +1091,49 @@ unchanged, only gold strength, USP card sizing, and one dead placeholder.
 
 ---
 
+## 9m. Asset audit — "[Đã lọc] HÌNH ẢNH DỰ ÁN" Drive folder
+
+The user pointed at a Google Drive folder named "[Đã lọc] HÌNH ẢNH DỰ ÁN"
+(owner: the user's account, created same day). It contains three
+subfolders — `Toàn cảnh` (6 files), `2. LAYOUT CĂN HỘ` (root files +
+`2BR`/`3BR` subfolders), `Tiện ích` (22 files) — plus 4 files at its
+root. Every file was catalogued via Drive metadata/OCR; files under the
+Google Drive MCP tool's 10 MB download cap were fetched and written
+into the repo, the rest could only be assessed from filename + Drive's
+auto-generated OCR text/vision labels (no way to view their pixels
+within the current tool access — see "Not implemented" below).
+
+**Implemented (real files now in `assets/`, wired into `js/config.js`):**
+
+| Drive file | Saved as | Section | Reason | `object-fit` / position |
+|---|---|---|---|---|
+| `2. LAYOUT CĂN HỘ/…DI.jpg` (Tower 3 typical floor, EN labels) | `floorplan-tower3-typical.jpg` | `floorPlanTypical.image` | Only typical-floor drawing whose gold/navy styling matches the site; the alternate Vietnamese-labelled version in the same folder carries an unrelated green brand skin | `contain`, center |
+| `2. LAYOUT CĂN HỘ/2PN.jpg` (84.9/75.8 m²) | `floorplan-2pn-corner.jpg` | `floorPlanTypes[id="2pn"].image` | Area matches the "2pn" type's range (84.9–85.9 m²); OCR text confirms unit type + both area figures | `contain`, center |
+| `2. LAYOUT CĂN HỘ/3PN - 2.jpg` (126.1/115.2 m²) | `floorplan-3pn.jpg` | `floorPlanTypes[id="3pn"].image` | Exact area match to the "3pn" type (126.1 m²), confirmed by OCR | `contain`, center |
+| Root `Chứng nhận F1.png` + `Sự kiện kick-off.jpg` (same event: Savills named Palm River's international strategic partner) | `media/savills-partner-certificate.png` (unassigned alt) + `media/palm-river-savills-partnership-event.jpg` (used) | `pressArticles[1].image` | The event photo directly illustrates that article's own subject line; used over the static certificate close-up since it's a genuine editorial-style photo of people/event, not a product shot | `cover`, center |
+
+**Downloaded but not wired (no matching slot in the approved data model — left as extra assets rather than force-fit):**
+
+- `floorplan-2pn.jpg` (85.9/76.9 m², the standard, non-corner 2PN) — `floorPlanTypes` has one merged "2pn" entry covering both area figures as a range; only one image slot exists, and the corner variant above was chosen as the representative.
+- `floorplan-3pn-corner.jpg` (125.3/115.3 m²) — doesn't match either existing 3-bedroom entry (`3pn` = 126.1 m², `3pn-dac-biet` = 157.0 m²); it's a genuine third variant the current type list has no id for. Not forced into either slot since that would show a mismatched area figure.
+- `media/savills-partner-certificate.png` — a clean product photo of the same certificate shown in the event photo above; kept as an alternate in case the event photo is later judged too busy for a press thumbnail.
+- The combined-grid images (`mat-bang-can-ho-palm-river.png`, `MB CĂN HỘ.jpg`, showing all 6 unit types on one sheet) — not used for any single-type card slot, since cropping one type out would either misrepresent "the full original plan without cropping" or leave 5 unrelated plans visible in a card labelled for one type.
+
+**Still missing (left as empty placeholders, unchanged):** `floorPlanTypes` entries `studio` (41.3 m²), `1pn` (65.9 m²), `2pn-dac-biet` (120.2 m²) and `3pn-dac-biet` (157.0 m²) — no individual card for any of these four exists anywhere in the folder, only as small panels inside the Tower-3 typical-floor sheet or the combined grid, neither of which is a standalone plan for that type. `pressArticles[0].image` (the Savills blog article) — nothing in the folder is clearly that specific article's photo.
+
+**Not implemented — tool limitation, not a content decision:** the Drive `download_file_content` tool used to fetch files into this session enforces a hard 10 MB cap. Every photograph in `Toàn cảnh` (6 files, the project's overview/riverside renders — candidates for a fresh `overviewImage`/`projectDetailImage`) and all but 2 of the 22 files in `Tiện ích` (the Palm City amenity category photography) are 10–20 MB and could not be fetched by any available route (direct Drive download over-limit; direct HTTPS to drive.google.com blocked by this environment's egress policy; the OCR tool returns nothing for photos with no embedded text). For the subset that does carry an OCR'd Vietnamese caption, content is inferable and listed below for whoever completes this by hand; the rest are genuinely unclassifiable without opening them:
+
+  - Likely **riverside/promenade** (`amenities.palmCity.riversidePromenade`): files captioned "Dòng Sông Ôm Trọn Tuyệt Tác Đô Thị", "Cảnh Quan Ven Sông Điểm Giao Thoa Tinh Hoa", "Cung Đường Ven Sông" (Drive file IDs `14Y5U3lVd2OaGTZzBZluEagCVVfYCeKwm`, `1VB6W0xreN3_cZsaEaVjV2hD1lIbl0Xl_`, `1rD6_y-fP-dJN1fC4B-LaLnDbF8U2AKrE`).
+  - Likely **community park** (`amenities.palmCity.communityPark`): files captioned "Công Viên Bên Sông", "Thảm Cỏ Nghỉ Dưỡng Ven Sông", "Thảm Cỏ Nghỉ Dưỡng", "Lối Vào Điểm Chạm Thiên Nhiên" (`1MuHhOCR0kqQZfBzCyiMp_q_gRev4eNvt`, `1zRPFAWUqbmGH6pbjl9b4l8jzQKy9iw5W`, `1FeWtBTaM25v5zTxGTzH1rVmd_0psFIF4`, `1wrpttGh3IBiUYxky8cFWeofpg5qhawu_`).
+  - No caption or vision label pointed at **retail** or **sport/wellness** specifically — `4.jpg` (`1Eaj7UVWDECJjWQWFUl06Ltf82hK7dbuY`) is a full amenities-legend infographic (illegible at photo size, not a single-subject photo) rather than a category photo.
+  - 12 further `Tiện ích` files (IDs `1tDqidUX3-kK1lJPDp_J6XEg_-i7m6ebK`, `1cx1_-SwGIOpAVjqFDHqRQcYp0wDcWe7H`, `1InPv3U-LLD80ki1_sDNsZSqJkfUNNOh0`, `1_9SSXzTmdcD7ULmBI1KQaFkEWYazcwT6`, `1VWJmG2KcYVrC-kwftTazmtVaHcrHCon_`, `1ru2kCEY87Gtiqga2SvQjmx2-_g9TQxSt`, `1885rV7zwFpSNqwgI8M_6Y0em1ixfZ8Kw`, `1sphLigfLEh1PN8Wsdj4pZ7cqGr8uBDAY`, `1j4hZPPbs8c_jagrrx6F9U8O_u4nRyAds`, `18h9aYnj0lZnikB4UGf5QDG4eWZlG8Qp5`, `17VqQnpPCydjSvq5X5XZj0KE2pcoW8wSL`, `1VKhu-CWLgtRFn3QhWhEU26bYTMHIV96C`) have numeric-only filenames and no OCR text — genuinely unclassifiable without viewing them, so none were assigned. Per the brief's own rule ("if ambiguous, do not guess"), `amenityGroups.palmCity.*.images` all stay `[]`.
+  - `2BR`/`3BR` subfolders (11 files total) are apartment-interior renders (bedroom/bathroom/wardrobe/living-room), not floor-plan drawings and not currently amenity photos either — no slot exists for an "interior gallery" in the current data model, so none were added.
+  - Root `1.jpg` (11.2 MB) and `Toàn cảnh/3.jpg` (has OCR text: a full masterplan overview infographic with density/unit-count stats) were also over the cap.
+
+  **To finish this by hand:** open the folder, export/compress the files above under 10 MB (or paste them directly into a future session), and re-run the same categorisation — the slots (`amenityGroups.palmCity.*.images`, `overviewImage`/`projectDetailImage`) are already in place and just need paths.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

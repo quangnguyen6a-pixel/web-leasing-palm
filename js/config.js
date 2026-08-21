@@ -279,10 +279,12 @@ window.amenityTabs = [
    ----------------------------------------------------- */
 window.floorPlanTypical = {
   headingVi: "Mặt bằng tầng điển hình", headingEn: "Typical floor layout",
-  /* Empty by default — renders the "Thêm ảnh mặt bằng tại đây"
-     placeholder in .glass-media-frame until an approved typical-
-     floor drawing is supplied. Expected path noted in index.html. */
-  image: "",
+  /* Approved Tower 3 typical-floor drawing, from the "[Đã lọc] HÌNH
+     ẢNH DỰ ÁN" Drive folder → 2. LAYOUT CĂN HỘ. Matches the site's
+     navy/gold identity (unlike the alternate Vietnamese-labelled
+     version in the same folder, which carries a different green
+     brand skin) — see README for the asset-mapping report. */
+  image: "assets/floorplan-tower3-typical.jpg",
   points: [
     { titleVi: "Mật độ siêu riêng tư", titleEn: "Ultra-private density",
       textVi: "Chỉ 6 căn/tầng. Gần như 100% là căn góc (2 căn đơn lập tuyệt đối, 4 căn chỉ chung 1 vách tường).",
@@ -323,7 +325,10 @@ window.floorPlanTypes = [
   {
     id: "2pn", vi: "2PN", en: "2BR",
     areaVi: "84,9–85,9 m²", areaEn: "84.9–85.9 m²",
-    image: "", expectedAsset: "assets/floor-plans/2pn.jpg",
+    /* Corner variant (84.9 m² net / 75.8 m² gross) — the leading
+       figure in this type's area range; the site has no separate slot
+       for the 85.9 m² standard variant's own card (see README). */
+    image: "assets/floorplan-2pn-corner.jpg",
     benefits: [
       { vi: "Tầm nhìn đa diện: 100% là căn góc (gồm 2 căn góc bo tròn kính panorama và 1 căn góc chuẩn).", en: "Multi-angle views: 100% corner units (including 2 curved panorama-glass corner units and 1 standard corner unit)." },
       { vi: "Thiết kế vuông vức: Bố trí công năng thông minh, triệt tiêu hoàn toàn các góc chết.", en: "Squared-off design: A smart functional layout that eliminates all dead corners." },
@@ -343,7 +348,7 @@ window.floorPlanTypes = [
   {
     id: "3pn", vi: "3PN", en: "3BR",
     areaVi: "126,1 m²", areaEn: "126.1 m²",
-    image: "", expectedAsset: "assets/floor-plans/3pn.jpg",
+    image: "assets/floorplan-3pn.jpg",
     benefits: [
       { vi: "Master Suite đẳng cấp: Phòng ngủ chính sở hữu tầm nhìn góc rộng, đi kèm hệ thống phòng tắm lớn trang bị bồn tắm thư giãn.", en: "Premium master suite: The master bedroom enjoys a wide corner view, with a large en-suite bathroom fitted with a relaxation bathtub." },
       { vi: "Bếp kín chuyên biệt: Tách biệt hoàn toàn khu vực nấu nướng, ngăn ám mùi hiệu quả – thiết kế “đo ni đóng giày” cho gia đình Việt.", en: "Dedicated enclosed kitchen: A fully separated cooking area for effective odour control — tailor-made for Vietnamese families." },
@@ -428,7 +433,11 @@ window.pressArticles = [
     excerpt: "",
     date: "",
     url: "https://www.facebook.com/SavillsVietnam/posts/savills-vi%E1%BB%87t-nam-%C4%91%C6%B0%E1%BB%A3c-b%E1%BB%95-nhi%E1%BB%87m-l%C3%A0m-%C4%91%E1%BB%91i-t%C3%A1c-chi%E1%BA%BFn-l%C6%B0%E1%BB%A3c-qu%E1%BB%91c-t%E1%BA%BF-c%E1%BB%A7a-palm-river-d%E1%BB%B1-/1558683272966044/",
-    image: ""
+    /* Matches this article's own subject (Savills appointed
+       international strategic partner for Palm River) — a real photo
+       of the on-stage certificate handover, from the "[Đã lọc] HÌNH
+       ẢNH DỰ ÁN" Drive folder root. See README asset-mapping report. */
+    image: "assets/media/palm-river-savills-partnership-event.jpg"
   }
 ];
 
