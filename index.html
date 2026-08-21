@@ -600,25 +600,18 @@
   </section>
 
   <!-- =========================================================
-       CREDIBILITY / MEDIA — contained image frame + press article grid
+       CREDIBILITY / MEDIA — press article grid
        No eyebrow, no oversized display heading — the previous
        full-viewport-width image and the large "Uy tín được củng cố…"
-       text block were replaced with the standard .glass-media-frame
-       component (see css/sections.css) and a compact press-article
-       grid. Both stay inside .section-container so their left/right
-       edges align with every other section on the page.
+       text block were replaced with a compact press-article grid; the
+       placeholder media frame that used to sit above the heading (no
+       approved image was ever available for it) has been removed
+       outright rather than replaced with another placeholder — see
+       README §9l. Section stays inside .section-container so its
+       left/right edges align with every other section on the page.
        ========================================================= -->
   <section class="credibility-section" id="truyen-thong">
     <div class="section-container">
-      <!-- Populated by renderCredibilityMedia() in js/sections.js from
-           window.credibilityMedia (js/config.js) — renders a real
-           <picture> once desktop/mobile paths are supplied, a compact
-           placeholder note until then (no forced height, so no large
-           empty gap either way). -->
-      <figure class="glass-media-frame credibility-media-frame" data-depth-frame>
-        <div class="glass-media-inner" id="credibility-media"></div>
-      </figure>
-
       <!-- Populated by renderPressArticles() in js/sections.js from
            window.pressArticles (js/config.js). Each card renders
            editable placeholder copy for any field that isn't

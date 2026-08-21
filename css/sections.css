@@ -40,7 +40,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--gold-champagne);
+  color: var(--gold-bright);
   margin-bottom: 14px;
 }
 .section-tag::before {
@@ -51,7 +51,18 @@
   transform: translateY(-50%);
   width: 20px;
   height: 2px;
-  background: var(--gold-champagne);
+  background: var(--gold-bright);
+}
+/* Light-section instances (Location/Floor plans/Progress/Residential)
+   need the darker end of the scale — pale champagne fails contrast on
+   the warm-ivory background used there. */
+.location .section-tag, .floorplans .section-tag,
+.progress-section .section-tag, .residential .section-tag {
+  color: var(--gold-deep);
+}
+.location .section-tag::before, .floorplans .section-tag::before,
+.progress-section .section-tag::before, .residential .section-tag::before {
+  background: var(--gold-deep);
 }
 .section-title {
   font-family: var(--font-heading-alt);
@@ -69,18 +80,26 @@
   max-width: 60ch;
 }
 
-/* Colour rhythm: alternating deep-navy / warm-ivory sections */
-.details, .amenities, .policy, .savills-section, .final-form {
-  background: var(--color-navy-secondary);
+/* Colour rhythm: alternating deep-navy / warm-ivory sections. Each
+   tone is a soft two-point radial wash (gold catch-light, faint ivory
+   glow) over a diagonal base so neither reads as one flat fill. */
+.details, .amenities, .policy, .savills-section, .final-form, .credibility-section {
+  background:
+    radial-gradient(circle at 82% 16%, rgba(196, 147, 56, 0.16), transparent 32%),
+    radial-gradient(circle at 8% 78%, rgba(243, 226, 179, 0.08), transparent 30%),
+    linear-gradient(135deg, #001428 0%, #002b49 48%, #001c3d 100%);
   color: var(--color-white);
 }
 .location, .floorplans, .progress-section, .residential {
-  background: var(--color-ivory);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(228, 198, 117, 0.28), transparent 30%),
+    radial-gradient(circle at 88% 78%, rgba(196, 147, 56, 0.14), transparent 34%),
+    linear-gradient(135deg, #fbf7ed 0%, #efe2c5 48%, #f8f2e6 100%);
   color: var(--color-navy-primary);
 }
 .location .section-lead, .floorplans .section-lead,
 .progress-section .section-lead, .residential .section-lead {
-  color: rgba(0, 28, 61, 0.72);
+  color: #17324d;
 }
 
 .details, .location, .amenities, .floorplans, .policy,
@@ -106,6 +125,29 @@
   border: 1px solid rgba(0, 28, 61, 0.12);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+}
+
+/* Premium glass — the full metallic-bordered treatment, reserved for
+   major conversion surfaces (registration popup, final-form panel).
+   Smaller cards (image frames, press cards, USP cards) keep the
+   simpler flat champagne border above/below instead. */
+.premium-glass {
+  color: var(--warm-ivory);
+  border: 1px solid transparent;
+  background:
+    linear-gradient(145deg, rgba(0, 28, 61, 0.94), rgba(10, 53, 84, 0.8)) padding-box,
+    var(--gold-metallic) border-box;
+  box-shadow: 0 22px 55px rgba(0, 12, 30, 0.3), inset 0 1px 0 rgba(255, 243, 206, 0.2);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+.premium-glass-light {
+  color: var(--savills-navy);
+  border: 1px solid transparent;
+  background:
+    linear-gradient(145deg, rgba(251, 247, 237, 0.94), rgba(239, 226, 197, 0.76)) padding-box,
+    var(--gold-metallic) border-box;
+  box-shadow: 0 20px 48px rgba(111, 73, 20, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .btn--block { width: 100%; }
@@ -1107,7 +1149,7 @@
 }
 .policy__step.is-active .policy__step-index,
 .policy__step.is-active .policy__step-label {
-  color: var(--gold-champagne);
+  color: var(--gold-bright);
   opacity: 1;
 }
 .policy__panels {
@@ -1256,49 +1298,18 @@
   color: rgba(248, 242, 230, 0.7);
 }
 /* =========================================================
-   CREDIBILITY / MEDIA — contained image frame + press article grid
+   CREDIBILITY / MEDIA — press article grid
+   The media-coverage placeholder frame that used to sit above
+   .press-section (no approved image was ever supplied for it) has
+   been removed outright — see README §9l. .press-section is now the
+   section's first child, so the section's own top padding
+   (--section-space-desktop/tablet/mobile, already 72px+ at every
+   breakpoint) is the only spacing above the heading; no extra
+   margin-top is stacked on top of it.
    ========================================================= */
 .credibility-section {
   padding: var(--section-space-desktop) 0;
-  background: var(--color-navy-secondary);
-  color: var(--color-white);
-}
-
-/* Tighter instance of the shared .glass-media-frame/.glass-media-inner
-   component (see their definition above) — smaller padding so the
-   image sits close to its border, and no forced aspect-ratio so the
-   frame hugs whatever the real image's own proportions turn out to
-   be instead of leaving letterboxed empty space around it. */
-.credibility-media-frame {
-  padding: clamp(8px, 0.8vw, 12px);
-  border-radius: 26px;
-}
-.credibility-media-frame .glass-media-inner {
-  aspect-ratio: auto;
-  background: transparent;
-}
-.credibility-media-frame .glass-media-inner picture,
-.credibility-media-frame .glass-media-inner img {
-  display: block;
-  width: 100%;
-  height: auto;
-  margin: 0;
-}
-.credibility-media-frame .glass-media-inner img {
-  object-fit: cover;
-}
-.credibility-media-placeholder {
-  padding: 64px 24px;
-  text-align: center;
-}
-.credibility-media-placeholder p {
-  font-family: var(--font-body-alt);
-  font-size: 14px;
-  color: rgba(248, 242, 230, 0.5);
-}
-
-.press-section {
-  margin-top: clamp(48px, 5vw, 64px);
+  overflow-x: hidden;
 }
 .press-section-header {
   margin-bottom: 28px;
@@ -1406,7 +1417,7 @@
   font-family: var(--font-body-alt);
   font-size: 13px;
   font-weight: 700;
-  color: var(--gold-champagne);
+  color: var(--gold-bright);
 }
 .press-card__link-icon {
   width: 14px;
@@ -1530,10 +1541,13 @@
 .final-form__panel {
   padding: 40px;
   border-radius: 4px;
-  background: rgba(248, 242, 230, 0.055);
-  border: 1px solid rgba(248, 242, 230, 0.12);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid transparent;
+  background:
+    linear-gradient(145deg, rgba(0, 28, 61, 0.94), rgba(10, 53, 84, 0.8)) padding-box,
+    var(--gold-metallic) border-box;
+  box-shadow: 0 22px 55px rgba(0, 12, 30, 0.3), inset 0 1px 0 rgba(255, 243, 206, 0.2);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
 }
 .final-form__title {
   font-family: var(--font-heading-alt);

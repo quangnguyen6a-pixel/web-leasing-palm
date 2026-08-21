@@ -1010,6 +1010,87 @@ borders, glass surfaces, shadows, and colour-bearing animations changed.
 
 ---
 
+## 9l. Metallic-gold refinement, compact USP cards, placeholder removal
+
+Three targeted follow-ups on top of §9k — layout and approved content
+unchanged, only gold strength, USP card sizing, and one dead placeholder.
+
+- **Stronger metallic gradient**: the gold scale in `css/styles.css`
+  `:root` was replaced with a six-stop scale — `--gold-shadow` (dark
+  bronze) → `--gold-deep` → `--gold-mid` → `--gold-bright` →
+  `--gold-champagne` → `--gold-specular` (narrow highlight) — and
+  `--gold-metallic` now visibly steps through bronze/mid/champagne/
+  specular instead of the previous three soft stops. `--gold-antique`/
+  `--gold-main`/`--gold-highlight` stay as aliases so no call site
+  needed touching. The hero "Palm River" gradient and its water/bling
+  layers were re-tinted to the new stops for the same reason.
+- **Gold readability**: small gold labels now use the correct end of
+  the scale for their background — `--gold-bright` on navy (nav/tab
+  active state, eyebrows, hero label, project-overview eyebrow, press
+  link, policy stepper) and `--gold-deep` on warm-ivory (`.section-tag`
+  gets a light-section override, since it's shared between both tones
+  and pale champagne failed contrast on ivory). Light-section body
+  copy (`.section-lead`) is now `#17324d` instead of a low-opacity
+  navy tint, matching the requested value exactly.
+- **Section backgrounds**: the flat `--color-navy-secondary`/
+  `--color-ivory` fills on `.details/.amenities/.policy/.savills-section/
+  .final-form/.credibility-section` (dark) and `.location/.floorplans/
+  .progress-section/.residential` (light) are now each a two-point
+  radial gold/ivory wash over a diagonal base, so neither tone reads
+  as one flat colour.
+- **Premium glass on major surfaces only**: added `.premium-glass`/
+  `.premium-glass-light` utilities (the metallic `border-box` gradient
+  border technique) next to `.glass-panel`, and applied the same
+  technique directly to the two surfaces that count as "major" —
+  `.popup__dialog` and `.final-form__panel`. Smaller cards
+  (`.glass-media-frame`, `.press-card`, `.usp-card`) keep their
+  existing flat champagne border, per "smaller cards should use a
+  simpler champagne border."
+- **Restrained metallic sweep**: added the shared `metallicSweep`
+  keyframe and `.metallic-animated` utility. The USP number shine now
+  uses it (renamed from the old `value-shine` keyframe, same ~1.15s
+  pass/long-hold rhythm, still staggered per card via `--shine-delay`
+  in `index.html`), and its glint-dot `::after` pseudo-element —
+  which sat between the number and its unit — was removed outright,
+  not replaced. `.usp-number`'s base (non-counting) state now also
+  renders the static metallic gradient rather than a flat solid, so
+  the number reads as gold from the first paint; `.usp-unit` stays a
+  flat `--gold-champagne` colour and is never animated.
+- **Compact USP cards**: `.usp-card` switched from fixed-height rows
+  (`56px 112px 48px`) to `minmax(...)` rows with `align-content: center`
+  and a `min-height: clamp(250px, 20vw, 300px)` on the card itself, so
+  height now tracks content instead of reserving near-empty bands —
+  desktop cards measure ~250–300px instead of the previous ~340px+.
+  `.usp-label`/`.usp-description` got explicit `min-height` instead of
+  row-height alignment, so every card's number row still shares one
+  baseline. Tablet (768–1023px) and mobile (≤767px) breakpoints got
+  matching `minmax()` rows and reduced `min-height` (240px / 220px);
+  the tablet 5th-card centring rule was kept (there are always exactly
+  five cards) but rewritten to size itself off the grid gap rather
+  than a fixed `max-width: 50%`.
+- **Media placeholder removed**: the `<figure class="glass-media-frame
+  credibility-media-frame">` block above "Tin tức và truyền thông" —
+  which only ever rendered "Thêm ảnh truyền thông tại đây" because no
+  approved media-coverage photo exists — is gone from `index.html`,
+  along with `renderCredibilityMedia()` and its call site in
+  `js/sections.js`, `window.credibilityMedia` in `js/config.js`, and
+  `.credibility-media-frame`/`.credibility-media-placeholder` in
+  `css/sections.css`. It was not replaced with another placeholder.
+  `.press-section`'s compensating `margin-top` (previously stacked on
+  top of the frame above it) was removed too, so the heading now sits
+  directly under `.credibility-section`'s own section padding with no
+  doubled or empty gap.
+- Verified at 1440/1280/1024/768/430/390px: gold gradient shows
+  bronze→mid→champagne→specular steps rather than one flat tone, both
+  section backgrounds read as a soft wash rather than flat fill, USP
+  cards measure ~250–300px tall on desktop with three equal cards in
+  row one and two centred cards in row two, no shimmer dot sits
+  between any number and its unit, Savills Yellow stays exclusive to
+  conversion CTAs, and "Tin tức và truyền thông" now appears with no
+  empty navy gap above it.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

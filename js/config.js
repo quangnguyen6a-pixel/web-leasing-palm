@@ -433,21 +433,6 @@ window.pressArticles = [
 ];
 
 /* -----------------------------------------------------
-   CREDIBILITY SECTION — contained media frame
-   No approved credibility/media-coverage photo exists yet (not part
-   of any D-row in the source sheet) — both paths stay empty and the
-   frame renders its compact placeholder note until real assets are
-   supplied. Expected paths noted below; drop files at those paths and
-   set desktop/mobile and the image appears automatically.
-   ----------------------------------------------------- */
-window.credibilityMedia = {
-  desktop: "", // expected: assets/media/credibility-desktop.jpg
-  mobile: "", // expected: assets/media/credibility-mobile.jpg
-  alt: "Thông tin chính thức và truyền thông về dự án Palm River",
-  altEn: "Official information and media coverage on the Palm River project"
-};
-
-/* -----------------------------------------------------
    FINAL FORM / POPUP — Row 14 "Form đăng ký" (D14)
    Shared field + option data so the final-page form and the
    registration popup stay identical. The D14 image

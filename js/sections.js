@@ -732,44 +732,6 @@
   }
 
   /* -----------------------------------------------------
-     7. CREDIBILITY MEDIA IMAGE (§10)
-     Renders a real <picture> into the shared .glass-media-inner once
-     window.credibilityMedia.desktop is supplied; until then, a
-     compact placeholder note — no forced height either way, so the
-     frame never leaves a large empty gap around whatever it holds.
-     ----------------------------------------------------- */
-  function renderCredibilityMedia(lang) {
-    var host = document.getElementById("credibility-media");
-    if (!host || !window.credibilityMedia) return;
-    var data = window.credibilityMedia;
-    host.innerHTML = "";
-
-    if (!data.desktop) {
-      var placeholder = document.createElement("div");
-      placeholder.className = "credibility-media-placeholder";
-      var note = document.createElement("p");
-      note.textContent = lang === "en" ? "Add media coverage image here" : "Thêm ảnh truyền thông tại đây";
-      placeholder.appendChild(note);
-      host.appendChild(placeholder);
-      return;
-    }
-
-    var picture = document.createElement("picture");
-    if (data.mobile) {
-      var source = document.createElement("source");
-      source.media = "(max-width: 767px)";
-      source.srcset = data.mobile;
-      picture.appendChild(source);
-    }
-    var img = document.createElement("img");
-    img.src = data.desktop;
-    img.alt = lang === "en" ? (data.altEn || data.alt) : data.alt;
-    img.loading = "lazy";
-    picture.appendChild(img);
-    host.appendChild(picture);
-  }
-
-  /* -----------------------------------------------------
      7b. PRESS ARTICLE GRID (§10)
      Data-driven, shared by VI/EN — window.pressArticles (js/config.js)
      holds one un-translated record per article (a real published
@@ -1009,7 +971,6 @@
     renderAmenitySection(lang);
     renderFloorplans(lang);
     renderProgress(lang);
-    renderCredibilityMedia(lang);
     renderPressArticles(lang);
   }
 
