@@ -82,24 +82,50 @@ manager.
 
 ## 3. Design tokens
 
-Defined as CSS custom properties in `css/styles.css` (`:root`):
+Defined as CSS custom properties in `css/styles.css` (`:root`) — the
+Champagne Gold × Savills Navy colour system (see §9k for the full pass):
 
 ```css
---color-navy-primary: #001c3d;
---color-navy-secondary: #002b49;
---color-savills-yellow: #ffdf00;
---color-white: #ffffff;
---color-neutral-light: #f4f4f4;
---color-text: #262626;
---color-overlay: rgba(0, 28, 61, 0.48);
+--savills-navy: #001c3d;
+--navy-secondary: #002b49;
+--navy-elevated: #0a3554;
+
+--gold-deep: #8a651b;
+--gold-antique: #b98a2e;
+--gold-main: #c79b42;
+--gold-champagne: #e7d29a;
+--gold-highlight: #f3e6c6;
+
+--warm-ivory: #f8f2e6;
+--warm-muted: #d9d0c2;
+
+--savills-yellow: #ffdf00;
+--savills-yellow-hover: #ffe63b;
+--savills-yellow-active: #e6c900;
+--savills-red: #cd171e;
+
+--gold-metallic: linear-gradient(105deg, #8a651b 0%, #c79b42 24%, #f3e6c6 48%, #d6b566 66%, #9a6b1f 100%);
+--gold-soft: linear-gradient(135deg, rgba(243, 230, 198, 0.18) 0%, rgba(199, 155, 66, 0.09) 46%, rgba(138, 101, 27, 0.06) 100%);
 
 --font-heading: "Playfair Display", Georgia, serif;
 --font-body: "Gotham", "SVN-Gotham", Arial, sans-serif;
 ```
 
-**Yellow usage rule:** Savills yellow is reserved for active menu state,
-hover/focus state, small accents, and the register-interest button. It
-must never be used as a large background fill.
+The pre-existing token names (`--color-navy-primary`, `--color-savills-yellow`,
+`--color-white`, etc.) are kept as aliases onto the tokens above, so every
+rule written against the old names still resolves correctly — no
+site-wide renaming was needed.
+
+**Yellow usage rule:** Solid Savills Yellow (`--savills-yellow`) is
+reserved exclusively for primary conversion CTAs (register/request-info/
+pricing/contact/brochure buttons, the popup's submit button) and the
+approved square icon backgrounds in the Savills benefit cards. Every
+other "gold" moment on the site — active nav/tabs, eyebrow labels,
+focus rings, USP numbers, map marker, carousel controls, secondary
+buttons, link arrows — uses Champagne Gold (`--gold-champagne` /
+`--gold-main` / `--gold-metallic`) instead. The two are visually close
+but never interchangeable: yellow always means "you can act on this
+now."
 
 **Fonts:** the prototype loads Playfair Display from Google Fonts for
 convenience. Gotham/SVN-Gotham is a licensed font and is **not** loaded
@@ -893,6 +919,94 @@ inside the same `.section-container` as every other section.
   press cards render with real hrefs, and the grid is 3/2/1 columns at
   desktop/tablet/mobile with zero horizontal overflow at
   1440/1280/1024/768/430/390px.
+
+---
+
+## 9k. Colour-system overhaul — Champagne Gold × Savills Navy
+
+Full site-wide colour pass, replacing the cold cyan-and-white glass
+treatment with the Champagne Gold × Savills Navy palette in §3. Layout,
+content, and interactions are untouched — only colour tokens, gradients,
+borders, glass surfaces, shadows, and colour-bearing animations changed.
+
+- **Tokens**: the full palette in §3 added to `css/styles.css` `:root`,
+  with every pre-existing token name aliased onto it. `css/sections.css`'s
+  legacy `--color-water-blue`/`--color-pale-blue` tokens were unused
+  dead code and were removed outright rather than aliased; `--color-ivory`
+  is now `var(--warm-ivory)`.
+- **CTA rule enforced in code, not just intent**: several buttons that
+  open the registration popup (`.btn--register`, `.btn--cta-primary`,
+  `.btn--policy-cta`, `.btn--floorplan-cta`, `.btn--residential-cta`)
+  were previously navy/transparent *at rest* and only turned yellow on
+  `:hover` — the opposite of "yellow marks a genuine conversion action."
+  All five are now solid Savills Yellow at rest, `--savills-yellow-hover`
+  on hover, `--savills-yellow-active` on `:active`, matching the given
+  `.cta-primary` recipe. `.btn--submit`'s hover state (previously
+  navy-bg/white-text) now stays in the yellow family for the same
+  reason. Also swapped which mid-page CTA got which class in
+  `index.html`: "Nhận thông tin" (opens the popup) is now
+  `.btn--cta-primary` (yellow); "Xem chi tiết dự án" (scroll-to-anchor)
+  is now `.btn--cta-secondary` (navy glass) — they were backwards.
+- **Decorative gold vs. functional yellow**: every non-CTA use of
+  `var(--color-savills-yellow)` — active nav/tab underline, eyebrow
+  labels, focus rings, the USP "+" glyph, the map marker/pulse, carousel
+  arrows/dots, `.section-tag`, the policy stepper, link arrows — now
+  points at `var(--gold-champagne)`. The three intentional exceptions
+  (checked against `index.html`/`js/sections.js` usage) are `.benefit-icon`
+  (Savills approved icon squares), `.floating-contacts__btn--register`,
+  and `.mobile-contact-bar__btn--primary` — all genuine conversion
+  controls, left solid yellow.
+- **Hero headline**: the "Palm River" word's three-layer water-shimmer
+  effect (base gradient, moving water texture, bling sweep, sparkle)
+  was cyan/white; all colour stops now sit inside the gold family
+  (base gradient `#f3e6c6→#e7d29a→#c79b42`, texture/sweep tinted with
+  `rgba(199,155,66,…)`/`rgba(243,230,198,…)`), capped at
+  `--gold-highlight` rather than pure white — the same ceiling the
+  spec's own `.animated-gold` reference uses. `.hero__supporting`/
+  `.hero__density` (the two lines below the headline) stay warm-ivory,
+  not gold — only the "Palm River" word itself is gold, per the
+  "don't turn the entire headline gold" rule.
+- **USP numbers**: `.usp-number.is-counted`'s shine was a raw
+  `#ffdf00`/`#ffffff` gradient; now `background-image: var(--gold-metallic)`.
+  The glint dot switched from `#fffef2`/yellow to
+  `--gold-highlight`/`--gold-main`.
+- **Glass surfaces**: `.glass-media-frame` (Overview/Details/Amenities/
+  Floorplans/Credibility image frames) and `.press-card` had a cyan
+  border (`rgba(191,232,247,…)`) — now champagne
+  (`rgba(231,210,154,…)`); their cyan-tinted background fill
+  (`rgba(105,213,245,…)`) is now gold-tinted (`rgba(199,155,66,…)`).
+  The unused `.glass-panel` utility was rewritten to match the spec's
+  exact recipe (gradient background, champagne border, warm inset
+  highlight) so it's ready if a future component adopts it.
+- **Registration popup** (`.popup__dialog`): was a light ivory dialog
+  with navy text: now navy/warm-glass per the modal rule — ivory title/
+  labels/close icon, muted-ivory paragraph, champagne-bordered inputs
+  with a champagne focus ring, submit button unchanged (solid yellow,
+  hover/active now yellow-family instead of switching to navy/white).
+  The page-embedded `.final-form` (already navy) got the same
+  champagne field-border treatment for consistency between the two
+  forms.
+- **Blanket sweep**: every literal `rgba(255, 255, 255, …)` decorative/
+  text colour in both stylesheets became `rgba(248, 242, 230, …)`
+  (warm ivory), and every `rgba(105, 213, 245, …)` cyan glass fill
+  became `rgba(199, 155, 66, …)` (gold). Remaining raw-yellow
+  `rgba(255, 223, 0, …)` decorative glows (hero spotlight/ripple,
+  section-water-divider streak, policy stepper highlight — none of
+  them CTAs) were converted to `rgba(199, 155, 66, …)` so decorative
+  gold never visually competes with an actual yellow CTA.
+- **Not changed**: the Savills and Palm City logo image assets (no
+  CSS filter was ever applied to them, so there was nothing to
+  remove); `#ff6b6b`/`#ff9d9d` form-validation error colours
+  (unrelated to the cyan/gold system); the neutral `#262626`/`#f4f4f4`
+  base text/placeholder tokens.
+- Verified at 1440/1280/1024/768/430/390px: hero headline reads gold
+  not cyan, every real conversion CTA (register, mid-page "Nhận thông
+  tin", floor-plan/policy/residential registration buttons, popup
+  submit, floating contact button) is solid yellow at rest with no
+  white text on yellow anywhere, USP numbers show the metallic gold
+  shine, benefit-icon squares are untouched, tabs/carousel/dots read
+  as champagne rather than yellow, and no cyan remains anywhere in
+  either stylesheet.
 
 ---
 
