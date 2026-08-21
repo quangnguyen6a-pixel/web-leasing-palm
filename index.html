@@ -154,7 +154,8 @@
     </div>
 
     <div class="hero__content">
-      <p class="hero__eyebrow hero__enter hero__enter--eyebrow">PALM RIVER</p>
+      <p class="hero__eyebrow hero__enter hero__enter--eyebrow"
+         data-lang-vi="ĐÔ THỊ NGHỈ DƯỠNG VEN SÔNG" data-lang-en="RIVERSIDE RESORT-STYLE LIVING">ĐÔ THỊ NGHỈ DƯỠNG VEN SÔNG</p>
 
       <!-- Content source: Section outline chuẩn, row 2 (D2). Primary
            heading = project name; secondary heading = positioning
@@ -239,62 +240,56 @@
 
       <!-- Content source: row 3 (D3) — 5 approved USP points, laid out
            on a 6-column balanced grid: row 1 three cards (2 columns
-           each), row 2 two cards centred (columns 2–3 and 4–5). See
-           .usp-grid / .usp-card in css/styles.css. -->
+           each), row 2 two cards centred (columns 2–3 and 4–5). Each
+           card is exactly label / number+unit / description, all on
+           a shared 3-row grid so every number sits on one baseline
+           regardless of how many lines its own label/description
+           wrap to. See .usp-grid / .usp-card in css/styles.css. -->
       <div class="usp-grid">
         <div class="usp-card" data-reveal style="--reveal-delay: 60ms; --shine-delay: 0ms">
-          <span class="usp-card__accent" aria-hidden="true"></span>
-          <p class="usp-card__label" data-lang-vi="Chỗ đậu xe định danh" data-lang-en="Dedicated parking">Chỗ đậu xe định danh</p>
-          <p class="usp-card__prefix" data-lang-vi="Ít nhất" data-lang-en="At least">Ít nhất</p>
-          <div class="usp-card__number-row">
-            <span class="usp-card__number" data-value="1" data-decimals="0">1</span>
-            <span class="usp-card__unit" data-lang-vi="chỗ/căn" data-lang-en="space/unit">chỗ/căn</span>
+          <h3 class="usp-label" data-lang-vi="Chỗ đậu xe định danh" data-lang-en="Dedicated parking">Chỗ đậu xe định danh</h3>
+          <div class="usp-value-row">
+            <span class="usp-number" data-value="1" data-decimals="0">1</span>
+            <span class="usp-unit" data-lang-vi="chỗ/căn" data-lang-en="space/unit">chỗ/căn</span>
           </div>
-          <p class="usp-card__description" data-lang-vi="Chỗ đậu ô tô định danh" data-lang-en="Dedicated car parking space">Chỗ đậu ô tô định danh</p>
+          <p class="usp-description" data-lang-vi="Tối thiểu cho mỗi căn hộ" data-lang-en="Minimum per unit">Tối thiểu cho mỗi căn hộ</p>
         </div>
 
         <div class="usp-card" data-reveal style="--reveal-delay: 100ms; --shine-delay: 150ms">
-          <span class="usp-card__accent" aria-hidden="true"></span>
-          <p class="usp-card__label" data-lang-vi="Mặt tiền sông" data-lang-en="River frontage">Mặt tiền sông</p>
-          <p class="usp-card__prefix" data-lang-vi="" data-lang-en=""></p>
-          <div class="usp-card__number-row">
-            <span class="usp-card__number" data-value="2.7" data-decimals="1">2,7</span>
-            <span class="usp-card__unit" data-lang-vi="km" data-lang-en="km">km</span>
+          <h3 class="usp-label" data-lang-vi="Mặt tiền sông" data-lang-en="River frontage">Mặt tiền sông</h3>
+          <div class="usp-value-row">
+            <span class="usp-number" data-value="2.7" data-decimals="1">2,7</span>
+            <span class="usp-unit" data-lang-vi="km" data-lang-en="km">km</span>
           </div>
-          <p class="usp-card__description" data-lang-vi="Mặt tiền sông Giồng Ông Tố" data-lang-en="Giong Ong To riverfront">Mặt tiền sông Giồng Ông Tố</p>
+          <p class="usp-description" data-lang-vi="Dọc sông Giồng Ông Tố" data-lang-en="Along the Giong Ong To river">Dọc sông Giồng Ông Tố</p>
         </div>
 
         <div class="usp-card" data-reveal style="--reveal-delay: 140ms; --shine-delay: 300ms">
-          <span class="usp-card__accent" aria-hidden="true"></span>
-          <p class="usp-card__label" data-lang-vi="Tiện ích nội khu" data-lang-en="In-residence amenities">Tiện ích nội khu</p>
-          <p class="usp-card__prefix" data-lang-vi="" data-lang-en=""></p>
-          <div class="usp-card__number-row">
-            <span class="usp-card__number" data-value="168" data-decimals="0">168</span>
-            <span class="usp-card__unit" data-lang-vi="+" data-lang-en="+">+</span>
+          <h3 class="usp-label" data-lang-vi="Hệ tiện ích" data-lang-en="Amenity system">Hệ tiện ích</h3>
+          <div class="usp-value-row">
+            <span class="usp-number" data-value="168" data-decimals="0">168</span>
+            <span class="usp-plus" aria-hidden="true">+</span>
+            <span class="usp-unit" data-lang-vi="tiện ích" data-lang-en="amenities">tiện ích</span>
           </div>
-          <p class="usp-card__description" data-lang-vi="Tiện ích nội khu Palm City" data-lang-en="In-residence amenities at Palm City">Tiện ích nội khu Palm City</p>
+          <p class="usp-description" data-lang-vi="Tại Palm City và Palm River" data-lang-en="Across Palm City and Palm River">Tại Palm City và Palm River</p>
         </div>
 
         <div class="usp-card" data-reveal style="--reveal-delay: 180ms; --shine-delay: 450ms">
-          <span class="usp-card__accent" aria-hidden="true"></span>
-          <p class="usp-card__label" data-lang-vi="Giá tham khảo" data-lang-en="Indicative price">Giá tham khảo</p>
-          <p class="usp-card__prefix" data-lang-vi="Từ" data-lang-en="From">Từ</p>
-          <div class="usp-card__number-row">
-            <span class="usp-card__number" data-value="168" data-decimals="0">168</span>
-            <span class="usp-card__unit" data-lang-vi="triệu/m²" data-lang-en="VND mil./m²">triệu/m²</span>
+          <h3 class="usp-label" data-lang-vi="Giá tham khảo" data-lang-en="Indicative price">Giá tham khảo</h3>
+          <div class="usp-value-row">
+            <span class="usp-number" data-value="168" data-decimals="0">168</span>
+            <span class="usp-unit" data-lang-vi="triệu/m²" data-lang-en="VND mil./m²">triệu/m²</span>
           </div>
-          <p class="usp-card__description" data-lang-vi="Theo diện tích thông thủy" data-lang-en="Based on carpet area">Theo diện tích thông thủy</p>
+          <p class="usp-description" data-lang-vi="Theo diện tích thông thủy" data-lang-en="Based on carpet area">Theo diện tích thông thủy</p>
         </div>
 
         <div class="usp-card" data-reveal style="--reveal-delay: 220ms; --shine-delay: 600ms">
-          <span class="usp-card__accent" aria-hidden="true"></span>
-          <p class="usp-card__label" data-lang-vi="Pháp lý dự án" data-lang-en="Project legal status">Pháp lý dự án</p>
-          <p class="usp-card__prefix" data-lang-vi="" data-lang-en=""></p>
-          <div class="usp-card__number-row">
-            <span class="usp-card__number" data-value="100" data-decimals="0">100</span>
-            <span class="usp-card__unit" data-lang-vi="%" data-lang-en="%">%</span>
+          <h3 class="usp-label" data-lang-vi="Pháp lý dự án" data-lang-en="Project legal status">Pháp lý dự án</h3>
+          <div class="usp-value-row">
+            <span class="usp-number" data-value="100" data-decimals="0">100</span>
+            <span class="usp-unit" data-lang-vi="%" data-lang-en="%">%</span>
           </div>
-          <p class="usp-card__description" data-lang-vi="Pháp lý sạch" data-lang-en="Clear legal status">Pháp lý sạch</p>
+          <p class="usp-description" data-lang-vi="Pháp lý minh bạch" data-lang-en="Transparent legal status">Pháp lý minh bạch</p>
         </div>
       </div>
 
@@ -310,7 +305,6 @@
       <div class="mid-cta__overlay"></div>
     </div>
     <div class="mid-cta__content">
-      <p class="mid-cta__eyebrow">PALM RIVER</p>
       <h2 class="mid-cta__heading" data-lang-vi="Khám phá không gian sống Palm River" data-lang-en="Discover life at Palm River">Khám phá không gian sống Palm River</h2>
       <div class="mid-cta__actions">
         <a href="#chi-tiet-du-an" class="btn btn--cta-primary" data-smooth-scroll
@@ -327,7 +321,7 @@
   <section class="details" id="chi-tiet-du-an" aria-labelledby="details-title">
     <div class="section-container details__container">
       <header class="section-head">
-        <p class="section-tag">PALM RIVER</p>
+        <p class="section-tag" data-lang-vi="TỔNG QUAN DỰ ÁN" data-lang-en="PROJECT OVERVIEW">TỔNG QUAN DỰ ÁN</p>
         <h2 class="section-title" id="details-title" data-lang-vi="Thông tin dự án" data-lang-en="Project information">Thông tin dự án</h2>
       </header>
 
@@ -346,12 +340,9 @@
         </div>
 
         <div class="details__panel">
-          <dl class="details__list" id="details-list-primary"></dl>
-          <details class="details__more" id="details-more">
-            <summary class="details__more-summary"
-                     data-lang-vi="Xem thêm chi tiết" data-lang-en="See more details">Xem thêm chi tiết</summary>
-            <dl class="details__list details__list--more" id="details-list-secondary"></dl>
-          </details>
+          <dl class="details__list" id="details-list"></dl>
+          <button type="button" class="details__toggle" id="details-toggle"
+                  aria-expanded="false" aria-controls="details-list"></button>
           <p class="details__disclaimer"
              data-lang-vi="Thông tin mang tính chất minh hoạ, có thể thay đổi theo thông báo chính thức của chủ đầu tư."
              data-lang-en="Information is illustrative and may change per the developer's official announcements.">
@@ -369,7 +360,7 @@
     <div class="section-container location__container">
       <!-- Content source: row 6 (D6) — approved heading + paragraph. -->
       <header class="section-head">
-        <p class="section-tag">PALM RIVER</p>
+        <p class="section-tag" data-lang-vi="KẾT NỐI KHU VỰC" data-lang-en="REGIONAL CONNECTIVITY">KẾT NỐI KHU VỰC</p>
         <h2 class="section-title" id="location-title" data-lang-vi="Vị trí kim cương – Kết nối 5 đại đô thị lớn nhất khu Đông" data-lang-en="A prime location – connecting the 5 largest urban hubs in the East">Vị trí kim cương – Kết nối 5 đại đô thị lớn nhất khu Đông</h2>
         <p class="section-lead"
            data-lang-vi="Tọa lạc tại tâm điểm giao thoa của 5 đại đô thị lớn phía Đông và hai sân bay quốc tế, Palm River sở hữu khả năng siêu kết nối nhờ hạ tầng bứt phá từ nút giao An Phú và tuyến cao tốc mở rộng. Tiên phong ứng dụng mô hình TOD, dự án cách trạm Metro Bình Trưng chỉ 1 phút đi bộ, giúp cư dân dễ dàng tiếp cận “siêu ga” và trung tâm tài chính Thủ Thiêm chỉ trong 5 phút di chuyển."
@@ -402,42 +393,44 @@
   <section class="amenities" id="tien-ich" aria-labelledby="amenities-title">
     <div class="section-container amenities__container">
       <header class="section-head">
-        <p class="section-tag">PALM RIVER</p>
+        <p class="section-tag" data-lang-vi="HỆ TIỆN ÍCH" data-lang-en="AMENITIES">HỆ TIỆN ÍCH</p>
         <h2 class="section-title" id="amenities-title" data-lang-vi="Hệ tiện ích cân bằng mọi nhịp sống" data-lang-en="A complete rhythm of living">Hệ tiện ích cân bằng mọi nhịp sống</h2>
       </header>
 
       <!-- Two-level tabs: level 1 switches between the shared Palm
            City master-community amenity system and Palm River's own
-           68-item in-residence list (D7); level 2 (only shown when a
-           tab has more than one group) switches Palm River's floor
-           groups (Tầng G / 1 / 2 / 20). Both levels, the image, and
-           the list are rendered from the single window.amenityData
-           source in js/config.js — see renderAmenitySection() in
-           js/sections.js, which never branches on a specific
-           tab/group key. -->
+           in-residence amenities; level 2 switches each tab's own
+           groups (Palm City: 4 categories: Palm River: 4 floors).
+           Both levels, the carousel, and the list are rendered from
+           the single window.amenityGroups source in js/config.js —
+           see renderAmenitySection() in js/sections.js, which never
+           branches on a specific tab/group key. The image carousel
+           and the amenity list are intentionally independent: the
+           list is plain text, never interactive, and never changes
+           what the carousel shows. -->
       <div class="amenities__main-tabs" id="amenities-main-tabs" role="tablist" aria-label="Nhóm tiện ích"></div>
-      <div class="amenities__floor-tabs" id="amenities-floor-tabs" role="tablist" aria-label="Nhóm tiện ích theo tầng"></div>
+      <div class="amenities__floor-tabs" id="amenities-floor-tabs" role="tablist" aria-label="Nhóm tiện ích con"></div>
 
       <div class="amenities__layout">
         <div class="amenity-media-frame">
           <span class="glass-depth-layer glass-depth-layer--1" aria-hidden="true"></span>
           <span class="glass-depth-layer glass-depth-layer--2" aria-hidden="true"></span>
           <figure class="media-depth-frame amenity-media-frame__card" data-depth-frame>
-            <div class="media-depth-frame__inner amenity-image-wrap" id="amenity-image-wrap"></div>
-            <div class="amenity-media-caption">
-              <span class="amenity-index" id="amenity-index" aria-hidden="true">01</span>
-              <div>
-                <h3 id="amenity-title"></h3>
-                <p id="amenity-description"></p>
-              </div>
+            <div class="amenity-carousel" id="amenity-carousel" role="region" aria-roledescription="carousel" aria-label="Hình ảnh minh họa tiện ích">
+              <div class="amenity-carousel__stage media-depth-frame__inner" id="amenity-carousel-stage"></div>
+              <button type="button" class="amenity-carousel__nav amenity-carousel__nav--prev" id="amenity-carousel-prev"
+                      aria-label="Ảnh trước" data-lang-vi-aria="Ảnh trước" data-lang-en-aria="Previous image">&larr;</button>
+              <button type="button" class="amenity-carousel__nav amenity-carousel__nav--next" id="amenity-carousel-next"
+                      aria-label="Ảnh tiếp theo" data-lang-vi-aria="Ảnh tiếp theo" data-lang-en-aria="Next image">&rarr;</button>
+              <div class="amenity-carousel__dots" id="amenity-carousel-dots" role="tablist" aria-label="Chọn ảnh"></div>
+              <button type="button" class="amenity-expand" id="amenity-expand"
+                      aria-label="Xem ảnh tiện ích" data-lang-vi-aria="Xem ảnh tiện ích" data-lang-en-aria="View amenity image"
+                      data-lang-vi="Xem ảnh" data-lang-en="View image">Xem ảnh</button>
             </div>
-            <button type="button" class="amenity-expand" id="amenity-expand"
-                    aria-label="Xem ảnh tiện ích" data-lang-vi-aria="Xem ảnh tiện ích" data-lang-en-aria="View amenity image"
-                    data-lang-vi="Xem ảnh" data-lang-en="View image">Xem ảnh</button>
           </figure>
         </div>
 
-        <div class="amenity-list" id="amenity-list" role="listbox" aria-label="Danh sách tiện ích"></div>
+        <div class="amenity-list" id="amenity-list" aria-label="Danh sách tiện ích"></div>
       </div>
     </div>
   </section>
@@ -448,7 +441,7 @@
   <section class="floorplans" id="mat-bang" aria-labelledby="floorplans-title">
     <div class="section-container floorplans__container">
       <header class="section-head">
-        <p class="section-tag">PALM RIVER</p>
+        <p class="section-tag" data-lang-vi="THIẾT KẾ CĂN HỘ" data-lang-en="UNIT DESIGN">THIẾT KẾ CĂN HỘ</p>
         <h2 class="section-title" id="floorplans-title" data-lang-vi="Mặt bằng và không gian sống" data-lang-en="Floor plans and residences">Mặt bằng và không gian sống</h2>
       </header>
 
@@ -508,7 +501,7 @@
   <section class="policy" id="chinh-sach" aria-labelledby="policy-title">
     <div class="section-container policy__container">
       <header class="section-head">
-        <p class="section-tag">PALM RIVER</p>
+        <p class="section-tag" data-lang-vi="THÔNG TIN BÁN HÀNG" data-lang-en="SALES INFORMATION">THÔNG TIN BÁN HÀNG</p>
         <h2 class="section-title" id="policy-title" data-lang-vi="Chính sách thanh toán" data-lang-en="Payment policy">Chính sách thanh toán</h2>
       </header>
 
@@ -553,7 +546,7 @@
   <section class="progress-section" id="tien-do" aria-labelledby="progress-title">
     <div class="section-container progress-section__container">
       <header class="section-head">
-        <p class="section-tag">PALM RIVER</p>
+        <p class="section-tag" data-lang-vi="TIẾN ĐỘ XÂY DỰNG" data-lang-en="CONSTRUCTION PROGRESS">TIẾN ĐỘ XÂY DỰNG</p>
         <h2 class="section-title" id="progress-title" data-lang-vi="Tiến độ dự án" data-lang-en="Project progress">Tiến độ dự án</h2>
       </header>
 
@@ -585,42 +578,63 @@
 
       <ul class="savills-section__pillars">
         <li class="pillar">
-          <span class="pillar__index">01</span>
+          <div class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3.2l7 2.8v5.2c0 5-3.1 8.4-7 9.6-3.9-1.2-7-4.6-7-9.6V6l7-2.8z"/><path d="M8.7 12.2l2.2 2.2 4.4-4.6"/></svg>
+          </div>
           <p class="pillar__label" data-lang-vi="Thông tin chính thống &amp; Minh bạch" data-lang-en="Official &amp; Transparent Information">Thông tin chính thống &amp; Minh bạch</p>
           <p class="pillar__desc"
              data-lang-vi="Đảm bảo 100% rổ hàng, chính sách bán hàng, bảng giá và ưu đãi chiết khấu trực tiếp từ Chủ đầu tư Hướng Việt Properties."
              data-lang-en="A 100% guarantee that unit inventory, sales policy, price list and discount incentives come directly from developer Huong Viet Properties.">Đảm bảo 100% rổ hàng, chính sách bán hàng, bảng giá và ưu đãi chiết khấu trực tiếp từ Chủ đầu tư Hướng Việt Properties.</p>
         </li>
         <li class="pillar">
-          <span class="pillar__index">02</span>
+          <div class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="7.6" cy="14.4" r="3"/><path d="M9.7 12.3L17 5"/><path d="M14.2 7.8l2.1 2.1"/><path d="M16.4 5.6l2.1 2.1"/></svg>
+          </div>
           <p class="pillar__label" data-lang-vi="Đặc quyền giỏ hàng đẹp nhất" data-lang-en="Priority Access to the Best Units">Đặc quyền giỏ hàng đẹp nhất</p>
           <p class="pillar__desc"
              data-lang-vi="Khách hàng được tiếp cận sớm nhất với các quỹ căn view sông, căn góc và vị trí tầng đẹp nhất dự án."
              data-lang-en="Customers get first access to river-view units, corner units and the best floor positions in the project.">Khách hàng được tiếp cận sớm nhất với các quỹ căn view sông, căn góc và vị trí tầng đẹp nhất dự án.</p>
         </li>
         <li class="pillar">
-          <span class="pillar__index">03</span>
+          <div class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg>
+          </div>
           <p class="pillar__label" data-lang-vi="Đồng hành chuyên nghiệp 1:1" data-lang-en="Professional 1:1 Support">Đồng hành chuyên nghiệp 1:1</p>
           <p class="pillar__desc"
              data-lang-vi="Đội ngũ chuyên viên tư vấn được đào tạo chuyên sâu, bảo mật thông tin tuyệt đối và hỗ trợ xuyên suốt toàn bộ quy trình giao dịch."
              data-lang-en="A highly trained advisory team, with absolute confidentiality and support throughout the entire transaction process.">Đội ngũ chuyên viên tư vấn được đào tạo chuyên sâu, bảo mật thông tin tuyệt đối và hỗ trợ xuyên suốt toàn bộ quy trình giao dịch.</p>
         </li>
       </ul>
-
-      <header class="section-head savills-section__news-head">
-        <p class="section-tag" data-lang-vi="THÔNG TIN CHÍNH THỨC &amp; TRUYỀN THÔNG" data-lang-en="OFFICIAL UPDATES &amp; MEDIA">THÔNG TIN CHÍNH THỨC &amp; TRUYỀN THÔNG</p>
-        <h3 class="savills-section__news-title" id="savills-news-title"
-            data-lang-vi="Uy tín được củng cố qua những thông tin chính thống"
-            data-lang-en="Credibility reinforced through trusted sources">Uy tín được củng cố qua những thông tin chính thống</h3>
-        <p class="section-lead"
-           data-lang-vi="Cập nhật các thông tin chính thức về dự án và vai trò đồng hành của Savills Việt Nam từ Savills cùng các kênh báo chí, truyền thông uy tín."
-           data-lang-en="Official updates on the project and Savills Vietnam's role, published across Savills and trusted media channels.">
-          Cập nhật các thông tin chính thức về dự án và vai trò đồng hành của Savills Việt Nam từ Savills cùng các kênh báo chí, truyền thông uy tín.
-        </p>
-      </header>
-
-      <div class="savills-section__news" id="savills-news" aria-labelledby="savills-news-title"></div>
     </div>
+  </section>
+
+  <!-- =========================================================
+       CREDIBILITY / MEDIA COVERAGE
+       No eyebrow per the design brief — the heading below already
+       states the section's subject. Replaces the old news-card grid
+       with a single full-viewport-width image (escapes
+       .section-container via the calc(50% - 50vw) trick). The two
+       D12 article links are no longer rendered anywhere on the page —
+       kept as data only in window.savillsNews (js/config.js) in case
+       a future pass wants to surface them again.
+       ========================================================= -->
+  <section class="credibility-section" id="truyen-thong" aria-labelledby="credibility-title">
+    <div class="credibility-heading section-container">
+      <h2 class="section-title" id="credibility-title"
+          data-lang-vi="Uy tín được củng cố qua những thông tin chính thống"
+          data-lang-en="Credibility reinforced through trusted sources">Uy tín được củng cố qua những thông tin chính thống</h2>
+      <p class="section-lead"
+         data-lang-vi="Cập nhật các thông tin chính thức về dự án và vai trò đồng hành của Savills Việt Nam từ Savills cùng các kênh báo chí, truyền thông uy tín."
+         data-lang-en="Official updates on the project and Savills Vietnam's role, published across Savills and trusted media channels.">
+        Cập nhật các thông tin chính thức về dự án và vai trò đồng hành của Savills Việt Nam từ Savills cùng các kênh báo chí, truyền thông uy tín.
+      </p>
+    </div>
+
+    <!-- Populated by renderCredibilityMedia() in js/sections.js from
+         window.credibilityMedia (js/config.js) — renders a <picture>
+         once desktop/mobile paths are supplied, a fixed-height
+         placeholder until then (no layout shift either way). -->
+    <figure class="credibility-fullscreen-media" id="credibility-media"></figure>
   </section>
 
   <!-- =========================================================

@@ -143,176 +143,126 @@ window.connectivityData = {
    (the project's own 68-item amenity list).
    ----------------------------------------------------- */
 
-/* Tab 1 — "Tiện ích Palm City". D7 points at
-   palmrivercity.com/wp-content/uploads/2026/06/palm-city-1.jpg for
-   this tab's copy ("Lấy text trong ảnh này") — that host is blocked
-   by this environment's network policy, so its text could not be
-   read. The six D7 SharePoint image links for this carousel are
-   likewise inaccessible (see projectConfig's comment). Per the
-   brief's own fallback rule, the existing approved content/imagery
-   already in this carousel is kept rather than inventing amenity
-   names from an unreadable source; both unresolved sources are
-   reported in the final summary. */
-window.amenitiesSlides = [
-  { image: "assets/palm-city-overview-riverside.jpg", objectPosition: "center 55%", expectedAsset: "assets/amenities/amenity-01.jpg", titleVi: "Cảnh quan ven sông", titleEn: "Riverside landscape" },
-  { image: null, expectedAsset: "assets/amenities/amenity-02.jpg", titleVi: "Đang cập nhật", titleEn: "Being updated" },
-  { image: null, expectedAsset: "assets/amenities/amenity-03.jpg", titleVi: "Đang cập nhật", titleEn: "Being updated" },
-  { image: null, expectedAsset: "assets/amenities/amenity-04.jpg", titleVi: "Đang cập nhật", titleEn: "Being updated" }
-];
+/* window.amenityGroups — single source for BOTH the (independent,
+   auto-playing) amenity image carousel and the plain amenity list,
+   for both level-1 tabs. Each group is { titleVi, titleEn, items,
+   images } — items and images are two independent lists (an amenity
+   never needs a 1:1 photo), per the brief. Group keys/order match the
+   requested amenityGroups shape.
 
-/* Tab 2 — "Tiện ích nội khu Palm River". Full 68-item list from D7,
-   grouped by floor exactly as supplied (Tầng G / Tầng 1 / Tầng 2 /
-   Tầng 20), numbering and wording preserved exactly. */
-window.palmRiverAmenities = [
-  {
-    floorVi: "Tầng G", floorEn: "Ground Floor",
-    items: [
-      { n: 1, vi: "Khu rèn luyện thể chất", en: "Fitness training area" },
-      { n: 2, vi: "Trạm sạc xe điện thông minh", en: "Smart EV charging station" },
-      { n: 3, vi: "Bãi đậu xe đạp chuyên dụng", en: "Dedicated bicycle parking" },
-      { n: 4, vi: "Không gian thư giãn và chăm sóc sức khỏe", en: "Wellness and relaxation space" },
-      { n: 5, vi: "Tuyến phố thương mại", en: "Retail street" },
-      { n: 6, vi: "Sảnh đón tiếp rộng rãi", en: "Spacious reception lobby" },
-      { n: 7, vi: "Sảnh thang máy riêng tư", en: "Private lift lobby" },
-      { n: 8, vi: "Phòng nhận thư/Bưu phẩm", en: "Mail/parcel room" }
-    ]
-  },
-  {
-    floorVi: "Tầng 1", floorEn: "Floor 1",
-    items: [
-      { n: 9, vi: "Vườn xanh tĩnh lặng", en: "Tranquil green garden" },
-      { n: 10, vi: "Sân yoga ngoài trời", en: "Outdoor yoga deck" },
-      { n: 11, vi: "Ốc đảo thư giãn", en: "Relaxation oasis" },
-      { n: 12, vi: "Vườn BBQ thoáng đãng", en: "Open-air BBQ garden" },
-      { n: 13, vi: "Sân chơi trẻ em trong nhà", en: "Indoor children's playground" },
-      { n: 14, vi: "Sân cầu lông cao cấp", en: "Premium badminton court" },
-      { n: 15, vi: "Hồ bơi an toàn cho trẻ", en: "Safe children's pool" },
-      { n: 16, vi: "Hồ bơi 70m chuẩn resort", en: "70m resort-standard pool" },
-      { n: 17, vi: "Vườn tản bộ ven hồ", en: "Lakeside walking garden" },
-      { n: 18, vi: "Jacuzzi phục hồi thể lực", en: "Recovery jacuzzi" },
-      { n: 19, vi: "Vườn thư giãn thác nước", en: "Waterfall relaxation garden" },
-      { n: 20, vi: "Tổ hợp thương mại và ẩm thực", en: "Retail and dining complex" },
-      { n: 21, vi: "Phòng massage trị liệu", en: "Therapeutic massage room" },
-      { n: 22, vi: "Khu chăm sóc sức khỏe gia đình", en: "Family wellness area" },
-      { n: 23, vi: "Phòng karaoke riêng tư", en: "Private karaoke room" },
-      { n: 24, vi: "Rạp chiếu phim tại gia đẳng cấp", en: "Premium home cinema" },
-      { n: 25, vi: "Sảnh sinh hoạt cộng đồng", en: "Community activity hall" },
-      { n: 26, vi: "Sân chơi trải nghiệm cho bé", en: "Children's experience playground" },
-      { n: 27, vi: "Không gian sinh hoạt đa năng", en: "Multi-purpose activity space" },
-      { n: 28, vi: "Câu lạc bộ trẻ em", en: "Kids' club" },
-      { n: 29, vi: "Sảnh đón/Trả khách sang trọng", en: "Elegant guest arrival/drop-off lobby" }
-    ]
-  },
-  {
-    floorVi: "Tầng 2", floorEn: "Floor 2",
-    items: [
-      { n: 30, vi: "Đài ngắm cảnh view sông", en: "River-view observation deck" },
-      { n: 31, vi: "Phố thương mại trên không", en: "Sky retail street" },
-      { n: 32, vi: "Cảnh quan thủy sinh", en: "Aquatic landscape garden" },
-      { n: 33, vi: "Khu ẩm thực ngoài trời", en: "Outdoor dining area" },
-      { n: 34, vi: "Đài ngắm cảnh thành phố", en: "City-view observation deck" },
-      { n: 35, vi: "Hồ nước tràn nghệ thuật", en: "Artistic infinity water feature" },
-      { n: 36, vi: "Vườn dạo trên không", en: "Sky promenade garden" },
-      { n: 37, vi: "Vườn hương thảo mộc", en: "Herb garden" },
-      { n: 38, vi: "Sân chơi cho thú cưng", en: "Pet playground" },
-      { n: 39, vi: "Không gian sự kiện ngoài trời", en: "Outdoor event space" },
-      { n: 40, vi: "Thảm cỏ tự nhiên dưới tán cây", en: "Natural lawn under tree canopy" },
-      { n: 41, vi: "Đường dạo bộ ven hồ", en: "Lakeside walking path" },
-      { n: 42, vi: "Cung đường tản bộ ngắm cảnh", en: "Scenic walking trail" }
-    ]
-  },
-  {
-    floorVi: "Tầng 20", floorEn: "Floor 20",
-    items: [
-      { n: 43, vi: "Phòng thủy nhiệt phục hồi và thải độc", en: "Hydrotherapy recovery and detox room" },
-      { n: 44, vi: "Phòng trị liệu nhiệt hồng ngoại", en: "Infrared heat therapy room" },
-      { n: 45, vi: "Bể ngâm lạnh phục hồi chuyên sâu", en: "Deep-recovery cold plunge pool" },
-      { n: 46, vi: "Nhà hàng trên không", en: "Sky restaurant" },
-      { n: 47, vi: "Cabana nghỉ dưỡng ven hồ", en: "Lakeside resort cabanas" },
-      { n: 48, vi: "Bãi nghỉ dưỡng phong cách biển", en: "Beach-style relaxation deck" },
-      { n: 49, vi: "Hồ bơi vô cực", en: "Infinity pool" },
-      { n: 50, vi: "Phòng gym trên cao", en: "Sky gym" },
-      { n: 51, vi: "Không gian học tập và sáng tạo", en: "Study and creative space" },
-      { n: 52, vi: "Phòng golf mô phỏng", en: "Golf simulator room" },
-      { n: 53, vi: "Khu giải trí thượng lưu", en: "Upscale entertainment area" },
-      { n: 54, vi: "Sảnh tiệc/Lounge biệt lập", en: "Private function hall/lounge" },
-      { n: 55, vi: "Cung đường tản bộ xanh", en: "Green walking trail" },
-      { n: 56, vi: "Khu nghỉ ngơi giữa lòng hồ", en: "Mid-lake relaxation area" },
-      { n: 57, vi: "Thang máy riêng biệt", en: "Dedicated lift" },
-      { n: 58, vi: "Đài nghỉ dưỡng trên không", en: "Sky relaxation deck" },
-      { n: 59, vi: "Góc thể thao ngoài trời", en: "Outdoor sports corner" },
-      { n: 60, vi: "Vườn sinh thái", en: "Eco garden" },
-      { n: 61, vi: "Onsen/Spa giữa tầng không", en: "Sky onsen/spa" },
-      { n: 62, vi: "Khu vườn thưởng ngoạn đô thị", en: "Urban view garden" },
-      { n: 63, vi: "Khu tiệc nướng BBQ trên cao", en: "Sky BBQ area" },
-      { n: 64, vi: "Đài vọng cảnh", en: "Scenic viewing deck" },
-      { n: 65, vi: "Không gian thiền/Yoga", en: "Meditation/yoga space" },
-      { n: 66, vi: "Vườn đá trị liệu", en: "Therapeutic stone garden" },
-      { n: 67, vi: "Vườn treo trên không", en: "Sky hanging garden" },
-      { n: 68, vi: "Cung đường xanh đón gió", en: "Breezy green pathway" }
-    ]
-  }
-];
+   Palm City → 4 category groups (retail / communityPark /
+   riversidePromenade / sportWellness). D7's only instruction for this
+   tab is "lấy text trong ảnh" pointing at
+   palmrivercity.com/wp-content/uploads/2026/06/palm-city-1.jpg — that
+   host is blocked by this environment's network policy (confirmed via
+   a live fetch attempt, EGRESS_BLOCKED), so no approved item list
+   exists yet for any of these 4 groups. `items` stays empty rather
+   than inventing amenity names; see the empty-state note rendered by
+   renderAmenityGroup() in js/sections.js and the final summary.
 
-/* -----------------------------------------------------
-   UNIFIED AMENITY DATA — feeds the interactive image+list amenities
-   layout (js/sections.js). Built here from the two canonical sources
-   above (amenitiesSlides / palmRiverAmenities) rather than duplicating
-   the approved copy a second time. To add a real photo, set `image`
-   on the source item in amenitiesSlides/palmRiverAmenities above (or
-   directly on the built object below) — it appears automatically, no
-   other code changes needed. Every item's `image` is empty by default
-   and renders the "Thêm ảnh tiện ích tại đây" placeholder.
-   ----------------------------------------------------- */
-function buildAmenityGroupItems(items) {
-  return items.map(function (item) {
-    return {
-      id: String(item.n).padStart(2, "0"),
-      titleVi: item.vi,
-      titleEn: item.en,
-      image: item.image || "",
-      descriptionVi: item.descriptionVi || "",
-      descriptionEn: item.descriptionEn || ""
-    };
-  });
-}
-
-window.amenityData = {
+   Palm River → 4 floor groups (Tầng G / 1 / 2 / 20), full 68-item
+   list from D7, numbering and wording preserved exactly as supplied. */
+window.amenityGroups = {
   palmCity: {
-    all: window.amenitiesSlides.map(function (slide, index) {
-      return {
-        id: String(index + 1).padStart(2, "0"),
-        titleVi: slide.titleVi,
-        titleEn: slide.titleEn,
-        image: slide.image || "",
-        objectPosition: slide.objectPosition || "",
-        descriptionVi: "",
-        descriptionEn: ""
-      };
-    })
+    retail: { titleVi: "Khu thương mại", titleEn: "Retail precinct", items: [], images: [] },
+    communityPark: { titleVi: "Công viên cộng đồng", titleEn: "Community park", items: [], images: [] },
+    riversidePromenade: { titleVi: "Tuyến dạo bờ sông sinh thái", titleEn: "Eco riverside promenade", items: [], images: [] },
+    sportWellness: { titleVi: "Thể thao & Sức khỏe", titleEn: "Sport & wellness", items: [], images: [] }
   },
   palmRiver: {
-    ground: buildAmenityGroupItems(window.palmRiverAmenities[0].items),
-    floor1: buildAmenityGroupItems(window.palmRiverAmenities[1].items),
-    floor2: buildAmenityGroupItems(window.palmRiverAmenities[2].items),
-    floor20: buildAmenityGroupItems(window.palmRiverAmenities[3].items)
+    ground: {
+      titleVi: "Tầng G", titleEn: "Ground Floor",
+      items: [
+        { n: 1, vi: "Khu rèn luyện thể chất", en: "Fitness training area" },
+        { n: 2, vi: "Trạm sạc xe điện thông minh", en: "Smart EV charging station" },
+        { n: 3, vi: "Bãi đậu xe đạp chuyên dụng", en: "Dedicated bicycle parking" },
+        { n: 4, vi: "Không gian thư giãn và chăm sóc sức khỏe", en: "Wellness and relaxation space" },
+        { n: 5, vi: "Tuyến phố thương mại", en: "Retail street" },
+        { n: 6, vi: "Sảnh đón tiếp rộng rãi", en: "Spacious reception lobby" },
+        { n: 7, vi: "Sảnh thang máy riêng tư", en: "Private lift lobby" },
+        { n: 8, vi: "Phòng nhận thư/Bưu phẩm", en: "Mail/parcel room" }
+      ],
+      images: []
+    },
+    floor1: {
+      titleVi: "Tầng 1", titleEn: "Floor 1",
+      items: [
+        { n: 9, vi: "Vườn xanh tĩnh lặng", en: "Tranquil green garden" },
+        { n: 10, vi: "Sân yoga ngoài trời", en: "Outdoor yoga deck" },
+        { n: 11, vi: "Ốc đảo thư giãn", en: "Relaxation oasis" },
+        { n: 12, vi: "Vườn BBQ thoáng đãng", en: "Open-air BBQ garden" },
+        { n: 13, vi: "Sân chơi trẻ em trong nhà", en: "Indoor children's playground" },
+        { n: 14, vi: "Sân cầu lông cao cấp", en: "Premium badminton court" },
+        { n: 15, vi: "Hồ bơi an toàn cho trẻ", en: "Safe children's pool" },
+        { n: 16, vi: "Hồ bơi 70m chuẩn resort", en: "70m resort-standard pool" },
+        { n: 17, vi: "Vườn tản bộ ven hồ", en: "Lakeside walking garden" },
+        { n: 18, vi: "Jacuzzi phục hồi thể lực", en: "Recovery jacuzzi" },
+        { n: 19, vi: "Vườn thư giãn thác nước", en: "Waterfall relaxation garden" },
+        { n: 20, vi: "Tổ hợp thương mại và ẩm thực", en: "Retail and dining complex" },
+        { n: 21, vi: "Phòng massage trị liệu", en: "Therapeutic massage room" },
+        { n: 22, vi: "Khu chăm sóc sức khỏe gia đình", en: "Family wellness area" },
+        { n: 23, vi: "Phòng karaoke riêng tư", en: "Private karaoke room" },
+        { n: 24, vi: "Rạp chiếu phim tại gia đẳng cấp", en: "Premium home cinema" },
+        { n: 25, vi: "Sảnh sinh hoạt cộng đồng", en: "Community activity hall" },
+        { n: 26, vi: "Sân chơi trải nghiệm cho bé", en: "Children's experience playground" },
+        { n: 27, vi: "Không gian sinh hoạt đa năng", en: "Multi-purpose activity space" },
+        { n: 28, vi: "Câu lạc bộ trẻ em", en: "Kids' club" },
+        { n: 29, vi: "Sảnh đón/Trả khách sang trọng", en: "Elegant guest arrival/drop-off lobby" }
+      ],
+      images: []
+    },
+    floor2: {
+      titleVi: "Tầng 2", titleEn: "Floor 2",
+      items: [
+        { n: 30, vi: "Đài ngắm cảnh view sông", en: "River-view observation deck" },
+        { n: 31, vi: "Phố thương mại trên không", en: "Sky retail street" },
+        { n: 32, vi: "Cảnh quan thủy sinh", en: "Aquatic landscape garden" },
+        { n: 33, vi: "Khu ẩm thực ngoài trời", en: "Outdoor dining area" },
+        { n: 34, vi: "Đài ngắm cảnh thành phố", en: "City-view observation deck" },
+        { n: 35, vi: "Hồ nước tràn nghệ thuật", en: "Artistic infinity water feature" },
+        { n: 36, vi: "Vườn dạo trên không", en: "Sky promenade garden" },
+        { n: 37, vi: "Vườn hương thảo mộc", en: "Herb garden" },
+        { n: 38, vi: "Sân chơi cho thú cưng", en: "Pet playground" },
+        { n: 39, vi: "Không gian sự kiện ngoài trời", en: "Outdoor event space" },
+        { n: 40, vi: "Thảm cỏ tự nhiên dưới tán cây", en: "Natural lawn under tree canopy" },
+        { n: 41, vi: "Đường dạo bộ ven hồ", en: "Lakeside walking path" },
+        { n: 42, vi: "Cung đường tản bộ ngắm cảnh", en: "Scenic walking trail" }
+      ],
+      images: []
+    },
+    floor20: {
+      titleVi: "Tầng 20", titleEn: "Floor 20",
+      items: [
+        { n: 43, vi: "Phòng thủy nhiệt phục hồi và thải độc", en: "Hydrotherapy recovery and detox room" },
+        { n: 44, vi: "Phòng trị liệu nhiệt hồng ngoại", en: "Infrared heat therapy room" },
+        { n: 45, vi: "Bể ngâm lạnh phục hồi chuyên sâu", en: "Deep-recovery cold plunge pool" },
+        { n: 46, vi: "Nhà hàng trên không", en: "Sky restaurant" },
+        { n: 47, vi: "Cabana nghỉ dưỡng ven hồ", en: "Lakeside resort cabanas" },
+        { n: 48, vi: "Bãi nghỉ dưỡng phong cách biển", en: "Beach-style relaxation deck" },
+        { n: 49, vi: "Hồ bơi vô cực", en: "Infinity pool" },
+        { n: 50, vi: "Phòng gym trên cao", en: "Sky gym" },
+        { n: 51, vi: "Không gian học tập và sáng tạo", en: "Study and creative space" },
+        { n: 52, vi: "Phòng golf mô phỏng", en: "Golf simulator room" },
+        { n: 53, vi: "Khu giải trí thượng lưu", en: "Upscale entertainment area" },
+        { n: 54, vi: "Sảnh tiệc/Lounge biệt lập", en: "Private function hall/lounge" },
+        { n: 55, vi: "Cung đường tản bộ xanh", en: "Green walking trail" },
+        { n: 56, vi: "Khu nghỉ ngơi giữa lòng hồ", en: "Mid-lake relaxation area" },
+        { n: 57, vi: "Thang máy riêng biệt", en: "Dedicated lift" },
+        { n: 58, vi: "Đài nghỉ dưỡng trên không", en: "Sky relaxation deck" },
+        { n: 59, vi: "Góc thể thao ngoài trời", en: "Outdoor sports corner" },
+        { n: 60, vi: "Vườn sinh thái", en: "Eco garden" },
+        { n: 61, vi: "Onsen/Spa giữa tầng không", en: "Sky onsen/spa" },
+        { n: 62, vi: "Khu vườn thưởng ngoạn đô thị", en: "Urban view garden" },
+        { n: 63, vi: "Khu tiệc nướng BBQ trên cao", en: "Sky BBQ area" },
+        { n: 64, vi: "Đài vọng cảnh", en: "Scenic viewing deck" },
+        { n: 65, vi: "Không gian thiền/Yoga", en: "Meditation/yoga space" },
+        { n: 66, vi: "Vườn đá trị liệu", en: "Therapeutic stone garden" },
+        { n: 67, vi: "Vườn treo trên không", en: "Sky hanging garden" },
+        { n: 68, vi: "Cung đường xanh đón gió", en: "Breezy green pathway" }
+      ],
+      images: []
+    }
   }
-};
-
-/* Sub-group tabs per top-level amenity tab — Palm City has a single
-   flat list (no floor breakdown), Palm River has its four D7 floor
-   groups. Rendering logic in sections.js loops over these generically;
-   it never branches on the tab/group key itself. */
-window.amenityGroups = {
-  palmCity: [
-    { key: "all", labelVi: "Tiện ích Palm City", labelEn: "Palm City amenities" }
-  ],
-  palmRiver: [
-    { key: "ground", labelVi: "Tầng G", labelEn: "Ground Floor" },
-    { key: "floor1", labelVi: "Tầng 1", labelEn: "Floor 1" },
-    { key: "floor2", labelVi: "Tầng 2", labelEn: "Floor 2" },
-    { key: "floor20", labelVi: "Tầng 20", labelEn: "Floor 20" }
-  ]
 };
 
 window.amenityTabs = [
@@ -451,14 +401,12 @@ window.savillsAbout = {
 };
 
 /* -----------------------------------------------------
-   SAVILLS NEWS / CREDIBILITY CARDS — Row 12 (D12)
-   The same two confirmed links as before; `publisher` is inferred
-   from each URL's own domain/owner (both are Savills-owned
-   channels). No headline, date or excerpt was supplied with either
-   link, so `confirmed` stays false and both are hidden per the
-   brief's "hide empty cards" rule rather than shown with placeholder
-   copy. Flip `confirmed` to true and fill in date/title/excerpt once
-   supplied, and the card renders automatically.
+   SAVILLS NEWS LINKS — Row 12 (D12)
+   Not rendered on the page — the credibility section (see
+   window.credibilityMedia below) was redesigned to a heading +
+   full-width image and no longer shows a news-card grid. Kept here
+   as the two confirmed source URLs from D12 in case a future pass
+   wants to surface them again.
    ----------------------------------------------------- */
 window.savillsNews = [
   {
@@ -480,6 +428,23 @@ window.savillsNews = [
     excerptVi: null, excerptEn: null
   }
 ];
+
+/* -----------------------------------------------------
+   CREDIBILITY SECTION — full-width media
+   No approved credibility/media-coverage photo exists yet (not part
+   of any D-row in the source sheet) — both paths stay empty and the
+   section renders its fixed-height placeholder until real assets are
+   supplied. Expected paths noted below; drop files at those paths and
+   set desktop/mobile and the image appears automatically.
+   ----------------------------------------------------- */
+window.credibilityMedia = {
+  desktop: "", // expected: assets/media/credibility-desktop.jpg
+  mobile: "", // expected: assets/media/credibility-mobile.jpg
+  alt: "Thông tin chính thức và truyền thông về dự án Palm River",
+  altEn: "Official information and media coverage on the Palm River project",
+  focalPointDesktop: "center",
+  focalPointMobile: "58% center"
+};
 
 /* -----------------------------------------------------
    FINAL FORM / POPUP — Row 14 "Form đăng ký" (D14)

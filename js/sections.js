@@ -88,16 +88,21 @@
 
   /* -----------------------------------------------------
      1. PROJECT DETAILS (§4)
+     Desktop and mobile render from the same window.projectDetails
+     array into one list — no separate desktop/mobile dataset, and
+     rows beyond the default count are hidden with CSS (nth-child,
+     see css/sections.css) rather than removed from the DOM by
+     breakpoint. The toggle button expands/collapses the same list at
+     every width; only the default cutoff count differs (8 desktop/
+     tablet, 5 mobile).
      ----------------------------------------------------- */
+  var detailsExpanded = false;
   function renderDetails(lang) {
-    var primaryEl = document.getElementById("details-list-primary");
-    var secondaryEl = document.getElementById("details-list-secondary");
-    if (!primaryEl || !secondaryEl || !window.projectDetails) return;
-    var PRIMARY_COUNT = 5;
-    primaryEl.innerHTML = "";
-    secondaryEl.innerHTML = "";
+    var listEl = document.getElementById("details-list");
+    if (!listEl || !window.projectDetails) return;
+    listEl.innerHTML = "";
 
-    window.projectDetails.forEach(function (field, index) {
+    window.projectDetails.forEach(function (field) {
       var dt = document.createElement("dt");
       dt.textContent = lang === "en" ? field.en : field.vi;
       var dd = document.createElement("dd");
@@ -111,7 +116,33 @@
       row.className = "details__row";
       row.appendChild(dt);
       row.appendChild(dd);
-      (index < PRIMARY_COUNT ? primaryEl : secondaryEl).appendChild(row);
+      listEl.appendChild(row);
+    });
+
+    updateDetailsToggle(lang);
+  }
+
+  function updateDetailsToggle(lang) {
+    var listEl = document.getElementById("details-list");
+    var btn = document.getElementById("details-toggle");
+    if (!listEl || !btn) return;
+    listEl.setAttribute("data-expanded", detailsExpanded ? "true" : "false");
+    btn.setAttribute("aria-expanded", detailsExpanded ? "true" : "false");
+    btn.textContent = detailsExpanded
+      ? (lang === "en" ? "Collapse" : "Thu gọn")
+      : (lang === "en" ? "View full information" : "Xem đầy đủ thông tin");
+  }
+
+  function setupDetailsToggle() {
+    var btn = document.getElementById("details-toggle");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      detailsExpanded = !detailsExpanded;
+      updateDetailsToggle(currentLang());
+      if (!detailsExpanded) {
+        var section = document.getElementById("chi-tiet-du-an");
+        if (section) section.scrollIntoView({ block: "nearest" });
+      }
     });
   }
 
@@ -176,21 +207,25 @@
   }
 
   /* -----------------------------------------------------
-     3. AMENITIES — image + interactive list (§6)
-     Two-level tabs (main tab, then group/floor tab) both read from
-     window.amenityTabs / window.amenityGroups / window.amenityData
-     (js/config.js). Nothing here branches on a specific tab or group
-     key — the same render path serves Palm City's single flat group
-     and Palm River's four floor groups.
+     3. AMENITIES (§6)
+     The amenity list and the amenity image carousel are fully
+     independent of each other — the list is plain text (no buttons,
+     no click-to-change-image, no per-item active state); the carousel
+     runs on its own autoplay timer against the active group's own
+     `images` array. Two-level tabs (main tab, then group tab) both
+     read generically from window.amenityTabs / window.amenityGroups
+     (js/config.js) — nothing here branches on a specific tab/group
+     key, so Palm City's 4 category groups and Palm River's 4 floor
+     groups share the exact same render path.
      ----------------------------------------------------- */
   var activeAmenityTab = null;
   var activeAmenityGroup = null;
-  var activeAmenityItemIndex = 0;
+  var lastRenderedAmenityGroupKey = null;
 
-  function currentAmenityItems() {
-    if (!activeAmenityTab || !activeAmenityGroup || !window.amenityData) return [];
-    var tabData = window.amenityData[activeAmenityTab] || {};
-    return tabData[activeAmenityGroup] || [];
+  function currentAmenityGroup() {
+    if (!activeAmenityTab || !activeAmenityGroup || !window.amenityGroups) return null;
+    var tabGroups = window.amenityGroups[activeAmenityTab] || {};
+    return tabGroups[activeAmenityGroup] || null;
   }
 
   function renderAmenitySection(lang) {
@@ -199,10 +234,9 @@
     if (!mainTabsHost || !groupTabsHost || !window.amenityTabs || !window.amenityGroups) return;
 
     if (!activeAmenityTab) activeAmenityTab = window.amenityTabs[0].key;
-    var groups = window.amenityGroups[activeAmenityTab] || [];
-    if (!activeAmenityGroup || !groups.some(function (g) { return g.key === activeAmenityGroup; })) {
-      activeAmenityGroup = groups.length ? groups[0].key : null;
-      activeAmenityItemIndex = 0;
+    var groupKeys = Object.keys(window.amenityGroups[activeAmenityTab] || {});
+    if (!activeAmenityGroup || groupKeys.indexOf(activeAmenityGroup) === -1) {
+      activeAmenityGroup = groupKeys[0] || null;
     }
 
     mainTabsHost.innerHTML = "";
@@ -218,29 +252,24 @@
         if (activeAmenityTab === tab.key) return;
         activeAmenityTab = tab.key;
         activeAmenityGroup = null;
-        activeAmenityItemIndex = 0;
         renderAmenitySection(currentLang());
       });
       mainTabsHost.appendChild(btn);
     });
 
-    // Group/floor tabs only make sense when a tab has more than one
-    // group (Palm River); Palm City's single flat list hides this row
-    // entirely rather than showing a redundant one-item tablist.
     groupTabsHost.innerHTML = "";
-    groupTabsHost.hidden = groups.length <= 1;
-    groups.forEach(function (group) {
-      var isActive = group.key === activeAmenityGroup;
+    groupKeys.forEach(function (key) {
+      var group = window.amenityGroups[activeAmenityTab][key];
+      var isActive = key === activeAmenityGroup;
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "glass-tab glass-tab--dark amenities__floor-tab" + (isActive ? " is-active" : "");
       btn.setAttribute("role", "tab");
       btn.setAttribute("aria-selected", isActive ? "true" : "false");
-      btn.textContent = lang === "en" ? group.labelEn : group.labelVi;
+      btn.textContent = lang === "en" ? group.titleEn : group.titleVi;
       btn.addEventListener("click", function () {
-        if (activeAmenityGroup === group.key) return;
-        activeAmenityGroup = group.key;
-        activeAmenityItemIndex = 0;
+        if (activeAmenityGroup === key) return;
+        activeAmenityGroup = key;
         renderAmenitySection(currentLang());
       });
       if (isActive) {
@@ -249,115 +278,227 @@
       groupTabsHost.appendChild(btn);
     });
 
+    // Only rebuild/reset the carousel when the active group actually
+    // changed — a pure language switch just relabels the existing
+    // slides/list in place (no autoplay restart, no layout jump).
+    var groupKey = activeAmenityTab + ":" + activeAmenityGroup;
+    var groupChanged = groupKey !== lastRenderedAmenityGroupKey;
+    lastRenderedAmenityGroupKey = groupKey;
+
     renderAmenityList(lang);
-    renderAmenityMedia(lang);
+    renderAmenityCarousel(lang, groupChanged);
   }
 
+  // Plain list — natural numbered text, not interactive. Clicking an
+  // item never changes the carousel; there is no per-item active
+  // state to maintain.
   function renderAmenityList(lang) {
     var listHost = document.getElementById("amenity-list");
     if (!listHost) return;
     listHost.innerHTML = "";
-    currentAmenityItems().forEach(function (item, index) {
-      var isActive = index === activeAmenityItemIndex;
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "amenity-list__item" + (isActive ? " is-active" : "");
-      btn.setAttribute("role", "option");
-      btn.setAttribute("aria-selected", isActive ? "true" : "false");
+    var group = currentAmenityGroup();
+    var items = group ? group.items : [];
 
-      var idx = document.createElement("span");
-      idx.className = "amenity-list__index";
-      idx.textContent = item.id;
-      var name = document.createElement("span");
-      name.className = "amenity-list__name";
-      name.textContent = lang === "en" ? item.titleEn : item.titleVi;
-      btn.appendChild(idx);
-      btn.appendChild(name);
-
-      btn.addEventListener("click", function () {
-        if (activeAmenityItemIndex === index) return;
-        activeAmenityItemIndex = index;
-        updateAmenityListActiveState();
-        renderAmenityMedia(currentLang());
-      });
-      listHost.appendChild(btn);
-    });
-  }
-
-  function updateAmenityListActiveState() {
-    var listHost = document.getElementById("amenity-list");
-    if (!listHost) return;
-    Array.prototype.forEach.call(listHost.children, function (btn, index) {
-      var isActive = index === activeAmenityItemIndex;
-      btn.classList.toggle("is-active", isActive);
-      btn.setAttribute("aria-selected", isActive ? "true" : "false");
-    });
-  }
-
-  // Cross-fade + slight scale between amenity images (350–500ms total,
-  // no page reload, no section height change — the frame keeps a
-  // fixed aspect ratio throughout via CSS).
-  var amenityMediaSwapTimer = null;
-  function renderAmenityMedia(lang) {
-    var wrap = document.getElementById("amenity-image-wrap");
-    var indexEl = document.getElementById("amenity-index");
-    var titleEl = document.getElementById("amenity-title");
-    var descEl = document.getElementById("amenity-description");
-    var expandBtn = document.getElementById("amenity-expand");
-    if (!wrap) return;
-
-    var item = currentAmenityItems()[activeAmenityItemIndex];
-    if (!item) {
-      wrap.innerHTML = "";
-      if (titleEl) titleEl.textContent = "";
-      if (descEl) { descEl.textContent = ""; descEl.hidden = true; }
+    if (!items.length) {
+      var empty = document.createElement("p");
+      empty.className = "amenity-list__empty";
+      empty.textContent = lang === "en"
+        ? "The amenity list for this group has not been supplied in the approved source yet."
+        : "Danh sách tiện ích của khu vực này chưa được cung cấp trong tài liệu duyệt.";
+      listHost.appendChild(empty);
       return;
     }
 
-    var title = lang === "en" ? item.titleEn : item.titleVi;
-    var description = lang === "en" ? item.descriptionEn : item.descriptionVi;
+    items.forEach(function (item, index) {
+      var row = document.createElement("p");
+      row.className = "amenity-list__item";
+      var idx = document.createElement("span");
+      idx.className = "amenity-list__index";
+      idx.textContent = String(item.n || index + 1).padStart(2, "0");
+      var name = document.createElement("span");
+      name.className = "amenity-list__name";
+      name.textContent = lang === "en" ? item.en : item.vi;
+      row.appendChild(idx);
+      row.appendChild(name);
+      listHost.appendChild(row);
+    });
+  }
 
-    if (indexEl) indexEl.textContent = item.id;
-    if (titleEl) titleEl.textContent = title;
-    if (descEl) {
-      descEl.textContent = description || "";
-      descEl.hidden = !description;
-    }
-    if (expandBtn) {
-      expandBtn.onclick = function () {
-        openZoomModal(item.image || null, title);
-      };
-    }
+  /* Independent auto-playing image carousel — fade + slight scale
+     transition, previous/next, pagination dots, swipe on touch, pause
+     on hover/focus, "Xem ảnh" opens the shared zoom lightbox. Runs
+     entirely off the active group's own `images` list. */
+  var amenityCarouselIndex = 0;
+  var amenityCarouselTimer = null;
+  var amenityCarouselPaused = false;
+  var amenityCarouselInteractionSetup = false;
+  var AMENITY_AUTOPLAY_MS = 5500;
 
-    clearTimeout(amenityMediaSwapTimer);
-    wrap.classList.add("is-swapping");
-    amenityMediaSwapTimer = setTimeout(function () {
-      wrap.innerHTML = "";
-      if (item.image) {
-        var img = document.createElement("img");
-        img.src = item.image;
+  function renderAmenityCarousel(lang, groupChanged) {
+    var stage = document.getElementById("amenity-carousel-stage");
+    var dotsHost = document.getElementById("amenity-carousel-dots");
+    var expandBtn = document.getElementById("amenity-expand");
+    if (!stage || !dotsHost) return;
+
+    var group = currentAmenityGroup();
+    var images = group ? group.images : [];
+    var title = group ? (lang === "en" ? group.titleEn : group.titleVi) : "";
+
+    if (!groupChanged) {
+      // Language-only re-render: just relabel what's already there.
+      Array.prototype.forEach.call(stage.querySelectorAll(".amenity-carousel__img"), function (img) {
         img.alt = title;
-        img.loading = "lazy";
-        if (item.objectPosition) img.style.objectPosition = item.objectPosition;
-        wrap.appendChild(img);
-      } else {
-        var placeholder = document.createElement("div");
-        placeholder.className = "amenity-image-wrap__placeholder";
-        var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        icon.setAttribute("viewBox", "0 0 24 24");
-        icon.setAttribute("aria-hidden", "true");
-        icon.innerHTML =
-          '<rect x="3" y="4.5" width="18" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/>' +
-          '<circle cx="9" cy="10" r="1.6" fill="none" stroke="currentColor" stroke-width="1.4"/>' +
-          '<path d="M4 17.5l5.5-5.5 3 3 3.5-4 4 4.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>';
-        placeholder.appendChild(icon);
-        var note = document.createElement("p");
-        note.textContent = lang === "en" ? "Add the amenity image here" : "Thêm ảnh tiện ích tại đây";
-        placeholder.appendChild(note);
-        wrap.appendChild(placeholder);
+      });
+      var note = stage.querySelector(".amenity-carousel__placeholder p");
+      if (note) note.textContent = lang === "en" ? "Add amenity illustration images here" : "Thêm ảnh minh họa tiện ích tại đây";
+      if (expandBtn && images.length) {
+        expandBtn.onclick = function () { openZoomModal(images[amenityCarouselIndex], title); };
       }
-      wrap.classList.remove("is-swapping");
-    }, 190);
+      return;
+    }
+
+    stopAmenityCarouselAutoplay();
+    amenityCarouselIndex = 0;
+    stage.innerHTML = "";
+    dotsHost.innerHTML = "";
+    var carousel = document.getElementById("amenity-carousel");
+    if (carousel) carousel.classList.toggle("amenity-carousel--empty", !images.length);
+
+    if (!images.length) {
+      var placeholder = document.createElement("div");
+      placeholder.className = "amenity-carousel__placeholder";
+      var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      icon.setAttribute("viewBox", "0 0 24 24");
+      icon.setAttribute("aria-hidden", "true");
+      icon.innerHTML =
+        '<rect x="3" y="4.5" width="18" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/>' +
+        '<circle cx="9" cy="10" r="1.6" fill="none" stroke="currentColor" stroke-width="1.4"/>' +
+        '<path d="M4 17.5l5.5-5.5 3 3 3.5-4 4 4.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>';
+      placeholder.appendChild(icon);
+      var note = document.createElement("p");
+      note.textContent = lang === "en" ? "Add amenity illustration images here" : "Thêm ảnh minh họa tiện ích tại đây";
+      placeholder.appendChild(note);
+      stage.appendChild(placeholder);
+      if (expandBtn) expandBtn.onclick = null;
+      return;
+    }
+
+    images.forEach(function (src, index) {
+      var img = document.createElement("img");
+      img.className = "amenity-carousel__img" + (index === 0 ? " is-active" : "");
+      img.src = src;
+      img.alt = title;
+      img.loading = index === 0 ? "eager" : "lazy";
+      stage.appendChild(img);
+
+      var dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "amenity-carousel__dot" + (index === 0 ? " is-active" : "");
+      dot.setAttribute("role", "tab");
+      dot.setAttribute("aria-label", (lang === "en" ? "Image " : "Ảnh ") + (index + 1));
+      dot.setAttribute("aria-selected", index === 0 ? "true" : "false");
+      dot.addEventListener("click", function () {
+        goToAmenityCarouselSlide(index);
+        restartAmenityCarouselAutoplay();
+      });
+      dotsHost.appendChild(dot);
+    });
+
+    if (expandBtn) {
+      expandBtn.onclick = function () { openZoomModal(images[amenityCarouselIndex], title); };
+    }
+
+    setupAmenityCarouselInteraction();
+    if (images.length > 1) startAmenityCarouselAutoplay();
+  }
+
+  function goToAmenityCarouselSlide(index) {
+    var stage = document.getElementById("amenity-carousel-stage");
+    if (!stage) return;
+    var imgs = stage.querySelectorAll(".amenity-carousel__img");
+    if (!imgs.length) return;
+    amenityCarouselIndex = (index + imgs.length) % imgs.length;
+    imgs.forEach(function (img, i) {
+      img.classList.toggle("is-active", i === amenityCarouselIndex);
+    });
+    var dots = document.querySelectorAll("#amenity-carousel-dots .amenity-carousel__dot");
+    dots.forEach(function (dot, i) {
+      var isActive = i === amenityCarouselIndex;
+      dot.classList.toggle("is-active", isActive);
+      dot.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+    var expandBtn = document.getElementById("amenity-expand");
+    var group = currentAmenityGroup();
+    if (expandBtn && group && group.images.length) {
+      expandBtn.onclick = function () { openZoomModal(group.images[amenityCarouselIndex], currentLang() === "en" ? group.titleEn : group.titleVi); };
+    }
+  }
+
+  function startAmenityCarouselAutoplay() {
+    stopAmenityCarouselAutoplay();
+    amenityCarouselTimer = setInterval(function () {
+      if (amenityCarouselPaused) return;
+      goToAmenityCarouselSlide(amenityCarouselIndex + 1);
+    }, AMENITY_AUTOPLAY_MS);
+  }
+  function stopAmenityCarouselAutoplay() {
+    if (amenityCarouselTimer) {
+      clearInterval(amenityCarouselTimer);
+      amenityCarouselTimer = null;
+    }
+  }
+  function restartAmenityCarouselAutoplay() {
+    var stage = document.getElementById("amenity-carousel-stage");
+    if (stage && stage.querySelectorAll(".amenity-carousel__img").length > 1) {
+      startAmenityCarouselAutoplay();
+    }
+  }
+
+  function setupAmenityCarouselInteraction() {
+    if (amenityCarouselInteractionSetup) return;
+    amenityCarouselInteractionSetup = true;
+
+    var carousel = document.getElementById("amenity-carousel");
+    var stage = document.getElementById("amenity-carousel-stage");
+    var prevBtn = document.getElementById("amenity-carousel-prev");
+    var nextBtn = document.getElementById("amenity-carousel-next");
+    if (!carousel || !stage) return;
+
+    if (prevBtn) prevBtn.addEventListener("click", function () {
+      goToAmenityCarouselSlide(amenityCarouselIndex - 1);
+      restartAmenityCarouselAutoplay();
+    });
+    if (nextBtn) nextBtn.addEventListener("click", function () {
+      goToAmenityCarouselSlide(amenityCarouselIndex + 1);
+      restartAmenityCarouselAutoplay();
+    });
+
+    ["mouseenter", "focusin"].forEach(function (evt) {
+      carousel.addEventListener(evt, function () { amenityCarouselPaused = true; });
+    });
+    ["mouseleave", "focusout"].forEach(function (evt) {
+      carousel.addEventListener(evt, function () { amenityCarouselPaused = false; });
+    });
+
+    // Touch swipe.
+    var startX = 0, deltaX = 0, tracking = false;
+    stage.addEventListener("touchstart", function (e) {
+      tracking = true;
+      startX = e.touches[0].clientX;
+      deltaX = 0;
+    }, { passive: true });
+    stage.addEventListener("touchmove", function (e) {
+      if (!tracking) return;
+      deltaX = e.touches[0].clientX - startX;
+    }, { passive: true });
+    stage.addEventListener("touchend", function () {
+      if (!tracking) return;
+      tracking = false;
+      if (Math.abs(deltaX) > 40) {
+        goToAmenityCarouselSlide(amenityCarouselIndex + (deltaX < 0 ? 1 : -1));
+        restartAmenityCarouselAutoplay();
+      }
+    });
   }
 
   /* -----------------------------------------------------
@@ -591,103 +732,43 @@
   }
 
   /* -----------------------------------------------------
-     7. SAVILLS NEWS / CREDIBILITY CARDS (§10)
-     Only cards with confirmed source data render — an item with a
-     real URL but no confirmed headline/date/excerpt (see
-     js/config.js) is skipped rather than shown with placeholder
-     copy, per this task's "hide empty cards" instruction. If nothing
-     is confirmed yet, the grid shows one calm empty-state message
-     instead of an abrupt blank section.
+     7. CREDIBILITY / MEDIA — full-width image (§10)
+     Replaces the old news-card grid. Renders a real <picture> once
+     window.credibilityMedia.desktop is supplied; until then, a fixed-
+     height placeholder note (no "đang được xác nhận" copy, no
+     layout shift either way — the figure's own CSS height is what
+     holds the space, not the presence of an <img>).
      ----------------------------------------------------- */
-  function renderNews(lang) {
-    var host = document.getElementById("savills-news");
-    if (!host || !window.savillsNews) return;
+  function renderCredibilityMedia(lang) {
+    var host = document.getElementById("credibility-media");
+    if (!host || !window.credibilityMedia) return;
+    var data = window.credibilityMedia;
     host.innerHTML = "";
 
-    var confirmedItems = window.savillsNews.filter(function (item) { return item.confirmed; });
-
-    if (!confirmedItems.length) {
-      host.innerHTML =
-        '<div class="savills-section__news-empty">' +
-        (lang === "en"
-          ? "Official updates and media coverage are being confirmed"
-          : "Thông tin chính thức và tin tức truyền thông đang được xác nhận") +
-        "</div>";
+    if (!data.desktop) {
+      var placeholder = document.createElement("div");
+      placeholder.className = "credibility-fullscreen-media__placeholder";
+      var note = document.createElement("p");
+      note.textContent = lang === "en" ? "Add media coverage image here" : "Thêm ảnh truyền thông tại đây";
+      placeholder.appendChild(note);
+      host.appendChild(placeholder);
       return;
     }
 
-    confirmedItems.forEach(function (item, index) {
-      var a = document.createElement("a");
-      a.className = "news-card" + (index === 0 ? " news-card--featured" : "");
-      a.href = item.url;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-
-      var media = document.createElement("div");
-      media.className = "news-card__media";
-      if (item.image) {
-        var img = document.createElement("img");
-        img.src = item.image;
-        img.alt = "";
-        img.loading = "lazy";
-        media.appendChild(img);
-      } else {
-        var note = document.createElement("p");
-        note.className = "news-card__media-note";
-        note.textContent = lang === "en" ? "Image being updated" : "Hình ảnh đang được cập nhật";
-        media.appendChild(note);
-      }
-
-      var body = document.createElement("div");
-      body.className = "news-card__body";
-
-      var badge = document.createElement("div");
-      badge.className = "news-card__badge";
-
-      var source = document.createElement("span");
-      source.className = "news-card__source";
-      if (item.publisherLogo) {
-        var logoImg = document.createElement("img");
-        logoImg.src = item.publisherLogo;
-        logoImg.alt = item.publisher;
-        source.appendChild(logoImg);
-      }
-      source.appendChild(document.createTextNode(item.publisher));
-
-      var type = document.createElement("span");
-      type.className = "news-card__type";
-      type.textContent = lang === "en" ? item.typeEn : item.typeVi;
-
-      var date = document.createElement("span");
-      date.className = "news-card__date";
-      date.textContent = lang === "en" ? item.dateEn : item.dateVi;
-
-      badge.appendChild(source);
-      badge.appendChild(type);
-      badge.appendChild(date);
-
-      var title = document.createElement("p");
-      title.className = "news-card__title";
-      title.textContent = lang === "en" ? item.titleEn : item.titleVi;
-
-      var excerpt = document.createElement("p");
-      excerpt.className = "news-card__excerpt";
-      excerpt.textContent = lang === "en" ? item.excerptEn : item.excerptVi;
-
-      var link = document.createElement("span");
-      link.className = "news-card__link";
-      link.innerHTML = (lang === "en" ? "See details" : "Xem chi tiết") +
-        ' <span class="news-card__arrow" aria-hidden="true">&rarr;</span>';
-
-      body.appendChild(badge);
-      body.appendChild(title);
-      body.appendChild(excerpt);
-      body.appendChild(link);
-
-      a.appendChild(media);
-      a.appendChild(body);
-      host.appendChild(a);
-    });
+    var picture = document.createElement("picture");
+    if (data.mobile) {
+      var source = document.createElement("source");
+      source.media = "(max-width: 767px)";
+      source.srcset = data.mobile;
+      picture.appendChild(source);
+    }
+    var img = document.createElement("img");
+    img.src = data.desktop;
+    img.alt = lang === "en" ? (data.altEn || data.alt) : data.alt;
+    img.loading = "lazy";
+    img.style.setProperty("--credibility-focus", data.focalPointDesktop || "center");
+    picture.appendChild(img);
+    host.appendChild(picture);
   }
 
   /* -----------------------------------------------------
@@ -840,11 +921,12 @@
     renderAmenitySection(lang);
     renderFloorplans(lang);
     renderProgress(lang);
-    renderNews(lang);
+    renderCredibilityMedia(lang);
   }
 
   renderAll();
   setupPolicyTabs();
+  setupDetailsToggle();
   setupFloatingContacts();
   setupFinalForm();
   setupDepthFrames();

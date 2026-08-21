@@ -715,6 +715,89 @@ under-designed. All new/renamed classes are documented inline in
 
 ---
 
+## 9h. Refinement pass — USP baseline, eyebrows, details toggle, amenities data model, credibility image
+
+A second, more targeted design/data pass on top of 9g. Hero, header, the
+registration popup, and every section not listed below are unchanged.
+
+- **USP cards**: rebuilt as a strict 3-row CSS grid (`grid-template-rows:
+  56px 112px 48px`) per card — label / number+unit / description — so
+  every card's number sits on the same pixel baseline regardless of how
+  many lines its own label/description wrap to (verified: both rows'
+  number tops match exactly at every breakpoint tested). Classes
+  simplified to the flat `.usp-card`/`.usp-label`/`.usp-value-row`/
+  `.usp-number`/`.usp-unit`/`.usp-description` (dropped the old
+  `.usp-card__*` BEM names and the separate "Ít nhất"/"Từ" prefix line
+  — those words are gone; a `.usp-plus` element carries just the "+" in
+  the "168+ tiện ích" card). `js/main.js`'s count-up/shine logic was
+  repointed from `.stat-card__value`/`.usp-card__number` to
+  `.usp-number` — same behaviour, new selector.
+- **Eyebrow repetition**: hero eyebrow is now "ĐÔ THỊ NGHỈ DƯỠNG VEN
+  SÔNG" / "RIVERSIDE RESORT-STYLE LIVING" (hero `<h1>` unchanged). Six
+  section eyebrows were switched from a repeated "PALM RIVER" to
+  function-based labels (Project Details → "TỔNG QUAN DỰ ÁN", Location →
+  "KẾT NỐI KHU VỰC", Amenities → "HỆ TIỆN ÍCH", Floor Plans → "THIẾT KẾ
+  CĂN HỘ", Payment Policy → "THÔNG TIN BÁN HÀNG", Progress → "TIẾN ĐỘ
+  XÂY DỰNG" — the last one wasn't named in the brief's list but was
+  extended the same treatment for consistency). The mid-page CTA's
+  eyebrow was removed outright (`.mid-cta__eyebrow` CSS deleted) since
+  its own heading already says "Palm River".
+- **Project Details table**: no longer a `<details>`/`<summary>` pair
+  whose "Xem thêm" summary was `display:none` on desktop (the actual bug
+  behind "desktop thiếu nhiều thông tin" — the extra 9 rows were
+  literally unreachable there). Now one `<dl id="details-list">` with
+  all 14 rows always in the DOM; a `.details__toggle` button
+  (`aria-expanded`, `aria-controls="details-list"`, keyboard + focus-
+  visible) toggles `data-expanded` on the list, which CSS uses with
+  `:nth-child(n+9)` (desktop/tablet: 8 default) / `:nth-child(n+6)`
+  (mobile: 5 default) to hide the rest — same dataset, same list, only
+  the default cutoff differs by breakpoint. Content itself was already
+  sheet-accurate from an earlier pass, so nothing in `projectDetails`
+  changed.
+- **Amenities data model**: replaced the click-an-item-to-change-image
+  interaction with two independent widgets sharing one
+  `window.amenityGroups` source (`js/config.js`) — a plain, non-
+  interactive amenity list (numbered `<p>` rows, no buttons, no active
+  state) and a fully separate auto-playing image carousel (5.5s
+  interval, prev/next, pagination dots, touch swipe, pauses on hover/
+  focus, cross-fade + scale transition, "Xem ảnh" opens the shared zoom
+  lightbox). Both tabs now have 4 real groups: Palm City → Khu thương
+  mại / Công viên cộng đồng / Tuyến dạo bờ sông sinh thái / Thể thao &
+  Sức khỏe (group names supplied directly in this task's brief); Palm
+  River → the same 68-item, 4-floor list as before, unchanged. Palm
+  City's `items`/`images` arrays are empty — see the missing-data note
+  below — and render an explicit "chưa được cung cấp" message rather
+  than reusing the sitewide "Đang cập nhật" phrase or fabricating
+  amenity names.
+- **Savills benefit cards**: "01"/"02"/"03" replaced with a
+  `.benefit-icon` — a 52×52 square, `#FFDF00` background, a distinct
+  24×24 stroke-only SVG per card (shield-check / key / advisor), all
+  same size/stroke-width. Cards are still `<li>`, not buttons (no click
+  action exists for them).
+- **Credibility section**: split out of `#savills` into its own
+  `<section class="credibility-section" id="truyen-thong">`. Removed the
+  "THÔNG TIN CHÍNH THỨC & TRUYỀN THÔNG" eyebrow and the old news-card
+  grid/empty-state entirely (`renderNews()`, `.news-card*`,
+  `.savills-section__news*` CSS all deleted, not just overridden).
+  Heading/paragraph unchanged. Below them, a single
+  `.credibility-fullscreen-media` figure breaks out of `.section-
+  container` to full viewport width via `margin-left: calc(50% - 50vw)`,
+  with a slow 1.01→1.035 zoom (14s, alternating) and a ≤0.08-opacity
+  light sweep — both disabled under `prefers-reduced-motion`. No
+  approved photo exists yet (not part of any row in the source sheet),
+  so it renders a fixed-height placeholder ("Thêm ảnh truyền thông tại
+  đây") rather than the removed "đang được xác nhận" copy or a broken
+  `<img>`; setting `window.credibilityMedia.desktop`/`.mobile` in
+  `js/config.js` makes the real `<picture>` appear automatically.
+- Re-verified at 1440/1280/1024/768/430/390px after this pass: zero
+  horizontal overflow, USP number baselines match within each row, the
+  details toggle correctly shows 8/5 rows by breakpoint and 14 when
+  expanded, the amenity carousel hides its prev/next/dots when a group
+  has no images, and VI/EN switching covers every new string with no
+  missing translation keys.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

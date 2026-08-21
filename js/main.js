@@ -137,7 +137,7 @@
   var prefersReducedMotion =
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  var statValues = document.querySelectorAll(".usp-card__number[data-value]");
+  var statValues = document.querySelectorAll(".usp-number[data-value]");
   if (statValues.length && "IntersectionObserver" in window && !prefersReducedMotion) {
     statValues.forEach(function (el) {
       var decimals = parseInt(el.getAttribute("data-decimals") || "0", 10);
@@ -364,7 +364,7 @@
     // reduced motion is on, or IntersectionObserver isn't supported,
     // the count-up system never zeroed the value in the first place —
     // it's always "final" and safe to reformat with the real number.
-    document.querySelectorAll(".usp-card__number[data-value]").forEach(function (el) {
+    document.querySelectorAll(".usp-number[data-value]").forEach(function (el) {
       if (el.classList.contains("is-counting")) return;
       var decimals = parseInt(el.getAttribute("data-decimals") || "0", 10);
       var isFinal =

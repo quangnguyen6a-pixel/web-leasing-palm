@@ -371,13 +371,6 @@
   max-width: 720px;
   padding: 0 24px;
 }
-.mid-cta__eyebrow {
-  font-family: var(--font-body-alt);
-  letter-spacing: 0.3em;
-  font-size: 13px;
-  color: var(--color-savills-yellow);
-  margin-bottom: 16px;
-}
 .mid-cta__heading {
   font-family: var(--font-heading-alt);
   font-weight: 400;
@@ -477,19 +470,40 @@
   opacity: 0.55;
   font-style: italic;
 }
-.details__more {
-  border-top: none;
-}
-.details__more-summary {
+/* Same dataset, same list, at every width — only the default visible
+   row count differs (8 desktop/tablet, 5 mobile; see the responsive
+   blocks below). Expanding never removes anything from the DOM, so
+   there is nothing to lose when the viewport crosses a breakpoint
+   mid-scroll. */
+.details__row:nth-child(n+9) {
   display: none;
-  cursor: pointer;
-  padding: 14px 4px;
+}
+.details__list[data-expanded="true"] .details__row {
+  display: grid;
+}
+.details__toggle {
+  margin-top: 18px;
+  padding: 12px 26px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(191, 232, 247, 0.3);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  color: var(--color-white);
   font-family: var(--font-body-alt);
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-savills-yellow);
+  letter-spacing: 0.03em;
+  transition: background-color 200ms ease, border-color 200ms ease, transform 200ms ease;
+}
+.details__toggle:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(191, 232, 247, 0.5);
+  transform: translateY(-3px);
+}
+.details__toggle:focus-visible {
+  outline: 2px solid var(--color-savills-yellow);
+  outline-offset: 2px;
 }
 .details__disclaimer {
   margin-top: 20px;
@@ -606,8 +620,9 @@
   font-size: 13px;
 }
 
-/* Level 2: group/floor tabs — hidden entirely (via [hidden], set in
-   JS) when the active level-1 tab has only one group. */
+/* Level 2: each level-1 tab now always has 4 real groups (Palm City's
+   4 categories, Palm River's 4 floors), so this row is always shown —
+   no more conditional hide/show. */
 .amenities__floor-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -632,8 +647,9 @@
    shared component comment above the definition) plus the shared
    .glass-depth-layer utility for the two offset background layers —
    the same pairing as .floorplan-media-frame in the Floor Plans
-   section, just with a photography (cover) aspect instead of a plan
-   drawing (contain). */
+   section. Fully independent of the amenity list beside it: it runs
+   its own autoplay/prev/next/swipe against the active group's own
+   `images` array (js/config.js), never the list's `items`. */
 .amenity-media-frame {
   position: relative;
 }
@@ -641,31 +657,32 @@
   position: relative;
   z-index: 1;
 }
-.amenity-image-wrap {
+.amenity-carousel {
+  position: relative;
+}
+.amenity-carousel__stage {
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
 }
-.amenity-image-wrap img {
+.amenity-carousel__img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: var(--amenity-focal, center);
-}
-/* Cross-fade + scale swap between amenity images, 350–500ms total
-   (190ms out, matching JS's swap timeout, + ~200ms back in). */
-.amenity-image-wrap img,
-.amenity-image-wrap__placeholder {
-  transition: opacity 200ms ease, transform 200ms ease;
-}
-.amenity-image-wrap.is-swapping img,
-.amenity-image-wrap.is-swapping .amenity-image-wrap__placeholder {
   opacity: 0;
-  transform: scale(0.98);
+  transform: scale(1.02);
+  transition: opacity 420ms ease, transform 420ms ease;
 }
-.amenity-image-wrap__placeholder {
+.amenity-carousel__img.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+.amenity-carousel__placeholder {
   width: 100%;
   height: 100%;
+  aspect-ratio: 4 / 3;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -673,48 +690,75 @@
   gap: 10px;
   color: rgba(255, 255, 255, 0.4);
 }
-.amenity-image-wrap__placeholder svg {
+.amenity-carousel__placeholder svg {
   width: 34px;
   height: 34px;
 }
-.amenity-image-wrap__placeholder p {
+.amenity-carousel__placeholder p {
   font-family: var(--font-body-alt);
   font-size: 13px;
   color: rgba(255, 255, 255, 0.55);
 }
-.amenity-media-caption {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 16px 6px 4px;
+.amenity-carousel--empty .amenity-carousel__nav,
+.amenity-carousel--empty .amenity-carousel__dots,
+.amenity-carousel--empty .amenity-expand {
+  display: none;
 }
-.amenity-index {
-  flex: 0 0 auto;
-  font-family: var(--font-heading-alt);
-  font-weight: 400;
-  font-size: 26px;
-  color: var(--color-savills-yellow);
-  line-height: 1;
-}
-.amenity-media-caption h3 {
-  font-family: var(--font-heading-alt);
-  font-weight: 400;
-  font-size: 18px;
+.amenity-carousel__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 28, 61, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   color: var(--color-white);
-  margin-bottom: 4px;
+  font-size: 15px;
+  transition: background-color 200ms ease, border-color 200ms ease;
 }
-.amenity-media-caption p {
-  font-family: var(--font-body-alt);
-  font-size: 13px;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.62);
+.amenity-carousel__nav:hover, .amenity-carousel__nav:focus-visible {
+  background: var(--color-savills-yellow);
+  border-color: var(--color-savills-yellow);
+  color: var(--color-navy-primary);
 }
-.amenity-media-caption p[hidden] { display: none; }
+.amenity-carousel__nav--prev { left: 14px; }
+.amenity-carousel__nav--next { right: 14px; }
+.amenity-carousel__dots {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+}
+.amenity-carousel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.25);
+  padding: 0;
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+.amenity-carousel__dot.is-active {
+  background: var(--color-savills-yellow);
+  border-color: var(--color-savills-yellow);
+  transform: scale(1.2);
+}
+.amenity-carousel__dot:focus-visible {
+  outline: 2px solid var(--color-savills-yellow);
+  outline-offset: 2px;
+}
 
 .amenity-expand {
   position: absolute;
-  top: 22px;
-  right: 22px;
+  top: 16px;
+  right: 16px;
   z-index: 2;
   padding: 8px 16px;
   border-radius: 999px;
@@ -739,7 +783,8 @@
   outline-offset: 2px;
 }
 
-/* Interactive amenity list — each row is a real <button>. */
+/* Plain amenity list — natural numbered text, not interactive; no
+   button, no active state, no click-to-change-image. */
 .amenity-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -751,58 +796,33 @@
 }
 .amenity-list__item {
   display: flex;
-  align-items: flex-start;
+  align-items: baseline;
   gap: 10px;
-  padding: 11px 14px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  background: transparent;
-  text-align: left;
+  margin: 0;
+  padding: 8px 4px;
   font-family: var(--font-body-alt);
   font-size: 13.5px;
+  line-height: 1.4;
   color: rgba(255, 255, 255, 0.78);
-  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
-}
-.amenity-list__item:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-.amenity-list__item:focus-visible {
-  outline: 2px solid var(--color-savills-yellow);
-  outline-offset: 2px;
-}
-.amenity-list__item.is-active {
-  position: relative;
-  background: rgba(105, 213, 245, 0.09);
-  border-color: rgba(191, 232, 247, 0.32);
-  color: var(--color-white);
-}
-.amenity-list__item.is-active::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 20%;
-  bottom: 20%;
-  width: 2px;
-  background: var(--color-savills-yellow);
-  border-radius: 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .amenity-list__index {
   flex: 0 0 auto;
   font-weight: 700;
-  line-height: 1.35;
   color: rgba(255, 255, 255, 0.4);
   min-width: 20px;
 }
-.amenity-list__item.is-active .amenity-list__index {
-  color: var(--color-savills-yellow);
-}
-.amenity-list__name {
-  line-height: 1.35;
+.amenity-list__empty {
+  grid-column: 1 / -1;
+  font-family: var(--font-body-alt);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .amenity-image-wrap img,
-  .amenity-image-wrap__placeholder {
+  .amenity-carousel__img {
     transition: none;
   }
 }
@@ -1247,17 +1267,34 @@
   margin-bottom: 56px;
 }
 .pillar {
+  display: flex;
+  flex-direction: column;
   padding: 24px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
-.pillar__index {
-  display: block;
-  font-family: var(--font-heading-alt);
-  font-size: 22px;
-  color: var(--color-savills-yellow);
-  margin-bottom: 10px;
+/* Square yellow icon glyph — replaces the old "01/02/03" numerals.
+   Shared by all three Savills benefit cards; same size/stroke on
+   every icon so they read as one consistent set. */
+.benefit-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+  background: var(--color-savills-yellow);
+  color: var(--color-navy-primary);
+  border-radius: 4px;
+}
+.benefit-icon svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .pillar__label {
   font-family: var(--font-body-alt);
@@ -1271,165 +1308,104 @@
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.7);
 }
-.savills-section__news-head {
-  margin-top: 8px;
+/* =========================================================
+   CREDIBILITY / MEDIA COVERAGE — heading + full-viewport-width image
+   ========================================================= */
+.credibility-section {
+  padding: var(--section-space-desktop) 0;
+  background: var(--color-navy-secondary);
+  color: var(--color-white);
+  overflow-x: hidden;
 }
-.savills-section__news-title {
-  font-family: var(--font-heading-alt);
-  font-weight: 400;
-  font-size: clamp(52px, 5vw, 78px);
-  line-height: 1.08;
-  margin-bottom: 14px;
-  text-wrap: balance;
+.credibility-heading {
+  max-width: 720px;
+  margin-bottom: 48px;
 }
-.savills-section__news-head .section-lead {
-  font-size: clamp(17px, 1.4vw, 19px);
+.credibility-heading .section-title {
+  font-size: clamp(38px, 4.2vw, 60px);
+}
+.credibility-heading .section-lead {
+  font-size: clamp(16px, 1.3vw, 18px);
   line-height: 1.65;
+  opacity: 0.82;
 }
-.savills-section__news {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-  align-items: start;
-}
-/* Editorial card: clean, credible surface — ivory/translucent-white on
-   the section's navy background, thin navy border, no heavy glass. */
-.news-card {
-  display: flex;
-  flex-direction: column;
-  background: rgba(245, 243, 236, 0.96);
-  border: 1px solid rgba(0, 28, 61, 0.14);
-  border-radius: 4px;
-  overflow: hidden;
-  color: var(--color-navy-primary);
-  transition: border-color 200ms ease, box-shadow 200ms ease;
-}
-.news-card:hover, .news-card:focus-visible {
-  border-color: rgba(0, 28, 61, 0.3);
-  box-shadow: 0 16px 36px -24px rgba(0, 0, 0, 0.4);
-}
-.news-card__media {
+/* Escapes .section-container on purpose — this is the one deliberate
+   full-bleed element on the page. */
+.credibility-fullscreen-media {
   position: relative;
-  aspect-ratio: 16 / 10;
+  width: 100vw;
+  height: clamp(620px, 78svh, 900px);
+  margin: 0 0 0 calc(50% - 50vw);
   overflow: hidden;
-  background: rgba(0, 28, 61, 0.06);
+  background: var(--color-navy-secondary);
+  isolation: isolate;
+}
+.credibility-fullscreen-media picture,
+.credibility-fullscreen-media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.credibility-fullscreen-media img {
+  object-fit: cover;
+  object-position: var(--credibility-focus, center);
+  animation: credibility-zoom 14s ease-in-out infinite alternate;
+}
+@keyframes credibility-zoom {
+  from { transform: scale(1.01); }
+  to { transform: scale(1.035); }
+}
+/* Very light reflected-light sweep, well within the shared 0.08–0.12
+   ripple-opacity guideline — never behind body text here, since this
+   figure carries no text of its own. */
+.credibility-fullscreen-media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.08;
+  background: linear-gradient(100deg, transparent 40%, rgba(255, 255, 255, 0.5) 50%, rgba(105, 213, 245, 0.4) 54%, transparent 64%);
+  background-size: 220% 220%;
+  background-position: 200% 0;
+  animation: credibility-sweep 12s ease-in-out infinite;
+}
+@keyframes credibility-sweep {
+  0% { background-position: 200% 0; }
+  20% { background-position: -60% 0; }
+  100% { background-position: -60% 0; }
+}
+/* Inner border only — no outer yellow frame. */
+.credibility-fullscreen-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border: 1px solid rgba(191, 232, 247, 0.25);
+}
+.credibility-fullscreen-media__placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.news-card__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 320ms ease;
-}
-.news-card:hover .news-card__media img,
-.news-card:focus-visible .news-card__media img {
-  transform: translateY(-3px);
-}
-.news-card__media-note {
-  font-family: var(--font-body-alt);
-  font-size: 12px;
-  color: rgba(0, 28, 61, 0.4);
-  padding: 16px;
-  text-align: center;
-}
-.news-card__body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 20px 22px 22px;
-}
-/* Credibility hierarchy: publisher/source badge is the most prominent
-   metadata; content-type and date sit smaller beside it. */
-.news-card__badge {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.news-card__source {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.credibility-fullscreen-media__placeholder p {
   font-family: var(--font-body-alt);
   font-size: 14px;
-  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
 }
-.news-card__source img {
-  height: 18px;
-  width: auto;
-}
-.news-card__type {
-  font-family: var(--font-body-alt);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 3px 9px;
-  border-radius: 999px;
-  background: rgba(0, 28, 61, 0.08);
-  color: rgba(0, 28, 61, 0.68);
-}
-.news-card__date {
-  margin-left: auto;
-  font-family: var(--font-body-alt);
-  font-size: 12px;
-  color: rgba(0, 28, 61, 0.42);
-}
-.news-card__title {
-  font-family: var(--font-heading-alt);
-  font-weight: 400;
-  font-size: 21px;
-  margin-bottom: 10px;
-  line-height: 1.3;
-}
-.news-card__excerpt {
-  font-family: var(--font-body-alt);
-  font-size: 14px;
-  color: rgba(0, 28, 61, 0.68);
-  margin-bottom: 16px;
-  line-height: 1.6;
-}
-.news-card__link {
-  margin-top: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-body-alt);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-navy-primary);
-}
-.news-card__arrow {
-  transition: transform 200ms ease;
-}
-.news-card:hover .news-card__arrow,
-.news-card:focus-visible .news-card__arrow {
-  transform: translateX(4px);
-}
-/* Optional larger treatment for the first confirmed article. */
-.news-card--featured {
-  grid-column: 1 / -1;
-}
-@media (min-width: 1024px) {
-  .news-card--featured {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
+@media (prefers-reduced-motion: reduce) {
+  .credibility-fullscreen-media img,
+  .credibility-fullscreen-media::before {
+    animation: none;
   }
-  .news-card--featured .news-card__media { aspect-ratio: auto; }
-  .news-card--featured .news-card__title { font-size: 26px; }
 }
-.savills-section__news-empty {
-  grid-column: 1 / -1;
-  padding: 40px 24px;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  text-align: center;
-  font-family: var(--font-body-alt);
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.55);
+@media (max-width: 767px) {
+  .credibility-section { padding: var(--section-space-mobile) 0; }
+  .credibility-fullscreen-media { height: clamp(460px, 65svh, 680px); }
 }
 
 /* =========================================================
@@ -1714,7 +1690,6 @@
   /* Floor plan image full width above the 2x2 feature-card grid. */
   .floorplan-typical-layout { grid-template-columns: 1fr; gap: 32px; }
   .savills-section__pillars { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-  .savills-section__news { grid-template-columns: 1fr; }
 }
 
 /* =========================================================
@@ -1733,10 +1708,10 @@
 
   .details__grid { grid-template-columns: 1fr; gap: 28px; }
   .details__media { position: static; order: -1; }
-  /* Mobile accordion: first five facts stay visible, the rest are
-     collapsed behind the native <details>/<summary> toggle. */
-  .details__more-summary { display: block; }
-  .details__more[open] .details__more-summary { color: var(--color-white); opacity: 0.7; }
+  /* Mobile default cutoff: 5 rows instead of desktop's 8 — same list,
+     same toggle, just a tighter nth-child cutoff at this width. */
+  .details__row:nth-child(n+6) { display: none; }
+  .details__list[data-expanded="true"] .details__row { display: grid; }
 
   .location__map-frame { aspect-ratio: 4 / 3; }
   .location__panel { grid-template-columns: 1fr; }
@@ -1802,7 +1777,6 @@
   .policy__step { flex: 1 1 auto; }
 
   .savills-section__pillars { grid-template-columns: 1fr; }
-  .savills-section__news { grid-template-columns: 1fr; }
 
   .residential__container { grid-template-columns: 1fr; }
 
