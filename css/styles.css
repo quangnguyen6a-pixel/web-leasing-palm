@@ -906,6 +906,9 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   align-items: center;
   margin-top: var(--space-xl);
 }
+.project-overview__body > * {
+  min-width: 0;
+}
 .project-overview__body .project-intro {
   margin-top: 0;
 }

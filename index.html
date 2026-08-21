@@ -229,9 +229,9 @@
              "Nơi tái tạo năng lượng mỗi ngày" and the Palm River logo.
              Renders automatically once that path is set; no CSS/layout
              changes needed. -->
-        <div class="media-depth-frame media-depth-frame--dark project-overview__media" data-depth-frame>
-          <div class="media-depth-frame__inner" id="overview-media-inner">
-            <p class="media-depth-frame__note"
+        <div class="glass-media-frame" data-depth-frame>
+          <div class="glass-media-inner project-overview__media" id="overview-media-inner">
+            <p class="glass-media-note"
                data-lang-vi="Hình ảnh phối cảnh đang được cập nhật"
                data-lang-en="Rendering image is being updated">Hình ảnh phối cảnh đang được cập nhật</p>
           </div>
@@ -330,9 +330,9 @@
           <!-- Add approved Project Details rendering here
                (projectConfig.projectDetailImage in js/config.js), 3:4/4:5
                ratio. Renders automatically once that path is set. -->
-          <div class="media-depth-frame media-depth-frame--dark" data-depth-frame>
-            <div class="details__image-frame media-depth-frame__inner" id="details-media-inner">
-              <p class="media-depth-frame__note"
+          <div class="glass-media-frame" data-depth-frame>
+            <div class="details__image-frame glass-media-inner" id="details-media-inner">
+              <p class="glass-media-note"
                  data-lang-vi="Hình ảnh dự án đang được cập nhật"
                  data-lang-en="Project image is being updated">Hình ảnh dự án đang được cập nhật</p>
             </div>
@@ -412,23 +412,19 @@
       <div class="amenities__floor-tabs" id="amenities-floor-tabs" role="tablist" aria-label="Nhóm tiện ích con"></div>
 
       <div class="amenities__layout">
-        <div class="amenity-media-frame">
-          <span class="glass-depth-layer glass-depth-layer--1" aria-hidden="true"></span>
-          <span class="glass-depth-layer glass-depth-layer--2" aria-hidden="true"></span>
-          <figure class="media-depth-frame amenity-media-frame__card" data-depth-frame>
-            <div class="amenity-carousel" id="amenity-carousel" role="region" aria-roledescription="carousel" aria-label="Hình ảnh minh họa tiện ích">
-              <div class="amenity-carousel__stage media-depth-frame__inner" id="amenity-carousel-stage"></div>
-              <button type="button" class="amenity-carousel__nav amenity-carousel__nav--prev" id="amenity-carousel-prev"
-                      aria-label="Ảnh trước" data-lang-vi-aria="Ảnh trước" data-lang-en-aria="Previous image">&larr;</button>
-              <button type="button" class="amenity-carousel__nav amenity-carousel__nav--next" id="amenity-carousel-next"
-                      aria-label="Ảnh tiếp theo" data-lang-vi-aria="Ảnh tiếp theo" data-lang-en-aria="Next image">&rarr;</button>
-              <div class="amenity-carousel__dots" id="amenity-carousel-dots" role="tablist" aria-label="Chọn ảnh"></div>
-              <button type="button" class="amenity-expand" id="amenity-expand"
-                      aria-label="Xem ảnh tiện ích" data-lang-vi-aria="Xem ảnh tiện ích" data-lang-en-aria="View amenity image"
-                      data-lang-vi="Xem ảnh" data-lang-en="View image">Xem ảnh</button>
-            </div>
-          </figure>
-        </div>
+        <figure class="glass-media-frame" data-depth-frame>
+          <div class="amenity-carousel" id="amenity-carousel" role="region" aria-roledescription="carousel" aria-label="Hình ảnh minh họa tiện ích">
+            <div class="amenity-carousel__stage glass-media-inner" id="amenity-carousel-stage"></div>
+            <button type="button" class="amenity-carousel__nav amenity-carousel__nav--prev" id="amenity-carousel-prev"
+                    aria-label="Ảnh trước" data-lang-vi-aria="Ảnh trước" data-lang-en-aria="Previous image">&larr;</button>
+            <button type="button" class="amenity-carousel__nav amenity-carousel__nav--next" id="amenity-carousel-next"
+                    aria-label="Ảnh tiếp theo" data-lang-vi-aria="Ảnh tiếp theo" data-lang-en-aria="Next image">&rarr;</button>
+            <div class="amenity-carousel__dots" id="amenity-carousel-dots" role="tablist" aria-label="Chọn ảnh"></div>
+            <button type="button" class="amenity-expand" id="amenity-expand"
+                    aria-label="Xem ảnh tiện ích" data-lang-vi-aria="Xem ảnh tiện ích" data-lang-en-aria="View amenity image"
+                    data-lang-vi="Xem ảnh" data-lang-en="View image">Xem ảnh</button>
+          </div>
+        </figure>
 
         <div class="amenity-list" id="amenity-list" aria-label="Danh sách tiện ích"></div>
       </div>
@@ -450,8 +446,8 @@
       <div class="floorplans__viewer">
         <div class="floorplans__image-wrap">
           <!-- Expected asset: assets/floor-plans/{type-id}.jpg (approved plan or show-unit image per type) -->
-          <div class="media-depth-frame media-depth-frame--light" data-depth-frame>
-            <div class="floorplans__image-frame media-depth-frame__inner" id="floorplans-image-frame">
+          <div class="glass-media-frame glass-media-frame--light" data-depth-frame>
+            <div class="floorplans__image-frame glass-media-inner" id="floorplans-image-frame">
               <p class="floorplans__image-note" data-lang-vi="Hình ảnh mặt bằng đang được cập nhật" data-lang-en="Floor plan image is being updated">Hình ảnh mặt bằng đang được cập nhật</p>
             </div>
           </div>
@@ -470,24 +466,19 @@
           <!-- Expected asset: assets/floor-plans/typical-floor.jpg (approved
                typical-floor plan drawing). Renders automatically once
                window.floorPlanTypical.image is set in js/config.js.
-               Reuses .media-depth-frame (see css/sections.css) for the
-               glass chrome/hover/sweep — .floorplan-media-frame only
-               adds the two offset background layers behind it. -->
-          <div class="floorplan-media-frame">
-            <span class="glass-depth-layer glass-depth-layer--1" aria-hidden="true"></span>
-            <span class="glass-depth-layer glass-depth-layer--2" aria-hidden="true"></span>
-            <figure class="media-depth-frame floorplan-media-frame__card" data-depth-frame>
-              <div class="media-depth-frame__inner floorplan-image-wrap" id="floorplan-typical-image-wrap">
-                <p class="media-depth-frame__note" data-lang-vi="Thêm ảnh mặt bằng tại đây" data-lang-en="Add the floor plan image here">Thêm ảnh mặt bằng tại đây</p>
-              </div>
-              <div class="floorplan-media-frame__footer">
-                <figcaption data-lang-vi="Mặt bằng tầng điển hình — hình ảnh minh họa" data-lang-en="Typical floor layout — illustrative image">Mặt bằng tầng điển hình — hình ảnh minh họa</figcaption>
-                <button type="button" class="floorplan-zoom" id="floorplan-typical-zoom"
-                        aria-label="Phóng to mặt bằng" data-lang-vi-aria="Phóng to mặt bằng" data-lang-en-aria="Zoom floor plan"
-                        data-lang-vi="Xem chi tiết" data-lang-en="View details">Xem chi tiết</button>
-              </div>
-            </figure>
-          </div>
+               Uses the shared .glass-media-frame component (see
+               css/sections.css). -->
+          <figure class="glass-media-frame" data-depth-frame>
+            <div class="glass-media-inner floorplan-image-wrap" id="floorplan-typical-image-wrap">
+              <p class="glass-media-note" data-lang-vi="Thêm ảnh mặt bằng tại đây" data-lang-en="Add the floor plan image here">Thêm ảnh mặt bằng tại đây</p>
+            </div>
+            <div class="floorplan-media-frame__footer">
+              <figcaption data-lang-vi="Mặt bằng tầng điển hình — hình ảnh minh họa" data-lang-en="Typical floor layout — illustrative image">Mặt bằng tầng điển hình — hình ảnh minh họa</figcaption>
+              <button type="button" class="floorplan-zoom" id="floorplan-typical-zoom"
+                      aria-label="Phóng to mặt bằng" data-lang-vi-aria="Phóng to mặt bằng" data-lang-en-aria="Zoom floor plan"
+                      data-lang-vi="Xem chi tiết" data-lang-en="View details">Xem chi tiết</button>
+            </div>
+          </figure>
 
           <div class="floorplan-features" id="floorplans-typical-points"></div>
         </div>

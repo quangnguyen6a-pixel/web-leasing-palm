@@ -798,6 +798,61 @@ registration popup, and every section not listed below are unchanged.
 
 ---
 
+## 9i. Image-frame audit — one component, no offset layers
+
+Audited every image-frame usage in Overview, Project Details, Amenities,
+Floor Plans, and Credibility for misalignment/overlap/overflow. Root
+cause: two separate legacy components stacked on top of each other —
+`.media-depth-frame` (the glass card itself, with two of its own
+animated `::after` pseudo-elements) plus `.glass-depth-layer` (two more
+absolutely-positioned, `translate()`-offset rounded rects behind it,
+used on the Amenities carousel and the Floor-plan-typical frame). The
+offset layers' `translate(10px, 12px)`/`translate(20px, 24px)` pushed
+them up to 24px outside their own bounding box, which is exactly the
+"decorative outlines extend beyond the frame" / "frames positioned
+outside their parent" symptom — and the outer frame's aspect-ratio was
+applied inconsistently (sometimes on the outer card, sometimes on the
+inner mask), which is the "inconsistent dimensions" symptom.
+
+- **Classes that caused it**: `.media-depth-frame` / `.media-depth-frame__inner`
+  / `.media-depth-frame--light` (two `::after` pseudo-elements: an
+  animated inner light-sweep plus an outer reflection), `.glass-depth-layer`
+  / `.glass-depth-layer--1` / `.glass-depth-layer--2` (offset, translated,
+  absolutely-positioned duplicate frames), and the two now-removed
+  wrapper `<div>`s `.amenity-media-frame` / `.floorplan-media-frame`
+  that existed solely to host those offset layers.
+- **Legacy removed** (deleted outright, not overridden): both
+  `.glass-depth-layer` offset layers and their host wrappers; the
+  animated `depth-frame-sweep` keyframes and the inner `::after` sweep
+  pseudo-element; the outer frame's separate reflection `::after`
+  (replaced by one static highlight); the `aspect-ratio` on
+  `.project-overview__media` being applied to the outer card instead of
+  the inner mask; the now-redundant `.media-depth-frame__inner .details__image`
+  specificity-defense rule (the shared component's own default already
+  matches what it needed).
+- **Reusable component applied**: `.glass-media-frame` /
+  `.glass-media-inner`, exactly as specified — one border, one static
+  `inset: 1px` top-highlight pseudo-element, depth from background
+  transparency + border + box-shadow only. Used identically at all 5
+  sites (Overview media, Project Details image, Amenities carousel
+  stage, Floor Plans viewer, Floor Plans typical), with only a
+  `--light` modifier (paler wash, navy border) for the two floor-plan
+  drawings and a `contain` object-fit override where a plan must never
+  be cropped. `[data-depth-frame]` scroll-entrance and the pointer-
+  parallax hover effect (`js/sections.js`, `setupDepthFrames()`) still
+  work — only their CSS selectors were renamed to match, not their
+  behaviour. Every grid that places one of these frames beside text
+  (`.project-overview__body`, `.details__grid`, `.amenities__layout`,
+  `.floorplan-typical-layout`, `.floorplans__viewer`) now has
+  `min-width: 0` on its column children so a frame can never blow out
+  its column at any width. Re-verified at 1440/1280/1024/768/430/390px:
+  zero horizontal overflow, every `.glass-media-frame`'s bounding box
+  stays within its parent, exactly 5 frames/5 inners in the DOM, and
+  the amenities carousel, lightbox, and floor-plan/unit tabs all still
+  work exactly as before.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

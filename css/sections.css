@@ -111,118 +111,96 @@
 .btn--block { width: 100%; }
 
 /* -----------------------------------------------------
-   MEDIA DEPTH FRAME — reusable component for major editorial
-   images (Overview media, project-details image, amenities carousel,
-   floor-plan viewer, progress image). Not used for logos, icons, the
-   hero background, the location map, or small news-source badges.
+   GLASS MEDIA FRAME — the one reusable component for every standard
+   editorial image: Overview media, project-details image, amenities
+   carousel, floor-plan viewer, floor-plan typical. Not used for logos,
+   icons, the hero background, the location map, small news badges, or
+   the full-viewport Credibility image (its own dedicated component).
 
-   The static glass chrome (padding/gradient/border/shadow/cyan
-   reflection) is always on via .media-depth-frame alone, so it never
-   depends on JS. The scroll-entrance animation is an opt-in
-   enhancement via [data-depth-frame] + .is-visible, added by
-   sections.js's IntersectionObserver — kept separate so it can't
-   fight a host section's own opacity/scale logic (e.g. the amenities
-   carousel's own active/inactive slide states).
+   Single frame, single inner mask, at most one static highlight
+   pseudo-element — depth comes from background transparency + border
+   + shadow, not from stacked/offset/rotated layers. Nothing here is
+   absolutely positioned for layout purposes and nothing extends past
+   the frame's own box, so it can never overlap a neighbouring column,
+   heading or caption regardless of viewport width.
 
-   No yellow anywhere in this component on purpose (removed per a
-   later refinement pass — see the git history for the earlier
-   yellow-bordered ::before offset frame this replaced). Savills
-   yellow stays everywhere else: buttons, active-tab indicators,
-   section accents, USP numbers.
+   The scroll-entrance animation is an opt-in enhancement via
+   [data-depth-frame] + .is-visible, added by sections.js's
+   IntersectionObserver — kept separate so it can't fight a host
+   section's own opacity/scale logic (e.g. the amenities carousel's
+   own active/inactive slide states).
    ----------------------------------------------------- */
-.media-depth-frame {
+.glass-media-frame {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
-  padding: 10px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(105, 213, 245, 0.07), rgba(0, 43, 73, 0.16));
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), 0 28px 70px -30px rgba(0, 28, 61, 0.58);
-  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 520ms ease;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-inline: auto;
+  padding: 12px;
+  border: 1px solid rgba(191, 232, 247, 0.28);
+  border-radius: 28px;
+  background: rgba(105, 213, 245, 0.06);
+  box-shadow: 0 24px 60px rgba(0, 28, 61, 0.22);
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 400ms ease;
 }
-.media-depth-frame:hover {
-  transform: translateY(-5px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 34px 82px -26px rgba(0, 28, 61, 0.62);
+.glass-media-frame:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 70px rgba(0, 28, 61, 0.28);
 }
-/* Very subtle water-light reflection along the upper edge — neutral
-   cyan, not neon, and never yellow. */
-.media-depth-frame::after {
+/* One subtle static highlight, fully contained within the frame
+   (inset: 1px — never negative, never larger than the frame). */
+.glass-media-frame::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: 1px;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(105, 213, 245, 0.14), transparent 42%);
-  mix-blend-mode: screen;
-  opacity: 0.5;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
 }
-/* Light-section variant: navy translucent border, softer shadow. */
-.media-depth-frame--light {
-  border-color: rgba(0, 28, 61, 0.16);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 24px 60px -30px rgba(0, 28, 61, 0.28);
-}
-.media-depth-frame--light:hover {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 30px 70px -28px rgba(0, 28, 61, 0.34);
+/* Light-section variant: floor-plan drawings are white-background
+   line art, not photography, so this pairing gets a paler wash and a
+   navy border instead of the default cyan-on-navy one. */
+.glass-media-frame--light {
+  border-color: rgba(0, 28, 61, 0.14);
+  background: rgba(0, 28, 61, 0.03);
+  box-shadow: 0 24px 60px rgba(0, 28, 61, 0.12);
 }
 
-.media-depth-frame__inner {
+.glass-media-inner {
   position: relative;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
-  border-radius: clamp(14px, 1.4vw, 18px);
-  isolation: isolate;
-  background: rgba(255, 255, 255, 0.04);
-  min-height: 160px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
 }
-/* Floor plans (and any other --light-variant frame) get a genuinely
-   ivory/white inner surface — plan drawings are white-background line
-   art, not photography, so they need to sit on white, not a
-   navy-tinted glass wash. */
-.media-depth-frame--light .media-depth-frame__inner {
+.glass-media-frame--light .glass-media-inner {
   background: var(--color-ivory);
 }
-.media-depth-frame__inner img {
+.glass-media-inner img {
   display: block;
   width: 100%;
-  height: auto;
-  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.media-depth-frame:hover .media-depth-frame__inner img {
+.glass-media-frame:hover .glass-media-inner img {
   transform: scale(1.018);
 }
-/* Slow reflected-light sweep — kept low-opacity, well outside any
-   embedded copy baked into the image itself. */
-.media-depth-frame__inner::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(100deg, transparent 42%, rgba(255, 255, 255, 0.32) 50%, rgba(105, 213, 245, 0.22) 54%, transparent 64%);
-  background-size: 220% 220%;
-  background-position: 200% 0;
-  mix-blend-mode: screen;
-  opacity: 0.5;
-  animation: depth-frame-sweep 8s ease-in-out infinite;
-  animation-delay: var(--sweep-delay, 0ms);
-}
-@keyframes depth-frame-sweep {
-  0% { background-position: 200% 0; }
-  15% { background-position: -60% 0; }
-  100% { background-position: -60% 0; }
-}
-.media-depth-frame__note {
+.glass-media-note {
   font-family: var(--font-body-alt);
   font-size: 13px;
   color: rgba(255, 255, 255, 0.55);
   padding: 24px;
   text-align: center;
 }
-.media-depth-frame--light .media-depth-frame__note {
+.glass-media-frame--light .glass-media-note {
   color: rgba(0, 28, 61, 0.5);
 }
 
@@ -230,22 +208,22 @@
    chrome above so it never fights a host section's own opacity/scale
    logic (e.g. the amenities carousel, which only gets the static
    frame, not this attribute). */
-.media-depth-frame[data-depth-frame] {
+.glass-media-frame[data-depth-frame] {
   opacity: 0;
   transform: translateY(28px);
-  transition: opacity 950ms cubic-bezier(0.22, 1, 0.36, 1), transform 950ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 520ms ease;
+  transition: opacity 800ms cubic-bezier(0.22, 1, 0.36, 1), transform 800ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 400ms ease;
 }
-.media-depth-frame[data-depth-frame].is-visible {
+.glass-media-frame[data-depth-frame].is-visible {
   opacity: 1;
   transform: translateY(0);
 }
-.media-depth-frame[data-depth-frame] .media-depth-frame__inner img {
+.glass-media-frame[data-depth-frame] .glass-media-inner img {
   transform: scale(1.035);
 }
-.media-depth-frame[data-depth-frame].is-visible .media-depth-frame__inner img {
+.glass-media-frame[data-depth-frame].is-visible .glass-media-inner img {
   transform: scale(1);
 }
-.media-depth-frame[data-depth-frame]:hover .media-depth-frame__inner img {
+.glass-media-frame[data-depth-frame]:hover .glass-media-inner img {
   transform: scale(1.018);
 }
 
@@ -313,15 +291,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .media-depth-frame[data-depth-frame] {
+  .glass-media-frame[data-depth-frame] {
     opacity: 1 !important;
     transform: none !important;
   }
-  .media-depth-frame[data-depth-frame] .media-depth-frame__inner img {
+  .glass-media-frame[data-depth-frame] .glass-media-inner img {
     transform: none !important;
-  }
-  .media-depth-frame__inner::after {
-    animation-name: none !important;
   }
 }
 
@@ -422,20 +397,17 @@
 .details__media {
   position: sticky;
   top: calc(var(--header-height-scrolled) + 24px);
+  min-width: 0;
+}
+.details__panel {
+  min-width: 0;
 }
 .details__image-frame {
-  /* Sizing only — radius/overflow/isolation come from
-     .media-depth-frame__inner (see the shared component above). */
+  /* Sizing only — radius/overflow/isolation come from the shared
+     .glass-media-inner component above. Its default object-fit:cover
+     already matches what this image needs, so no override is required
+     here. */
   aspect-ratio: 4 / 5;
-}
-/* Scoped with the parent class (not a bare ".details__image") so this
-   beats the generic ".media-depth-frame__inner img" rule's height:auto
-   on specificity — a plain single-class selector here would lose to
-   that class+element compound selector regardless of source order. */
-.media-depth-frame__inner .details__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 .details__list {
   border-top: 1px solid rgba(255, 255, 255, 0.14);
@@ -642,28 +614,19 @@
   gap: 40px;
   align-items: start;
 }
+.amenities__layout > * {
+  min-width: 0;
+}
 
-/* Media frame: reuses .media-depth-frame (dark variant, see the
-   shared component comment above the definition) plus the shared
-   .glass-depth-layer utility for the two offset background layers —
-   the same pairing as .floorplan-media-frame in the Floor Plans
-   section. Fully independent of the amenity list beside it: it runs
-   its own autoplay/prev/next/swipe against the active group's own
-   `images` array (js/config.js), never the list's `items`. */
-.amenity-media-frame {
-  position: relative;
-}
-.amenity-media-frame__card {
-  position: relative;
-  z-index: 1;
-}
+/* Media frame: uses the shared .glass-media-frame component (see its
+   definition above). Fully independent of the amenity list beside it:
+   it runs its own autoplay/prev/next/swipe against the active group's
+   own `images` array (js/config.js), never the list's `items`. */
 .amenity-carousel {
   position: relative;
 }
 .amenity-carousel__stage {
-  position: relative;
   aspect-ratio: 4 / 3;
-  overflow: hidden;
 }
 .amenity-carousel__img {
   position: absolute;
@@ -682,7 +645,6 @@
 .amenity-carousel__placeholder {
   width: 100%;
   height: 100%;
-  aspect-ratio: 4 / 3;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -852,23 +814,24 @@
   gap: 40px;
   align-items: start;
 }
+.floorplans__viewer > * {
+  min-width: 0;
+}
 .floorplans__image-wrap {
   position: relative;
 }
 .floorplans__image-frame {
-  /* Sizing/interaction only — radius/overflow/isolation come from
-     .media-depth-frame__inner (see the shared component above). */
+  /* Sizing/interaction only — radius/overflow/isolation come from the
+     shared .glass-media-inner component above. */
   aspect-ratio: 4 / 3;
   padding: 24px;
   text-align: center;
   cursor: zoom-in;
 }
-/* Scoped with .media-depth-frame__inner for the same specificity
-   reason as .details__image above (defensive — ties with the generic
-   rule on source order alone, but this makes the win unambiguous). */
-.media-depth-frame__inner.floorplans__image-frame img {
-  width: 100%;
-  height: 100%;
+/* Floor-plan drawings must never be cropped — contain overrides the
+   shared component's default cover. Scoped with .glass-media-inner so
+   this wins on specificity regardless of source order. */
+.glass-media-inner.floorplans__image-frame img {
   object-fit: contain;
 }
 .floorplans__image-note {
@@ -957,56 +920,22 @@
   gap: 40px;
   align-items: start;
 }
+.floorplan-typical-layout > * {
+  min-width: 0;
+}
 
-/* Floor-plan media frame: two translucent layers offset behind the
-   glass card (.media-depth-frame, reused as-is — see the shared
-   component comment above) create the requested sense of depth
-   without duplicating its chrome/hover/sweep rules. */
-.floorplan-media-frame {
-  position: relative;
-}
-/* Shared "offset glass layers" utility — two translucent rounded
-   rects behind a glass card, giving it a sense of depth. Used by both
-   .floorplan-media-frame and .amenity-media-frame; the host element
-   just needs position: relative and a positioned card on top. */
-.glass-depth-layer {
-  position: absolute;
-  inset: 0;
-  border-radius: 22px;
-  background: rgba(105, 213, 245, 0.08);
-  border: 1px solid rgba(191, 232, 247, 0.16);
-  pointer-events: none;
-}
-.glass-depth-layer--1 {
-  transform: translate(10px, 12px);
-  opacity: 0.7;
-}
-.glass-depth-layer--2 {
-  transform: translate(20px, 24px);
-  opacity: 0.4;
-}
-.floorplan-media-frame__card {
-  position: relative;
-  z-index: 1;
-}
-.floorplan-image-wrap {
-  aspect-ratio: 4 / 3;
-}
+/* Floor-plan drawings must never be cropped — contain overrides the
+   shared component's default cover. */
 .floorplan-image-wrap img {
-  width: 100%;
-  height: 100%;
   object-fit: contain;
 }
 /* Precise hover values per the design brief (a gentler lift/scale
-   than the component's site-wide default, scoped to this instance
-   only via the descendant selector). */
-.floorplan-media-frame__card:hover {
+   than the shared component's site-wide default, scoped to this
+   instance only). */
+.floorplan-typical-layout .glass-media-frame:hover {
   transform: translateY(-4px);
 }
-.floorplan-media-frame__card .media-depth-frame__inner img {
-  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.floorplan-media-frame__card:hover .media-depth-frame__inner img {
+.floorplan-typical-layout .glass-media-frame:hover .glass-media-inner img {
   transform: scale(1.015);
 }
 .floorplan-media-frame__footer {

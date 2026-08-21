@@ -26,7 +26,7 @@
     container.scrollLeft = Math.max(0, target);
   }
 
-  // Shared renderer for a .media-depth-frame__inner box: shows the
+  // Shared renderer for a .glass-media-inner box: shows the
   // image when a path is supplied, otherwise the neutral "being
   // updated" note already sitting in the DOM (never replaced with
   // stock/demo content). `fit` picks object-fit — "contain" for any
@@ -46,7 +46,7 @@
       inner.appendChild(img);
     } else {
       var note = document.createElement("p");
-      note.className = "media-depth-frame__note";
+      note.className = "glass-media-note";
       note.textContent = currentLang() === "en" ? "Image being updated" : "Hình ảnh đang được cập nhật";
       inner.appendChild(note);
     }
@@ -857,9 +857,9 @@
   }
 
   /* -----------------------------------------------------
-     10. MEDIA DEPTH FRAME — scroll-entrance + pointer parallax
+     10. GLASS MEDIA FRAME — scroll-entrance + pointer parallax
      The static glass chrome renders with plain CSS (see
-     .media-depth-frame in sections.css); this only adds the opt-in
+     .glass-media-frame in sections.css); this only adds the opt-in
      entrance animation to elements carrying [data-depth-frame], and a
      restrained pointer-parallax on desktop/mouse devices.
      ----------------------------------------------------- */
@@ -895,7 +895,7 @@
 
     var MAX_SHIFT = 4;
     frames.forEach(function (frame) {
-      var img = frame.querySelector(".media-depth-frame__inner img");
+      var img = frame.querySelector(".glass-media-inner img");
       if (!img) return;
       frame.addEventListener("mousemove", function (e) {
         var rect = frame.getBoundingClientRect();

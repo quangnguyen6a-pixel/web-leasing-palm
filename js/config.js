@@ -280,7 +280,7 @@ window.amenityTabs = [
 window.floorPlanTypical = {
   headingVi: "Mặt bằng tầng điển hình", headingEn: "Typical floor layout",
   /* Empty by default — renders the "Thêm ảnh mặt bằng tại đây"
-     placeholder in .floorplan-media-frame until an approved typical-
+     placeholder in .glass-media-frame until an approved typical-
      floor drawing is supplied. Expected path noted in index.html. */
   image: "",
   points: [
