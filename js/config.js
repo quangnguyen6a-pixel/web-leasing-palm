@@ -419,7 +419,7 @@ window.savillsAbout = {
 window.pressArticles = [
   {
     publisher: "Savills Việt Nam",
-    logo: "",
+    logo: "assets/savills-logo.png",
     title: "",
     excerpt: "",
     date: "",
@@ -428,7 +428,7 @@ window.pressArticles = [
   },
   {
     publisher: "Savills Việt Nam",
-    logo: "",
+    logo: "assets/savills-logo.png",
     title: "",
     excerpt: "",
     date: "",

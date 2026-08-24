@@ -1134,6 +1134,49 @@ within the current tool access — see "Not implemented" below).
 
 ---
 
+## 9n. Image-population completion pass
+
+A follow-up sweep across every image slot in the site (not just the
+Drive folder from §9m), looking specifically for placeholders that
+could be filled from assets already approved and in use elsewhere.
+
+- **Press-card publisher logos**: `pressArticles[0].logo` and
+  `[1].logo` were empty, rendering a plain "Savills Việt Nam" text
+  label instead of the brand mark. Both articles' `publisher` field is
+  literally "Savills Việt Nam", so `assets/savills-logo.png` — the
+  same official mark already used in the header, benefit-icon squares
+  and elsewhere — was assigned to both. This is the one case the
+  "don't reuse an image more than twice" rule explicitly exempts
+  ("official map, logo or required repeated brand asset").
+- **Performance attributes**: added `fetchpriority="high"` +
+  `decoding="async"` to the static hero `<img>`, and `decoding =
+  "async"` to every JS-created `<img>` (`renderDepthFrameImage`,
+  the amenity carousel, the typical-floor plan, press-card media and
+  the new publisher-logo image) — `loading="lazy"`/`"eager"` was
+  already correctly set on all of them from prior passes.
+- **Re-verified but not reused**: `hero_cropped.jpg`, `guide.png` and
+  the `line163_img*`/`line185_img3` files sitting in this session's
+  scratch/uploads area (left over from an earlier turn) were opened
+  and confirmed to be exact duplicates of assets already in
+  `assets/` (the hero photo, the Savills and Palm City logos) or
+  working reference material (a crop-guide overlay, 1px colour-sample
+  strips) — not new content, so nothing was pulled from them.
+- **Re-confirmed empty (exception, not oversight)**: `.residential__image-frame`
+  ("Hình ảnh đội ngũ đang được cập nhật") — no photo of the actual
+  Savills Residential team exists anywhere available to this session;
+  the partnership-ceremony photo used for the press card shows three
+  different people at a different event, so reusing it here would
+  misrepresent it as the team photo. Left as the existing placeholder
+  rather than assigned. `amenityGroups.palmCity.*.images` and the
+  `palmRiver.{ground,floor1,floor2,floor20}.images` arrays, the four
+  remaining `floorPlanTypes` slots, and `pressArticles[0].image`
+  remain empty for the same reasons already documented in §9m — this
+  pass re-attempted every one of those Drive downloads (including the
+  9.5–10 MB borderline files) and got the same tool-side failures, so
+  nothing new was recoverable this time either.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

@@ -41,6 +41,7 @@
       img.src = src;
       img.alt = alt || "";
       img.loading = "lazy";
+      img.decoding = "async";
       img.style.objectFit = fit || "cover";
       img.style.objectPosition = objectPosition || "center";
       inner.appendChild(img);
@@ -389,6 +390,7 @@
       img.src = src;
       img.alt = title;
       img.loading = index === 0 ? "eager" : "lazy";
+      img.decoding = "async";
       stage.appendChild(img);
 
       var dot = document.createElement("button");
@@ -610,6 +612,7 @@
       img.src = window.floorPlanTypical.image;
       img.alt = label;
       img.loading = "lazy";
+      img.decoding = "async";
       wrap.appendChild(img);
     } else {
       var note = document.createElement("p");
@@ -761,6 +764,7 @@
         img.src = article.image;
         img.alt = "";
         img.loading = "lazy";
+        img.decoding = "async";
         media.appendChild(img);
       } else {
         media.className = "press-card__media press-card__media--empty";
@@ -776,6 +780,8 @@
         var logo = document.createElement("img");
         logo.src = article.logo;
         logo.alt = article.publisher || "";
+        logo.loading = "lazy";
+        logo.decoding = "async";
         publisher.appendChild(logo);
       } else {
         var publisherName = document.createElement("span");
