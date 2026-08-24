@@ -887,17 +887,23 @@
     if (window.projectConfig.zaloUrl && zalo) {
       zalo.disabled = false;
       zalo.removeAttribute("aria-disabled");
+      /* Logo-Zalo.webp exists in the project's Drive asset folder but
+         could not be reliably transferred into assets/icons/ this
+         session (see README) — this is a neutral chat-bubble glyph,
+         not the Zalo brand mark, standing in until that file is
+         added by hand. */
       zalo.outerHTML = '<a class="floating-contacts__btn floating-contacts__btn--zalo" id="floating-zalo" ' +
-        'href="' + window.projectConfig.zaloUrl + '" target="_blank" rel="noopener noreferrer">' +
-        '<span class="floating-contacts__icon" aria-hidden="true">Za</span>' +
+        'href="' + window.projectConfig.zaloUrl + '" target="_blank" rel="noopener noreferrer" aria-label="Liên hệ qua Zalo">' +
+        '<svg class="floating-contacts__icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M21 11.5a8.5 6.8 0 1 1-3.2-5.3L21 5l-1 3.4A6.7 6.7 0 0 1 21 11.5Z"/></svg>' +
         '<span class="floating-contacts__label">Zalo</span></a>';
     }
     if (window.projectConfig.whatsappUrl && whatsapp) {
       whatsapp.disabled = false;
       whatsapp.removeAttribute("aria-disabled");
       whatsapp.outerHTML = '<a class="floating-contacts__btn floating-contacts__btn--whatsapp" id="floating-whatsapp" ' +
-        'href="' + window.projectConfig.whatsappUrl + '" target="_blank" rel="noopener noreferrer">' +
-        '<span class="floating-contacts__icon" aria-hidden="true">Wa</span>' +
+        'href="' + window.projectConfig.whatsappUrl + '" target="_blank" rel="noopener noreferrer" aria-label="Liên hệ qua WhatsApp">' +
+        '<img src="assets/icons/icon-whatsapp.png" alt="" aria-hidden="true">' +
         '<span class="floating-contacts__label">WhatsApp</span></a>';
     }
   }

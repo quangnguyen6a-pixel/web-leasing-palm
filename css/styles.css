@@ -1019,35 +1019,30 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
    navy/champagne-gold surface per the shared glass-panel guideline (see
    css/sections.css §4 comment block for the full rationale). */
 .usp-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: clamp(18px, 1.5vw, 24px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px 24px;
   width: min(100%, 1440px);
   margin-inline: auto;
   margin-top: 36px;
 }
-.usp-card {
-  grid-column: span 2;
-}
-.usp-card:nth-child(4) {
-  grid-column: 2 / span 2;
-}
-.usp-card:nth-child(5) {
-  grid-column: 4 / span 2;
-}
 /* Each card is three content-sized rows — label / number+unit /
    description — centred as a group so the card's height tracks its
-   real content instead of reserving fixed, near-empty row bands. No
-   per-card margin is used to fake alignment; every row still lines up
-   across the grid because the rows share the same minmax floor. */
+   real content instead of reserving fixed, near-empty row bands. Flex
+   (not grid) at the .usp-grid level so a leftover pair (cards 4–5)
+   centres itself on its own row automatically instead of needing
+   nth-child column placement. */
 .usp-card {
+  flex: 0 1 340px;
   display: grid;
-  grid-template-rows: minmax(36px, auto) minmax(88px, auto) minmax(28px, auto);
+  grid-template-rows: minmax(30px, auto) minmax(70px, auto) minmax(22px, auto);
   align-content: center;
   justify-items: center;
-  gap: 14px;
+  gap: 8px;
   min-width: 0;
-  min-height: clamp(250px, 20vw, 300px);
+  width: 100%;
+  min-height: 220px;
   height: auto;
   box-sizing: border-box;
   position: relative;
@@ -1058,7 +1053,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   -webkit-backdrop-filter: blur(14px) saturate(120%);
   border: 1px solid rgba(231, 210, 154, 0.22);
   border-radius: 18px;
-  padding: clamp(24px, 2.2vw, 34px);
+  padding: 24px 26px;
   text-align: center;
   box-shadow: 0 24px 54px -28px rgba(0, 10, 26, 0.7);
   transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
@@ -1113,7 +1108,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 }
 .usp-label {
   margin: 0;
-  min-height: 36px;
+  min-height: 26px;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -1138,7 +1133,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 .usp-number {
   position: relative;
   font-family: "Noto Serif Display", Georgia, serif;
-  font-size: clamp(72px, 5.5vw, 102px);
+  font-size: clamp(56px, 9vw, 76px);
   font-weight: 400;
   /* Solid-colour fallback shown until (and unless) the gold shine
      gradient below is supported and .is-counted is applied. */
@@ -1175,7 +1170,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
 }
 .usp-description {
   margin: 0;
-  min-height: 28px;
+  min-height: 20px;
   text-align: center;
   font-family: "Manrope", "Gotham", "SVN-Gotham", Arial, sans-serif;
   font-size: clamp(13px, 1vw, 14.5px);
@@ -1448,15 +1443,12 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   .project-overview__container { padding: 0 32px; }
   /* Two columns; the fifth card (an odd one out) centres itself under
      the other four rather than stretching or leaving a gap. */
-  .usp-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
+  .usp-grid { gap: var(--space-sm); }
   .usp-card {
-    grid-column: auto;
-    grid-template-rows: minmax(32px, auto) minmax(76px, auto) minmax(24px, auto);
-    min-height: 240px;
+    flex-basis: calc(50% - 8px);
+    grid-template-rows: minmax(28px, auto) minmax(64px, auto) minmax(20px, auto);
+    min-height: 210px;
   }
-  .usp-card:nth-child(4) { grid-column: auto; }
-  .usp-card:nth-child(5) { grid-column: 1 / span 2; width: min(100%, calc(50% - 12px)); justify-self: center; margin: 0; }
-  .usp-number { font-size: clamp(64px, 7vw, 88px); }
 }
 
 /* Low desktop — nine nav items are still tight here even with the
@@ -1517,24 +1509,19 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   .project-intro__paragraph { font-size: 15px; }
   .project-intro__paragraph + .project-intro__paragraph { margin-top: 18px; }
   .usp-grid {
-    grid-template-columns: 1fr;
     gap: var(--space-sm);
     margin-top: 32px;
   }
-  .usp-card,
-  .usp-card:nth-child(4),
-  .usp-card:nth-child(5) {
-    grid-column: auto;
+  .usp-card {
+    flex-basis: 100%;
     width: 100%;
     max-width: none;
     margin: 0;
+    padding: 22px 20px;
+    grid-template-rows: minmax(26px, auto) minmax(60px, auto) minmax(20px, auto);
+    min-height: 200px;
   }
-  .usp-card {
-    padding: 24px 20px;
-    grid-template-rows: minmax(28px, auto) minmax(64px, auto) minmax(22px, auto);
-    min-height: 220px;
-  }
-  .usp-number { font-size: clamp(64px, 20vw, 84px); }
+  .usp-number { font-size: clamp(60px, 18vw, 78px); }
   .usp-unit { font-size: clamp(14px, 4vw, 16px); }
 
   .savills-logo { width: clamp(78px, 16vw, 82px); }

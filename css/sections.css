@@ -1011,6 +1011,35 @@
   font-style: italic;
   color: rgba(248, 242, 230, 0.55);
 }
+/* Floor-plan-typical instance only: the drawing itself is a white/
+   cream line-art image, so the caption+button move off the plain
+   footer row and sit as a bottom overlay inside the frame instead,
+   on a navy-to-transparent scrim so they stay readable over the
+   light artwork. The certificate instance (light .residential
+   section) keeps its own separate footer-row treatment below. */
+.floorplan-typical-layout .floorplan-media-frame__footer {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  margin: 0;
+  padding: 32px 14px 12px;
+  border-radius: 0 0 20px 20px;
+  background: linear-gradient(to top, rgba(0, 28, 61, 0.82) 0%, rgba(0, 28, 61, 0.5) 55%, transparent 100%);
+}
+.floorplan-typical-layout .floorplan-media-frame__footer figcaption {
+  color: #fff;
+  opacity: 0.95;
+}
+.floorplan-typical-layout .floorplan-media-frame__footer .floorplan-zoom {
+  color: #fff;
+  border-color: rgba(248, 242, 230, 0.5);
+}
+.floorplan-typical-layout .floorplan-media-frame__footer .floorplan-zoom:hover {
+  background: rgba(248, 242, 230, 0.18);
+  border-color: rgba(248, 242, 230, 0.75);
+}
 .floorplan-zoom {
   flex: 0 0 auto;
   padding: 9px 18px;
@@ -1045,31 +1074,43 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 26px;
+  padding: 22px 24px;
   border-radius: 18px;
-  background: linear-gradient(165deg, rgba(199, 155, 66, 0.07), rgba(0, 28, 61, 0.03));
-  border: 1px solid rgba(0, 28, 61, 0.12);
-  transition: transform 220ms ease, border-color 220ms ease;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.74) 0%,
+      rgba(244, 226, 181, 0.58) 55%,
+      rgba(218, 178, 91, 0.16) 100%
+    );
+  border: 1px solid rgba(178, 131, 44, 0.32);
+  box-shadow:
+    0 12px 30px rgba(0, 28, 61, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
 }
 .feature-card__title {
   font-family: var(--font-heading-alt);
   font-weight: 400;
   font-size: 17px;
-  color: var(--color-navy-primary);
+  color: #001c3d;
 }
 .feature-card__text {
   font-family: var(--font-body-alt);
   font-size: 13.5px;
   line-height: 1.6;
-  color: rgba(0, 28, 61, 0.72);
+  color: rgba(0, 28, 61, 0.88);
 }
 .feature-stat {
   font-weight: 700;
-  color: var(--color-navy-primary);
+  color: #001c3d;
 }
 .feature-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(199, 155, 66, 0.4);
+  transform: translateY(-3px);
+  border-color: rgba(178, 131, 44, 0.58);
+  box-shadow:
+    0 16px 34px rgba(0, 28, 61, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
 }
 
 /* Zoom modal */
@@ -1536,11 +1577,12 @@
 .final-form__media {
   position: relative;
 }
-.final-form__image {
+.final-form__media--empty {
   width: 100%;
   aspect-ratio: 4 / 5;
-  object-fit: cover;
   border-radius: 4px;
+  border: 1px solid rgba(231, 210, 154, 0.28);
+  background: rgba(248, 242, 230, 0.04);
 }
 .final-form__benefits {
   margin-top: 20px;
@@ -1683,18 +1725,32 @@
   gap: 10px;
 }
 .floating-contacts__btn {
-  display: flex;
+  position: relative;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  aspect-ratio: 1;
+  flex: 0 0 56px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  height: 46px;
-  padding: 0 14px;
-  border-radius: 999px;
+  justify-content: center;
   background: var(--color-navy-primary);
-  border: 1px solid rgba(248, 242, 230, 0.16);
+  border: 1px solid rgba(231, 210, 154, 0.35);
   color: var(--color-white);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-  white-space: nowrap;
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+.floating-contacts__btn:hover,
+.floating-contacts__btn:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(231, 210, 154, 0.65);
+}
+.floating-contacts__btn:focus-visible {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 3px;
 }
 .floating-contacts__icon {
   flex: 0 0 auto;
@@ -1703,19 +1759,35 @@
   font-size: 15px;
   font-weight: 700;
 }
+.floating-contacts__btn img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+}
+/* Text label is now a tooltip that appears beside the (always-circular)
+   button, instead of the button itself expanding to fit it. */
 .floating-contacts__label {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  background: rgba(0, 28, 61, 0.94);
+  color: var(--color-white);
+  padding: 6px 12px;
+  border-radius: 6px;
   font-family: var(--font-body-alt);
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
-  max-width: 0;
+  white-space: nowrap;
   opacity: 0;
-  overflow: hidden;
-  transition: max-width 220ms ease, opacity 200ms ease;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
 }
 .floating-contacts__btn:hover .floating-contacts__label,
 .floating-contacts__btn:focus-visible .floating-contacts__label {
-  max-width: 220px;
   opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }
 .floating-contacts__btn--register {
   background: var(--color-savills-yellow);
@@ -1748,6 +1820,9 @@
   .location__panel { grid-template-columns: 1fr; }
   /* Amenity image full width above the 2-column list. */
   .amenities__layout { grid-template-columns: 1fr; gap: 24px; }
+  /* Sit closer to the edge at tablet widths so the stack reads as a
+     compact corner cluster rather than eating into the content column. */
+  .floating-contacts { right: 12px; bottom: 16px; gap: 8px; }
   .amenity-list { max-height: none; }
   /* Floor plan image full width above the 2x2 feature-card grid. */
   .floorplan-typical-layout { grid-template-columns: 1fr; gap: 32px; }
@@ -1843,6 +1918,7 @@
   .residential__container { grid-template-columns: 1fr; }
 
   .final-form__container { grid-template-columns: 1fr; }
+  .final-form__media--empty { aspect-ratio: 16 / 9; max-height: 220px; }
   .final-form__panel { padding: 28px 22px; }
 
   .floating-contacts { display: none; }

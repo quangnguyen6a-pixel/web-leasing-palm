@@ -1344,6 +1344,101 @@ amenities fallback text computes to `rgb(245,241,232)` at `opacity:
 
 ---
 
+## 9r. USP compaction, feature-card contrast, empty final-form frame, floating-button rework
+
+**USP cards (`.usp-grid`/`.usp-card`)** switched from a 6-column CSS
+Grid with `nth-child(4)`/`nth-child(5)` column placement to
+`display:flex; flex-wrap:wrap; justify-content:center` with each card
+at `flex: 0 1 340px`. This reproduces the same 3-then-2-centred
+desktop layout without per-card positioning rules — a leftover pair
+centres itself on the next row automatically. Card `min-height`
+220px→200px across breakpoints (was 250–300px), padding
+`clamp(24,2.2vw,34)`→`24px 26px`, inner row gap 14px→8px, label/
+description `min-height` trimmed. `.usp-number`'s clamp tightened from
+`clamp(72px,5.5vw,102px)` to `clamp(56px,9vw,76px)` so the gold figure
+stays dominant without forcing the card larger. The five approved
+values, their order, and the count-up/shimmer behaviour are untouched.
+
+**Floor-plan feature cards (`.feature-card`)** replaced the ~7% gold/
+navy wash + 12% navy border + 72%-opacity body text with the specified
+glass treatment: a three-stop white→champagne→gold diagonal gradient,
+`rgba(178,131,44,0.32)` border, dual box-shadow (drop + inset rim
+light). Title and stat figures are now full `#001c3d`; body text
+`rgba(0,28,61,0.88)`. Hover lifts 3px with a stronger border/shadow.
+Reused the shared `.floorplan-media-frame__footer`/`.floorplan-zoom`
+component (see §9q) but this pass adds a `.floorplan-typical-layout`-
+scoped override that turns it into a bottom overlay *inside* the
+image frame — `position:absolute` on a navy-to-transparent gradient
+scrim, white caption/button text — since the floor-plan drawing itself
+is white line-art and the plain footer row read as low-contrast
+against it. The `.residential__certificate` instance (§9q) is
+untouched.
+
+**Final-form media (`.final-form__media`)** — the `<img
+src="assets/palm-city-hero.webp">` reuse is removed; the file itself
+is untouched and stays in use by the hero section. In its place:
+`<div class="final-form__media--empty" data-media-slot=
+"final-registration-image" aria-hidden="true"></div>`, styled with the
+same 4:5 aspect ratio and a champagne-gold border/tint (no icon, no
+placeholder copy, no background image). The three sales-highlight
+bullets stay below it in the same column. Mobile
+(`max-width:767`) caps the frame at `aspect-ratio:16/9;
+max-height:220px` so it doesn't dominate the scroll on a phone.
+
+**Floating contact buttons (`.floating-contacts__btn`)** forced to a
+true 56×56 circle (`width`/`height`/`min-*`/`aspect-ratio:1`,
+`flex:0 0 56px`) — previously ~60×46px ovals that also grew wider on
+hover to fit their label. The label is now a `position:absolute`
+tooltip anchored to the button's left edge (`opacity`/`translateX`
+transition, `pointer-events:none`), so hovering never changes the
+button's box. Every button got an explicit `aria-label` (`aria-label`
+was previously only carried on the `.floating-contacts__label`'s
+text). `:focus-visible` gets an explicit champagne outline. At the
+768–1023px tablet band the stack moves to `right:12px; bottom:16px`;
+below 768px it's unchanged — `display:none` in favour of the existing
+`.mobile-contact-bar`.
+
+**Icon replacement.** Searched the project's Drive asset folder (same
+folder as the Tier-1 certificate and partnership photo already used
+in this repo) and found `Logo-Zalo.webp` and `WhatApps Logo.png`
+alongside it. `WhatApps Logo.png` (4,897 bytes) downloaded and
+transferred byte-for-byte intact — verified both by exact size match
+against Drive's own file metadata and by decoding+rendering the
+result — and is now `assets/icons/icon-whatsapp.png`, wired into both
+the static markup and the `setupFloatingContacts()` runtime swap in
+`js/sections.js` (the function that turns the disabled Zalo/WhatsApp
+buttons into live links once `window.projectConfig.zaloUrl`/
+`whatsappUrl` are set — both already are, so these buttons are not
+actually "coming soon"; the stale HTML comment claiming otherwise was
+corrected). `Logo-Zalo.webp` (9,294 bytes) could **not** be reliably
+transferred in this session — every attempt decoded to a corrupted
+WebP (confirmed via both Pillow and a live Chromium render, each
+failing to decode pixel data despite a well-formed RIFF header), most
+likely a limitation of this environment's binary-data transfer at
+this file's size rather than anything wrong with the source file
+itself. Rather than ship a broken image or leave the old "Za" text
+abbreviation in place, the Zalo button now uses a neutral inline SVG
+chat-bubble glyph (not the Zalo brand mark) as a temporary stand-in;
+**`assets/icons/icon-zalo.webp` still needs to be added by hand** from
+the Drive file to complete this swap. No approved phone or
+registration-specific icon exists in the Drive folder, so the hotline
+(`☎`) and register (`✎`) buttons keep their existing neutral glyphs —
+noted here rather than silently left unexplained.
+
+Verified at 1440/1024/768/430/390px, VI and EN: USP cards render as a
+compact 3-then-2 grid on desktop and 2-then-1 on tablet/1-per-row on
+mobile with no layout break; feature cards show the new gradient/
+navy-text treatment at every width; the floor-plan caption/button
+overlay is legible over the drawing; the final-form frame is empty
+with zero broken-image icons/placeholder text and a visible border at
+every width; all four floating buttons measure exactly 56×56 (circular)
+where visible, hidden in favour of the mobile bar below 768px; the
+WhatsApp button's image decodes with `naturalWidth 360`; zero
+horizontal overflow (`body.scrollWidth === window.innerWidth`) at any
+tested width; zero failed (≥400) network requests.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or
