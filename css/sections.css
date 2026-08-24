@@ -1160,70 +1160,111 @@
 }
 
 /* =========================================================
-   PAYMENT POLICY
+   PAYMENT POLICY — four-tab payment-plan interface
+   Tabs + the single shared panel are rendered by
+   renderPolicySection()/renderPolicyPanel() in js/sections.js from
+   window.paymentPlans (js/config.js). The .payment-plan__* containers
+   are always mounted (see the JS comment) but collapse to zero height
+   via :empty below until an approved field is filled in.
    ========================================================= */
-.policy__timeline {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 32px;
-  flex-wrap: wrap;
+.policy__tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
 }
-.policy__step {
-  flex: 1 1 200px;
+.policy__tab {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 5px;
+  min-height: 90px;
   padding: 16px 20px;
-  border-radius: 4px;
+  border-radius: 12px;
   background: rgba(248, 242, 230, 0.04);
-  border: 1px solid rgba(248, 242, 230, 0.12);
-  color: var(--color-white);
-  transition: border-color 200ms ease, background-color 200ms ease;
+  border: 1px solid rgba(231, 210, 154, 0.2);
+  text-align: left;
+  transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
 }
-.policy__step-index {
+.policy__tab-index {
   font-family: var(--font-heading-alt);
-  font-size: 20px;
-  opacity: 0.5;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--gold-champagne);
+  opacity: 0.65;
 }
-.policy__step-label {
+.policy__tab-label {
   font-family: var(--font-body-alt);
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
+  line-height: 1.3;
+  color: rgba(248, 242, 230, 0.92);
 }
-.policy__step.is-active {
+.policy__tab:hover {
+  border-color: rgba(231, 210, 154, 0.42);
+  background: rgba(248, 242, 230, 0.07);
+}
+.policy__tab:focus-visible {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 2px;
+}
+.policy__tab.is-active {
+  position: relative;
+  background: rgba(199, 155, 66, 0.14);
   border-color: var(--gold-champagne);
-  background: rgba(199, 155, 66, 0.1);
+  box-shadow: inset 0 1px 0 rgba(248, 242, 230, 0.14), 0 12px 26px -16px rgba(0, 0, 0, 0.55);
 }
-.policy__step.is-active .policy__step-index,
-.policy__step.is-active .policy__step-label {
+.policy__tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--gold-champagne);
+}
+.policy__tab.is-active .policy__tab-index,
+.policy__tab.is-active .policy__tab-label {
   color: var(--gold-bright);
   opacity: 1;
 }
-.policy__panels {
-  margin-bottom: 32px;
+
+.policy__panel-shell {
+  min-height: 260px;
+  padding: 36px 42px;
+  margin-bottom: 28px;
+  border-radius: 18px;
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(165deg, rgba(199, 155, 66, 0.08), rgba(0, 28, 61, 0.4) 60%);
+  border: 1px solid rgba(231, 210, 154, 0.24);
+  box-shadow: 0 22px 50px -30px rgba(0, 10, 26, 0.65), inset 0 1px 0 rgba(248, 242, 230, 0.1);
 }
-.policy__panel {
-  padding: 32px;
-  border-radius: 4px;
-  background: rgba(248, 242, 230, 0.04);
-  border: 1px solid rgba(248, 242, 230, 0.12);
+.payment-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
-.policy__value {
+.payment-plan__header:empty,
+.payment-plan__timeline:empty,
+.payment-plan__highlights:empty {
+  display: none;
+}
+.payment-plan__title {
   font-family: var(--font-heading-alt);
-  font-size: clamp(32px, 3.4vw, 46px);
-  color: var(--gold-champagne);
-  margin-bottom: 10px;
-}
-.policy__value--pending {
+  font-weight: 400;
   font-size: clamp(20px, 2vw, 26px);
-  color: rgba(248, 242, 230, 0.6);
-  font-style: italic;
+  color: var(--gold-champagne);
 }
-.policy__note {
+.payment-plan__booking {
   font-family: var(--font-body-alt);
   font-size: 14px;
-  opacity: 0.72;
+  color: rgba(248, 242, 230, 0.72);
+  margin-top: 6px;
 }
+
 .btn--policy-cta {
   color: var(--savills-navy);
   background: var(--savills-yellow);
@@ -1827,6 +1868,8 @@
   /* Floor plan image full width above the 2x2 feature-card grid. */
   .floorplan-typical-layout { grid-template-columns: 1fr; gap: 32px; }
   .savills-section__pillars { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .policy__tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .policy__tab { min-height: 64px; padding: 13px 16px; }
 }
 
 /* =========================================================
@@ -1910,8 +1953,10 @@
   .floorplan-typical-layout { grid-template-columns: 1fr; gap: 24px; }
   .floorplan-features { grid-template-columns: 1fr; }
 
-  .policy__timeline { flex-direction: column; }
-  .policy__step { flex: 1 1 auto; }
+  .policy__tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .policy__tab { min-height: 56px; padding: 11px 14px; }
+  .policy__tab-label { font-size: 13px; }
+  .policy__panel-shell { min-height: 190px; padding: 22px; }
 
   .savills-section__pillars { grid-template-columns: 1fr; }
 

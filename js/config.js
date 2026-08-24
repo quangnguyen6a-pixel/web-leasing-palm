@@ -447,6 +447,57 @@ window.savillsAbout = {
 };
 
 /* -----------------------------------------------------
+   PAYMENT PLANS — §chinh-sach (Chính sách thanh toán)
+   The four official plan names come from the supplied Palm River
+   payment poster; the poster's booking amounts, milestone dates/
+   percentages and loan terms are NOT transcribed here yet — no
+   approved source text for those exists, so every content field
+   stays empty rather than guessed. renderPolicySection() in
+   js/sections.js renders the tabs/panel from this array and leaves
+   an empty field's container out of the DOM entirely (no visible
+   heading, bullet or "Đang cập nhật" placeholder). Fill any field in
+   and it renders automatically — no other file needs to change.
+   ----------------------------------------------------- */
+window.paymentPlans = [
+  {
+    id: "standard",
+    number: "01",
+    labelVi: "Thanh toán chuẩn", labelEn: "Standard Payment Plan",
+    titleVi: "", titleEn: "",
+    bookingVi: "", bookingEn: "",
+    milestonesVi: [], milestonesEn: [],
+    highlightsVi: [], highlightsEn: []
+  },
+  {
+    id: "special",
+    number: "02",
+    labelVi: "Thanh toán đặc biệt", labelEn: "Special Payment Plan",
+    titleVi: "", titleEn: "",
+    bookingVi: "", bookingEn: "",
+    milestonesVi: [], milestonesEn: [],
+    highlightsVi: [], highlightsEn: []
+  },
+  {
+    id: "accelerated",
+    number: "03",
+    labelVi: "Thanh toán nhanh", labelEn: "Accelerated Payment Plan",
+    titleVi: "", titleEn: "",
+    bookingVi: "", bookingEn: "",
+    milestonesVi: [], milestonesEn: [],
+    highlightsVi: [], highlightsEn: []
+  },
+  {
+    id: "mortgage",
+    number: "04",
+    labelVi: "Thanh toán vay", labelEn: "Mortgage-assisted Payment Plan",
+    titleVi: "", titleEn: "",
+    bookingVi: "", bookingEn: "",
+    milestonesVi: [], milestonesEn: [],
+    highlightsVi: [], highlightsEn: []
+  }
+];
+
+/* -----------------------------------------------------
    PRESS ARTICLES — Row 12 (D12)
    One shared, un-translated record per article (a real published
    headline/publisher isn't re-translated for the EN toggle — only the

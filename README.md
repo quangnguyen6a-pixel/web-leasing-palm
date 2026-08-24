@@ -1439,6 +1439,86 @@ tested width; zero failed (≥400) network requests.
 
 ---
 
+## 9s. Payment Policy rebuilt as a four-tab payment-plan interface
+
+**Data model** — `window.paymentPlans` (new, `js/config.js`, placed
+before the Press Articles block) is an array of four objects
+(`id`/`number`/`labelVi`/`labelEn`/`titleVi`/`titleEn`/`bookingVi`/
+`bookingEn`/`milestonesVi`/`milestonesEn`/`highlightsVi`/`highlightsEn`),
+one per official plan named on the supplied Palm River payment
+poster: 01 Thanh toán chuẩn / Standard Payment Plan, 02 Thanh toán
+đặc biệt / Special Payment Plan, 03 Thanh toán nhanh / Accelerated
+Payment Plan, 04 Thanh toán vay / Mortgage-assisted Payment Plan. All
+content fields (title, booking amount, milestones, highlights) stay
+empty strings/arrays — the poster's amounts, dates and percentages are
+not transcribed, and nothing is invented. The old three-tab Booking/
+Tiến độ thanh toán/Ưu đãi structure (with its two real approved
+figures, "Từ 100 triệu VNĐ" and "Đến 16,5%") is removed entirely per
+this pass's brief; those same figures are still shown elsewhere on the
+page (final-form bullets, the Savills-commitment paragraph) and were
+not touched there.
+
+**Markup** (`index.html`) — the old static `.policy__timeline`/
+`.policy__panels` markup is replaced with two empty mount points:
+`<div class="policy__tabs" id="policy-tabs" role="tablist">` and
+`<div class="policy__panel-shell"><div class="policy__panel"
+id="policy-panel" role="tabpanel" aria-live="polite"></div></div>`.
+Nothing else in the section (eyebrow, `#chinh-sach` anchor, CTA,
+section order) changed — the EN heading was corrected from "Payment
+policy" to "Payment Plans" per this pass's own spec for that string.
+
+**Rendering** (`js/sections.js`) — `setupPolicyTabs()` (inert
+click-wiring over static markup) is replaced with
+`renderPolicySection(lang)` + `renderPolicyPanel(plan, lang)`,
+following the same render-from-data-on-`renderAll()`/
+`palmcity:langchange` pattern already used for amenities/floor-plans.
+Only the active plan's panel is ever mounted — the other three plans'
+content never exists in the DOM at once. Each panel always mounts its
+three reusable containers (`.payment-plan__header`,
+`.payment-plan__timeline[data-content-slot="payment-plan-timeline"]`,
+`.payment-plan__highlights[data-content-slot="payment-plan-highlights"]`)
+so a later content edit needs no HTML/JS restructuring, but CSS
+collapses an empty one via `:empty { display:none }` — no blank
+heading, bullet or timeline dot, no "Đang cập nhật", no lorem ipsum.
+A module-level `activePolicyIndex` (default `0`, i.e. plan 01) is
+clamped to the array's bounds on every render, so a future edit that
+shortens `paymentPlans` can never leave the UI pointing at an
+undefined panel.
+
+**Interaction** — full roving-tabindex `tablist` pattern: `role="tab"`/
+`aria-selected`/`aria-controls="policy-panel"` on each tab,
+`aria-labelledby` on the panel pointing at the active tab's id,
+`tabindex` 0 on the active tab and −1 on the rest. ArrowLeft/Right
+wrap between tabs, Home/End jump to first/last; Enter/Space activate
+via the tabs' native `<button>` click behaviour. Selecting a tab never
+reloads or scrolls the page.
+
+**Layout** — desktop `.policy__tabs` is `display:grid;
+grid-template-columns:repeat(4,minmax(0,1fr))`, one row, each tab
+90px tall (within the 84–96px target). At ≤1023px it becomes a 2×2
+grid (`repeat(2,...)`, 64px tall at tablet, 56px at mobile — both
+≥52px touch target), no horizontal scroll. Inactive tabs are a navy-
+glass surface with a champagne/blue-grey border and ivory label/muted-
+gold number; the active tab brightens the glass, takes a full
+champagne-gold border plus a thin gold underline indicator, and turns
+its number/label bright gold — never a solid-yellow fill. `.policy__
+panel-shell` (260px min-height desktop / 190px mobile, 36px/22px
+padding) is the one shared premium glass frame, left-edge-aligned with
+both the tab grid and the `Nhận chính sách chi tiết` CTA (verified:
+all three share the same computed `left`). Savills Yellow stays
+reserved for that CTA alone.
+
+Verified at 1440/1024/768/430/390px, VI and EN: four equal tabs one
+row on desktop/1024, 2×2 on 768/430/390 with no clipped text and zero
+horizontal overflow; click and full keyboard (←/→/Home/End) switching
+both update `aria-selected`/focus/active panel correctly; the three
+`.payment-plan__*` containers compute `display:none` while empty;
+switching VI↔EN re-labels all four tabs and the heading without
+losing or invalidating the current selection; the CTA and popup are
+unaffected.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

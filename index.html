@@ -495,37 +495,17 @@
     <div class="section-container policy__container">
       <header class="section-head">
         <p class="section-tag" data-lang-vi="THÔNG TIN BÁN HÀNG" data-lang-en="SALES INFORMATION">THÔNG TIN BÁN HÀNG</p>
-        <h2 class="section-title" id="policy-title" data-lang-vi="Chính sách thanh toán" data-lang-en="Payment policy">Chính sách thanh toán</h2>
+        <h2 class="section-title" id="policy-title" data-lang-vi="Chính sách thanh toán" data-lang-en="Payment Plans">Chính sách thanh toán</h2>
       </header>
 
-      <div class="policy__timeline" id="policy-timeline">
-        <button type="button" class="policy__step is-active" data-policy-step="booking" aria-selected="true" role="tab">
-          <span class="policy__step-index">01</span>
-          <span class="policy__step-label" data-lang-vi="Booking" data-lang-en="Booking">Booking</span>
-        </button>
-        <button type="button" class="policy__step" data-policy-step="milestones" aria-selected="false" role="tab">
-          <span class="policy__step-index">02</span>
-          <span class="policy__step-label" data-lang-vi="Tiến độ thanh toán" data-lang-en="Payment milestones">Tiến độ thanh toán</span>
-        </button>
-        <button type="button" class="policy__step" data-policy-step="incentives" aria-selected="false" role="tab">
-          <span class="policy__step-index">03</span>
-          <span class="policy__step-label" data-lang-vi="Ưu đãi" data-lang-en="Incentives">Ưu đãi</span>
-        </button>
-      </div>
+      <!-- Rendered by renderPolicySection() in js/sections.js from
+           window.paymentPlans (js/config.js) — do not hard-code tab
+           markup here, it is fully data-driven so VI/EN and future
+           content-field edits need no HTML changes. -->
+      <div class="policy__tabs" id="policy-tabs" role="tablist" aria-label="Chính sách thanh toán"></div>
 
-      <div class="policy__panels">
-        <div class="policy__panel is-active" data-policy-panel="booking" role="tabpanel">
-          <p class="policy__value" data-lang-vi="Từ 100 triệu VNĐ" data-lang-en="From VND 100 million">Từ 100 triệu VNĐ</p>
-          <p class="policy__note" data-lang-vi="Giá trị booking giữ chỗ tham khảo." data-lang-en="Indicative booking amount.">Giá trị booking giữ chỗ tham khảo.</p>
-        </div>
-        <div class="policy__panel" data-policy-panel="milestones" role="tabpanel" hidden>
-          <p class="policy__value policy__value--pending" data-lang-vi="Đang cập nhật" data-lang-en="Being updated">Đang cập nhật</p>
-          <p class="policy__note" data-lang-vi="Lịch thanh toán chi tiết sẽ được công bố cùng chính sách bán hàng chính thức." data-lang-en="The detailed payment schedule will be published with the official sales policy.">Lịch thanh toán chi tiết sẽ được công bố cùng chính sách bán hàng chính thức.</p>
-        </div>
-        <div class="policy__panel" data-policy-panel="incentives" role="tabpanel" hidden>
-          <p class="policy__value" data-lang-vi="Đến 16,5%" data-lang-en="Up to 16.5%">Đến 16,5%</p>
-          <p class="policy__note" data-lang-vi="Mức ưu đãi tối đa tham khảo." data-lang-en="Indicative maximum incentive.">Mức ưu đãi tối đa tham khảo.</p>
-        </div>
+      <div class="policy__panel-shell">
+        <div class="policy__panel" id="policy-panel" role="tabpanel" aria-live="polite"></div>
       </div>
 
       <button type="button" class="btn btn--policy-cta" data-open-popup

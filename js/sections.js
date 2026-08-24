@@ -730,26 +730,126 @@
   }
 
   /* -----------------------------------------------------
-     5. PAYMENT POLICY (§8) — static markup, just wire tabs
+     5. PAYMENT POLICY (§8) — four-tab payment-plan interface,
+     fully data-driven from window.paymentPlans (js/config.js).
+     One shared panel is (re)rendered for whichever plan is active;
+     the other three plans' content is never mounted at once. Every
+     content field is empty until an approved source is supplied, so
+     renderPolicyPanel() only mounts a sub-container when its field
+     actually has content — an empty field never shows a heading,
+     bullet, timeline dot or "Đang cập nhật" placeholder to visitors.
      ----------------------------------------------------- */
-  function setupPolicyTabs() {
-    var steps = document.querySelectorAll(".policy__step");
-    var panels = document.querySelectorAll(".policy__panel");
-    steps.forEach(function (step) {
-      step.addEventListener("click", function () {
-        var target = step.getAttribute("data-policy-step");
-        steps.forEach(function (s) {
-          var isActive = s === step;
-          s.classList.toggle("is-active", isActive);
-          s.setAttribute("aria-selected", isActive ? "true" : "false");
-        });
-        panels.forEach(function (panel) {
-          var isMatch = panel.getAttribute("data-policy-panel") === target;
-          panel.classList.toggle("is-active", isMatch);
-          panel.hidden = !isMatch;
-        });
+  var activePolicyIndex = 0;
+
+  function renderPolicySection(lang) {
+    var tabsHost = document.getElementById("policy-tabs");
+    var panel = document.getElementById("policy-panel");
+    if (!tabsHost || !panel || !window.paymentPlans || !window.paymentPlans.length) return;
+
+    // Reset to a valid plan whenever the data/array shape could have
+    // changed (language switch, future content edits) — never leaves
+    // the active panel pointing past the end of the array.
+    if (activePolicyIndex < 0 || activePolicyIndex >= window.paymentPlans.length) {
+      activePolicyIndex = 0;
+    }
+
+    tabsHost.innerHTML = "";
+    window.paymentPlans.forEach(function (plan, index) {
+      var isActive = index === activePolicyIndex;
+      var tab = document.createElement("button");
+      tab.type = "button";
+      tab.className = "policy__tab" + (isActive ? " is-active" : "");
+      tab.id = "policy-tab-" + plan.id;
+      tab.setAttribute("role", "tab");
+      tab.setAttribute("aria-selected", isActive ? "true" : "false");
+      tab.setAttribute("aria-controls", "policy-panel");
+      tab.tabIndex = isActive ? 0 : -1;
+
+      var num = document.createElement("span");
+      num.className = "policy__tab-index";
+      num.textContent = plan.number;
+      tab.appendChild(num);
+
+      var label = document.createElement("span");
+      label.className = "policy__tab-label";
+      label.textContent = lang === "en" ? plan.labelEn : plan.labelVi;
+      tab.appendChild(label);
+
+      tab.addEventListener("click", function () {
+        if (activePolicyIndex === index) return;
+        activePolicyIndex = index;
+        renderPolicySection(currentLang());
+        tab.focus();
       });
+      tab.addEventListener("keydown", function (e) {
+        var last = window.paymentPlans.length - 1;
+        var target = null;
+        if (e.key === "ArrowRight") target = index === last ? 0 : index + 1;
+        else if (e.key === "ArrowLeft") target = index === 0 ? last : index - 1;
+        else if (e.key === "Home") target = 0;
+        else if (e.key === "End") target = last;
+        else return;
+        e.preventDefault();
+        activePolicyIndex = target;
+        renderPolicySection(currentLang());
+        var tabs = tabsHost.querySelectorAll(".policy__tab");
+        if (tabs[target]) tabs[target].focus();
+      });
+
+      tabsHost.appendChild(tab);
     });
+
+    renderPolicyPanel(window.paymentPlans[activePolicyIndex], lang);
+  }
+
+  function renderPolicyPanel(plan, lang) {
+    var panel = document.getElementById("policy-panel");
+    if (!panel) return;
+    panel.innerHTML = "";
+    panel.setAttribute("aria-labelledby", "policy-tab-" + plan.id);
+
+    // Always mount the three reusable containers so future content
+    // (an approved booking amount, milestone timeline, highlight
+    // metrics) has a slot to render into without any HTML/JS
+    // restructuring later. CSS collapses an empty one to zero height
+    // (see .payment-plan__header:empty etc. in sections.css) so no
+    // blank heading, bullet or timeline dot is ever visible now.
+    var wrap = document.createElement("div");
+    wrap.className = "payment-plan";
+
+    var header = document.createElement("header");
+    header.className = "payment-plan__header";
+    var title = lang === "en" ? plan.titleEn : plan.titleVi;
+    var booking = lang === "en" ? plan.bookingEn : plan.bookingVi;
+    if (title) {
+      var h = document.createElement("h3");
+      h.className = "payment-plan__title";
+      h.textContent = title;
+      header.appendChild(h);
+    }
+    if (booking) {
+      var b = document.createElement("p");
+      b.className = "payment-plan__booking";
+      b.textContent = booking;
+      header.appendChild(b);
+    }
+    wrap.appendChild(header);
+
+    // Milestone rows (dates/percentages) and highlight metrics render
+    // here once an approved schedule exists — plan.milestonesVi/En
+    // and plan.highlightsVi/En are intentionally left unbuilt (no
+    // invented dates/percentages) until then.
+    var timeline = document.createElement("div");
+    timeline.className = "payment-plan__timeline";
+    timeline.setAttribute("data-content-slot", "payment-plan-timeline");
+    wrap.appendChild(timeline);
+
+    var highlightsHost = document.createElement("div");
+    highlightsHost.className = "payment-plan__highlights";
+    highlightsHost.setAttribute("data-content-slot", "payment-plan-highlights");
+    wrap.appendChild(highlightsHost);
+
+    panel.appendChild(wrap);
   }
 
   /* -----------------------------------------------------
@@ -1046,12 +1146,12 @@
     renderLocation(lang);
     renderAmenitySection(lang);
     renderFloorplans(lang);
+    renderPolicySection(lang);
     renderProgress(lang);
     renderPressArticles(lang);
   }
 
   renderAll();
-  setupPolicyTabs();
   setupDetailsToggle();
   setupFloatingContacts();
   setupFinalForm();
