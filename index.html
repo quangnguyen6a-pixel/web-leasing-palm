@@ -413,8 +413,8 @@
       <div class="amenities__main-tabs" id="amenities-main-tabs" role="tablist" aria-label="Nhóm tiện ích"></div>
       <div class="amenities__floor-tabs" id="amenities-floor-tabs" role="tablist" aria-label="Nhóm tiện ích con"></div>
 
-      <div class="amenities__layout">
-        <figure class="glass-media-frame" data-depth-frame>
+      <div class="amenities__layout" id="amenities-layout">
+        <figure class="glass-media-frame" data-depth-frame id="amenity-media-frame">
           <div class="amenity-carousel" id="amenity-carousel" role="region" aria-roledescription="carousel" aria-label="Hình ảnh minh họa tiện ích">
             <div class="amenity-carousel__stage glass-media-inner" id="amenity-carousel-stage"></div>
             <button type="button" class="amenity-carousel__nav amenity-carousel__nav--prev" id="amenity-carousel-prev"
@@ -428,8 +428,26 @@
           </div>
         </figure>
 
-        <div class="amenity-list" id="amenity-list" aria-label="Danh sách tiện ích"></div>
+        <!-- Group heading + count badge + a preview (first 12) of the
+             active group's items, plus the expand/collapse toggle when
+             there are more than 12. The .amenity-list grid itself
+             (rendered by renderAmenityList() in js/sections.js) is
+             relocated here vs. #amenity-list-full-slot below depending
+             on expanded state — never duplicated in both places. -->
+        <div class="amenity-panel">
+          <div class="amenity-panel__head">
+            <h3 class="amenity-panel__title" id="amenity-group-title"></h3>
+            <span class="amenity-panel__count" id="amenity-group-count"></span>
+          </div>
+          <div class="amenity-panel__list-slot" id="amenity-list-slot"></div>
+          <button type="button" class="amenity-toggle" id="amenity-toggle" hidden></button>
+        </div>
       </div>
+
+      <!-- Full-width expanded list — used only while a group with more
+           than 12 items is expanded, so the carousel row never
+           stretches to match a long list. -->
+      <div class="amenity-list-full-slot" id="amenity-list-full-slot"></div>
     </div>
   </section>
 
@@ -867,14 +885,8 @@
     <span class="floating-contacts__icon" aria-hidden="true">&#9742;</span>
     <span class="floating-contacts__label">0969 696 201</span>
   </a>
-  <!-- Logo-Zalo.webp exists in the project's Drive asset folder but could
-       not be reliably transferred into assets/icons/ this session (see
-       README) — this is a neutral chat-bubble glyph, not the Zalo brand
-       mark, standing in until that file is added by hand. -->
   <button type="button" class="floating-contacts__btn floating-contacts__btn--zalo" id="floating-zalo" disabled aria-disabled="true" aria-label="Liên hệ qua Zalo">
-    <svg class="floating-contacts__icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 11.5a8.5 6.8 0 1 1-3.2-5.3L21 5l-1 3.4A6.7 6.7 0 0 1 21 11.5Z"/>
-    </svg>
+    <img src="assets/icons/icon-zalo.png" alt="" aria-hidden="true">
     <span class="floating-contacts__label" data-lang-vi="Zalo (sắp có)" data-lang-en="Zalo (coming soon)">Zalo (sắp có)</span>
   </button>
   <button type="button" class="floating-contacts__btn floating-contacts__btn--whatsapp" id="floating-whatsapp" disabled aria-disabled="true" aria-label="Liên hệ qua WhatsApp">

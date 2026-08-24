@@ -145,20 +145,19 @@ window.connectivityData = {
 
 /* window.amenityGroups — single source for BOTH the (independent,
    auto-playing) amenity image carousel and the plain amenity list,
-   for both level-1 tabs. Each group is { titleVi, titleEn, items,
-   images } — items and images are two independent lists (an amenity
-   never needs a 1:1 photo), per the brief. Group keys/order match the
-   requested amenityGroups shape.
+   for both level-1 tabs. Each Palm City group is { tabVi, tabEn,
+   titleVi, titleEn, items, images } — tabVi/tabEn is the compact tab
+   label, titleVi/titleEn is the full official group heading shown
+   inside the active panel. items and images are two independent
+   lists (an amenity never needs a 1:1 photo), per the brief.
 
-   Palm City → 4 category groups (retail / communityPark /
-   riversidePromenade / sportWellness). D7's only instruction for this
-   tab is "lấy text trong ảnh" pointing at
-   palmrivercity.com/wp-content/uploads/2026/06/palm-city-1.jpg — that
-   host is blocked by this environment's network policy (confirmed via
-   a live fetch attempt, EGRESS_BLOCKED), so no approved item list
-   exists yet for any of these 4 groups. `items` stays empty rather
-   than inventing amenity names; see the empty-state note rendered by
-   renderAmenityGroup() in js/sections.js and the final summary.
+   Palm City → 4 category groups, each with a compact tab label
+   (tabVi/tabEn) and the full official group heading (titleVi/titleEn)
+   shown inside the active panel — both approved wording, exact
+   numbering 01-100 preserved globally (item.n), not restarted per
+   group. Source: the supplied Palm City amenities list; British
+   English translations were generated for this pass (no existing EN
+   wording to preserve for these 100 names).
 
    Palm River → 4 floor groups (Tầng G / 1 / 2 / 20), full 68-item
    list from D7, numbering and wording preserved exactly as supplied. */
@@ -166,22 +165,62 @@ window.amenityGroups = {
   /* images: web-ready photography from the "[Đã lọc] HÌNH ẢNH DỰ ÁN"
      Drive folder → Tiện Ích (resized copies, each 1.5-2.9MB — the
      originals in "Tiện ích" are 10-20MB and are never loaded here).
-     Sorted by category match, not by original filename order. Every
-     image's own embedded caption/visible subject was checked before
-     assignment; a few photos in that folder (a family rooftop BBQ
-     scene, two building-facade shots, the amenities-legend graphic,
-     the brand hero shot) didn't clearly belong to any one category
-     and were left out rather than guessed into one. */
+     Reassigned to the new 4 groups by subject match: wellness photos
+     → sportsWellness, park/promenade photos → landscapeRiverside,
+     retail photos → retailCommunity. No local photography exists yet
+     for premiumPrivileges (a rooftop/executive-lounge scene) — its
+     `images` stays empty rather than reusing an unrelated photo; the
+     carousel hides itself for that group (see renderAmenityCarousel
+     in js/sections.js) and the list uses the full row width instead. */
   palmCity: {
-    retail: {
-      titleVi: "Khu thương mại", titleEn: "Retail precinct", items: [],
+    sportsWellness: {
+      tabVi: "Thể thao & Trị liệu", tabEn: "Sports & Wellness",
+      titleVi: "Tổ Hợp Thể Thao, Sức Khỏe & Trị Liệu", titleEn: "Sports, Wellness & Therapy Complex",
       images: [
-        "assets/amenities/amenity-palmcity-retail-1.jpg",
-        "assets/amenities/amenity-palmcity-retail-2.jpg"
+        "assets/amenities/amenity-palmcity-wellness-1.jpg",
+        "assets/amenities/amenity-palmcity-wellness-2.jpg"
+      ],
+      items: [
+        { n: 1, vi: "Sân Pickleball", en: "Pickleball Court" },
+        { n: 2, vi: "Sân bóng chuyền", en: "Volleyball Court" },
+        { n: 3, vi: "Sân thể thao đa năng", en: "Multi-purpose Sports Court" },
+        { n: 4, vi: "Sân bóng bàn", en: "Table Tennis Court" },
+        { n: 5, vi: "Góc chơi Bocce", en: "Bocce Court" },
+        { n: 6, vi: "Khu thể dục người cao tuổi", en: "Senior Fitness Area" },
+        { n: 7, vi: "Sàn tập thiền & Yoga ngoài trời", en: "Outdoor Meditation & Yoga Deck" },
+        { n: 8, vi: "Đường chạy bộ ven sông", en: "Riverside Jogging Trail" },
+        { n: 9, vi: "Đường đạp xe chung", en: "Shared Cycling Path" },
+        { n: 10, vi: "Hồ ngâm lạnh tái tạo tế bào", en: "Cellular Regeneration Cold Plunge Pool" },
+        { n: 11, vi: "Bệnh viện Quốc tế", en: "International Hospital" },
+        { n: 12, vi: "Sky Onsen", en: "Sky Onsen" },
+        { n: 13, vi: "Xông hơi Jim Jil Bang", en: "Jjimjilbang Sauna" },
+        { n: 14, vi: "Hồ bơi chuẩn Olympic", en: "Olympic-standard Swimming Pool" },
+        { n: 15, vi: "Hồ thủy trị liệu thư giãn", en: "Relaxation Hydrotherapy Pool" },
+        { n: 16, vi: "Hồ bơi vô cực trên cao", en: "Elevated Infinity Pool" },
+        { n: 17, vi: "Phòng Golf 3D", en: "3D Golf Simulator Room" },
+        { n: 18, vi: "Hồ tắm khoáng nóng Onsen", en: "Onsen Hot Mineral Bath" },
+        { n: 19, vi: "Phòng Gym", en: "Gymnasium" },
+        { n: 20, vi: "Phòng Yoga", en: "Yoga Studio" },
+        { n: 21, vi: "Khu trị liệu nhiệt nóng - lạnh", en: "Hot-Cold Contrast Therapy Zone" },
+        { n: 22, vi: "Tổ hợp sân thể thao", en: "Sports Court Complex" },
+        { n: 23, vi: "Phòng Yoga nhiệt và hồng ngoại", en: "Heated & Infrared Yoga Studio" },
+        { n: 24, vi: "Đường chạy bộ bình minh", en: "Sunrise Jogging Trail" },
+        { n: 25, vi: "Hồ bơi nước ấm tràn viền đón nắng", en: "Sun-facing Warm-water Infinity Pool" },
+        { n: 26, vi: "Phòng xông hơi trị liệu ánh sáng", en: "Light Therapy Sauna Room" },
+        { n: 27, vi: "Sân thiền & Yoga hoàng hôn", en: "Sunset Meditation & Yoga Deck" },
+        { n: 28, vi: "Phòng thể thao công nghệ cao", en: "High-tech Sports Room" },
+        { n: 29, vi: "Sàn Yoga vòm kính trên cao", en: "Elevated Glass-dome Yoga Deck" },
+        { n: 30, vi: "Phòng tập đạp xe & Cardio", en: "Cycling & Cardio Studio" },
+        { n: 31, vi: "Phòng Gym & Fitness vô cực", en: "Infinity Gym & Fitness Studio" },
+        { n: 32, vi: "Trung tâm trẻ hóa & thẩm mỹ công nghệ cao", en: "High-tech Rejuvenation & Aesthetics Centre" },
+        { n: 33, vi: "Viện y học tái tạo tế bào chuyên sâu", en: "Advanced Cellular Regenerative Medicine Institute" },
+        { n: 34, vi: "Viện trẻ hóa thẩm mỹ công nghệ cao", en: "High-tech Aesthetic Rejuvenation Institute" },
+        { n: 35, vi: "Phòng phục hồi thể chất", en: "Physical Recovery Room" }
       ]
     },
-    communityPark: {
-      titleVi: "Công viên cộng đồng", titleEn: "Community park", items: [],
+    landscapeRiverside: {
+      tabVi: "Cảnh quan & Ven sông", tabEn: "Landscape & Riverside",
+      titleVi: "Tổ Hợp Cảnh Quan Sinh Thái & Ven Sông", titleEn: "Ecological Landscape & Riverside Complex",
       images: [
         "assets/amenities/amenity-palmcity-park-1.jpg",
         "assets/amenities/amenity-palmcity-park-2.jpg",
@@ -190,23 +229,95 @@ window.amenityGroups = {
         "assets/amenities/amenity-palmcity-park-5.jpg",
         "assets/amenities/amenity-palmcity-park-6.jpg",
         "assets/amenities/amenity-palmcity-park-7.jpg",
-        "assets/amenities/amenity-palmcity-park-8.jpg"
-      ]
-    },
-    riversidePromenade: {
-      titleVi: "Tuyến dạo bờ sông sinh thái", titleEn: "Eco riverside promenade", items: [],
-      images: [
+        "assets/amenities/amenity-palmcity-park-8.jpg",
         "assets/amenities/amenity-palmcity-promenade-1.jpg",
         "assets/amenities/amenity-palmcity-promenade-2.jpg",
         "assets/amenities/amenity-palmcity-promenade-3.jpg",
         "assets/amenities/amenity-palmcity-promenade-4.jpg"
+      ],
+      items: [
+        { n: 36, vi: "Điểm ngắm cảnh ven sông", en: "Riverside Viewpoint" },
+        { n: 37, vi: "Công viên cộng đồng", en: "Community Park" },
+        { n: 38, vi: "Góc thư giãn", en: "Relaxation Corner" },
+        { n: 39, vi: "Vườn thảo mộc", en: "Herb Garden" },
+        { n: 40, vi: "Dãy ghế ngồi tương tác", en: "Interactive Seating Row" },
+        { n: 41, vi: "Bãi cỏ đa năng", en: "Multi-purpose Lawn" },
+        { n: 42, vi: "Khu hoa vàng", en: "Golden Flower Garden" },
+        { n: 43, vi: "Quảng trường trung tâm", en: "Central Plaza" },
+        { n: 44, vi: "Đường dạo cảm quan", en: "Sensory Walking Path" },
+        { n: 45, vi: "Đài quan sát sinh thái", en: "Ecological Observation Deck" },
+        { n: 46, vi: "Điểm câu cá", en: "Fishing Point" },
+        { n: 47, vi: "Biểu tượng nghệ thuật", en: "Art Landmark" },
+        { n: 48, vi: "Đường bộ đá cuội", en: "Pebble Walking Path" },
+        { n: 49, vi: "Sảnh nghỉ dưỡng Oxy", en: "Oxygen Wellness Lounge" },
+        { n: 50, vi: "Khu vực ghế ngồi thác nước", en: "Waterfall Seating Area" },
+        { n: 51, vi: "Vườn cây ăn quả tạo hình nghệ thuật", en: "Artistically Shaped Orchard Garden" },
+        { n: 52, vi: "Rừng Oxi và thảm thiền", en: "Oxygen Forest & Meditation Lawn" },
+        { n: 53, vi: "Sảnh hoa trị liệu", en: "Floral Therapy Lounge" },
+        { n: 54, vi: "Mê cung cây xanh cảnh quan", en: "Landscaped Green Maze" },
+        { n: 55, vi: "Vườn thảo dược chữa lành", en: "Healing Herbal Garden" },
+        { n: 56, vi: "Sân vọng cảnh ngắm sao", en: "Stargazing Viewing Terrace" },
+        { n: 57, vi: "Đài vọng cảnh hoàng hôn", en: "Sunset Viewing Deck" },
+        { n: 58, vi: "Đường dạo bộ đèn lồng", en: "Lantern-lit Walking Path" },
+        { n: 59, vi: "Quảng trường điêu khắc nghệ thuật động học", en: "Kinetic Sculpture Art Plaza" }
       ]
     },
-    sportWellness: {
-      titleVi: "Thể thao & Sức khỏe", titleEn: "Sport & wellness", items: [],
+    retailCommunity: {
+      tabVi: "Thương mại & Cộng đồng", tabEn: "Retail & Community",
+      titleVi: "Tổ Hợp Thương Mại, Giải Trí & Cộng Đồng", titleEn: "Retail, Entertainment & Community Complex",
       images: [
-        "assets/amenities/amenity-palmcity-wellness-1.jpg",
-        "assets/amenities/amenity-palmcity-wellness-2.jpg"
+        "assets/amenities/amenity-palmcity-retail-1.jpg",
+        "assets/amenities/amenity-palmcity-retail-2.jpg"
+      ],
+      items: [
+        { n: 60, vi: "Cổng chào", en: "Welcome Gate" },
+        { n: 61, vi: "Trung tâm thương mại", en: "Shopping Centre" },
+        { n: 62, vi: "Khu ẩm thực & café ngoài trời", en: "Outdoor Dining & Café Precinct" },
+        { n: 63, vi: "Bảng thông tin", en: "Information Board" },
+        { n: 64, vi: "Sân chơi sáng tạo", en: "Creative Playground" },
+        { n: 65, vi: "Trạm nghỉ chân", en: "Rest Station" },
+        { n: 66, vi: "Rạp xem phim ngoài trời & khán đài cỏ", en: "Outdoor Cinema & Grass Amphitheatre" },
+        { n: 67, vi: "Góc võng thư giãn", en: "Hammock Relaxation Corner" },
+        { n: 68, vi: "Nhà vệ sinh công cộng", en: "Public Restroom" },
+        { n: 69, vi: "Lối vào & bãi đậu xe đạp", en: "Entrance & Bicycle Parking" },
+        { n: 70, vi: "Bãi cỏ sinh hoạt cộng đồng", en: "Community Activity Lawn" },
+        { n: 71, vi: "Khu picnic & vườn cây ăn quả", en: "Picnic Area & Orchard Garden" },
+        { n: 72, vi: "Sân chơi thú cưng", en: "Pet Playground" },
+        { n: 73, vi: "Trạm nghỉ gia đình", en: "Family Rest Station" },
+        { n: 74, vi: "Sân chơi thiên nhiên", en: "Nature Playground" },
+        { n: 75, vi: "Khu vui chơi nước trẻ em", en: "Children's Water Play Area" },
+        { n: 76, vi: "Rạp chiếu phim / Karaoke", en: "Cinema / Karaoke Room" },
+        { n: 77, vi: "Trường học Quốc tế", en: "International School" },
+        { n: 78, vi: "Không gian kết nối gia đình", en: "Family Bonding Space" },
+        { n: 79, vi: "Phòng học & đọc sách chung", en: "Shared Study & Reading Room" },
+        { n: 80, vi: "Shophouse", en: "Shophouses" },
+        { n: 81, vi: "Nhà sinh hoạt cộng đồng", en: "Community Activity House" },
+        { n: 82, vi: "Câu lạc bộ sáng tạo cho giới trẻ", en: "Youth Creative Club" },
+        { n: 83, vi: "Khu vui chơi sáng tạo cho trẻ em", en: "Children's Creative Play Area" },
+        { n: 84, vi: "Khu vườn tiệc tối riêng tư", en: "Private Evening Garden Party Venue" },
+        { n: 85, vi: "Bãi cỏ sự kiện & lửa trại", en: "Event Lawn & Bonfire Area" },
+        { n: 86, vi: "Khu tiệc nướng & Teppanyaki ngoài trời", en: "Outdoor BBQ & Teppanyaki Area" },
+        { n: 87, vi: "Khu vực lửa trại không khói", en: "Smokeless Bonfire Area" },
+        { n: 88, vi: "Trung tâm giao thương", en: "Trade & Business Centre" },
+        { n: 89, vi: "Khu nhà hàng ẩm thực cao cấp", en: "Premium Fine-dining Precinct" }
+      ]
+    },
+    premiumPrivileges: {
+      tabVi: "Đặc quyền Thượng lưu", tabEn: "Premium Privileges",
+      titleVi: "Đặc Quyền Thượng Lưu & Không Gian Doanh Nhân", titleEn: "Premium Privileges & Executive Spaces",
+      images: [],
+      items: [
+        { n: 90, vi: "Không gian làm việc ngoài trời", en: "Outdoor Workspace" },
+        { n: 91, vi: "Sảnh trà chiều ngắm hoàng hôn", en: "Sunset Afternoon Tea Lounge" },
+        { n: 92, vi: "Phòng họp thượng đỉnh & sảnh Cigar VIP", en: "Summit Meeting Room & VIP Cigar Lounge" },
+        { n: 93, vi: "Bãi đáp trực thăng & sảnh đón VIP trên cao", en: "Rooftop Helipad & VIP Arrival Lounge" },
+        { n: 94, vi: "Không gian kết nối doanh nhân", en: "Business Networking Space" },
+        { n: 95, vi: "Câu lạc bộ điều hành trên cao", en: "Sky Executive Club" },
+        { n: 96, vi: "Thư viện & phòng họp bảo mật", en: "Library & Private Meeting Room" },
+        { n: 97, vi: "Sảnh tiếp khách doanh nhân", en: "Business Reception Lounge" },
+        { n: 98, vi: "Khối pha lê đón sáng", en: "Crystal Sunlight Atrium" },
+        { n: 99, vi: "Đại sảnh thông tầng Galleria", en: "Galleria Double-height Atrium" },
+        { n: 100, vi: "Sảnh dịch vụ khách hàng cao cấp", en: "Premium Guest Services Lounge" }
       ]
     }
   },

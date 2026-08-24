@@ -280,7 +280,11 @@
       btn.className = "glass-tab glass-tab--dark amenities__floor-tab" + (isActive ? " is-active" : "");
       btn.setAttribute("role", "tab");
       btn.setAttribute("aria-selected", isActive ? "true" : "false");
-      btn.textContent = lang === "en" ? group.titleEn : group.titleVi;
+      // Palm City groups carry a short tabVi/tabEn label separate from
+      // their full official heading (titleVi/titleEn, shown in the
+      // panel below); Palm River's floor groups only have the (already
+      // short) titleVi/titleEn, which doubles as both.
+      btn.textContent = lang === "en" ? (group.tabEn || group.titleEn) : (group.tabVi || group.titleVi);
       btn.addEventListener("click", function () {
         if (activeAmenityGroup === key) return;
         activeAmenityGroup = key;
@@ -292,50 +296,88 @@
       groupTabsHost.appendChild(btn);
     });
 
-    // Only rebuild/reset the carousel when the active group actually
-    // changed — a pure language switch just relabels the existing
-    // slides/list in place (no autoplay restart, no layout jump).
+    // Only rebuild/reset the carousel (and the expanded-list state)
+    // when the active group actually changed — a pure language switch
+    // just relabels what's already there (no autoplay restart, no
+    // layout jump, no losing the visitor's expand/collapse choice).
     var groupKey = activeAmenityTab + ":" + activeAmenityGroup;
     var groupChanged = groupKey !== lastRenderedAmenityGroupKey;
     lastRenderedAmenityGroupKey = groupKey;
+    if (groupChanged) amenityListExpanded = false;
 
     renderAmenityList(lang);
     renderAmenityCarousel(lang, groupChanged);
   }
 
-  // Plain list — natural numbered text, not interactive. Clicking an
-  // item never changes the carousel; there is no per-item active
-  // state to maintain.
+  // Group heading + count badge + a numbered list (global numbering,
+  // never restarted per group). Plain text, not interactive — clicking
+  // an item never changes the carousel. Only the first 12 items show
+  // by default; a glass "view all" toggle reveals the rest in a
+  // full-width block below the media row so the carousel never
+  // stretches to match a long list. Every Palm City/Palm River group
+  // always has an approved items array now, so there is no empty-list
+  // placeholder branch to render any more.
+  var amenityListExpanded = false;
+
   function renderAmenityList(lang) {
-    var listHost = document.getElementById("amenity-list");
-    if (!listHost) return;
-    listHost.innerHTML = "";
+    var titleHost = document.getElementById("amenity-group-title");
+    var countHost = document.getElementById("amenity-group-count");
+    var previewSlot = document.getElementById("amenity-list-slot");
+    var fullSlot = document.getElementById("amenity-list-full-slot");
+    var toggle = document.getElementById("amenity-toggle");
+    if (!titleHost || !countHost || !previewSlot || !fullSlot || !toggle) return;
+
     var group = currentAmenityGroup();
     var items = group ? group.items : [];
+    var total = items.length;
 
-    if (!items.length) {
-      var empty = document.createElement("p");
-      empty.className = "amenity-list__empty";
-      empty.textContent = lang === "en"
-        ? "The amenity list for this group has not been supplied in the approved source yet."
-        : "Danh sách tiện ích của khu vực này chưa được cung cấp trong tài liệu duyệt.";
-      listHost.appendChild(empty);
-      return;
-    }
+    titleHost.textContent = group ? (lang === "en" ? group.titleEn : group.titleVi) : "";
+    countHost.textContent = total
+      ? (lang === "en" ? total + " amenities" : total + " tiện ích")
+      : "";
 
-    items.forEach(function (item, index) {
+    var showAll = amenityListExpanded || total <= 12;
+    var visible = showAll ? items : items.slice(0, 12);
+
+    var list = document.createElement("div");
+    list.className = "amenity-list";
+    list.setAttribute("aria-label", lang === "en" ? "Amenity list" : "Danh sách tiện ích");
+    visible.forEach(function (item) {
       var row = document.createElement("p");
       row.className = "amenity-list__item";
       var idx = document.createElement("span");
       idx.className = "amenity-list__index";
-      idx.textContent = String(item.n || index + 1).padStart(2, "0");
+      idx.textContent = String(item.n).padStart(2, "0");
       var name = document.createElement("span");
       name.className = "amenity-list__name";
       name.textContent = lang === "en" ? item.en : item.vi;
       row.appendChild(idx);
       row.appendChild(name);
-      listHost.appendChild(row);
+      list.appendChild(row);
     });
+
+    previewSlot.innerHTML = "";
+    fullSlot.innerHTML = "";
+    if (showAll && total > 12) {
+      fullSlot.appendChild(list);
+    } else {
+      previewSlot.appendChild(list);
+    }
+
+    if (total > 12) {
+      toggle.hidden = false;
+      toggle.textContent = amenityListExpanded
+        ? (lang === "en" ? "Collapse" : "Thu gọn")
+        : (lang === "en" ? "View all " + total + " amenities" : "Xem tất cả " + total + " tiện ích");
+      toggle.setAttribute("aria-expanded", amenityListExpanded ? "true" : "false");
+      toggle.onclick = function () {
+        amenityListExpanded = !amenityListExpanded;
+        renderAmenityList(currentLang());
+      };
+    } else {
+      toggle.hidden = true;
+      toggle.onclick = null;
+    }
   }
 
   /* Independent auto-playing image carousel — fade + slight scale
@@ -357,14 +399,14 @@
     var group = currentAmenityGroup();
     var images = group ? group.images : [];
     var title = group ? (lang === "en" ? group.titleEn : group.titleVi) : "";
+    var mediaFrame = document.getElementById("amenity-media-frame");
+    var layout = document.getElementById("amenities-layout");
 
     if (!groupChanged) {
       // Language-only re-render: just relabel what's already there.
       Array.prototype.forEach.call(stage.querySelectorAll(".amenity-carousel__img"), function (img) {
         img.alt = title;
       });
-      var note = stage.querySelector(".amenity-carousel__placeholder p");
-      if (note) note.textContent = lang === "en" ? "Add amenity illustration images here" : "Thêm ảnh minh họa tiện ích tại đây";
       if (expandBtn && images.length) {
         expandBtn.onclick = function () { openZoomModal(images[amenityCarouselIndex], title); };
       }
@@ -375,27 +417,22 @@
     amenityCarouselIndex = 0;
     stage.innerHTML = "";
     dotsHost.innerHTML = "";
-    var carousel = document.getElementById("amenity-carousel");
-    if (carousel) carousel.classList.toggle("amenity-carousel--empty", !images.length);
 
+    // A group with no approved photography (e.g. Premium Privileges)
+    // hides the media frame entirely — no placeholder icon, no empty
+    // box — and lets the amenity panel take the full row width. A
+    // group whose photos happen to have all failed to load (a real
+    // runtime error, handled below) still uses the emptied-frame
+    // .amenity-carousel--empty treatment rather than removing the
+    // frame, since that's a transient failure, not a content gap.
+    if (mediaFrame) mediaFrame.hidden = !images.length;
+    if (layout) layout.classList.toggle("amenities__layout--full", !images.length);
     if (!images.length) {
-      var placeholder = document.createElement("div");
-      placeholder.className = "amenity-carousel__placeholder";
-      var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      icon.setAttribute("viewBox", "0 0 24 24");
-      icon.setAttribute("aria-hidden", "true");
-      icon.innerHTML =
-        '<rect x="3" y="4.5" width="18" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/>' +
-        '<circle cx="9" cy="10" r="1.6" fill="none" stroke="currentColor" stroke-width="1.4"/>' +
-        '<path d="M4 17.5l5.5-5.5 3 3 3.5-4 4 4.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>';
-      placeholder.appendChild(icon);
-      var note = document.createElement("p");
-      note.textContent = lang === "en" ? "Add amenity illustration images here" : "Thêm ảnh minh họa tiện ích tại đây";
-      placeholder.appendChild(note);
-      stage.appendChild(placeholder);
       if (expandBtn) expandBtn.onclick = null;
       return;
     }
+
+    var carousel = document.getElementById("amenity-carousel");
 
     images.forEach(function (src, index) {
       var img = document.createElement("img");
@@ -987,15 +1024,9 @@
     if (window.projectConfig.zaloUrl && zalo) {
       zalo.disabled = false;
       zalo.removeAttribute("aria-disabled");
-      /* Logo-Zalo.webp exists in the project's Drive asset folder but
-         could not be reliably transferred into assets/icons/ this
-         session (see README) — this is a neutral chat-bubble glyph,
-         not the Zalo brand mark, standing in until that file is
-         added by hand. */
       zalo.outerHTML = '<a class="floating-contacts__btn floating-contacts__btn--zalo" id="floating-zalo" ' +
         'href="' + window.projectConfig.zaloUrl + '" target="_blank" rel="noopener noreferrer" aria-label="Liên hệ qua Zalo">' +
-        '<svg class="floating-contacts__icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
-        '<path d="M21 11.5a8.5 6.8 0 1 1-3.2-5.3L21 5l-1 3.4A6.7 6.7 0 0 1 21 11.5Z"/></svg>' +
+        '<img src="assets/icons/icon-zalo.png" alt="" aria-hidden="true">' +
         '<span class="floating-contacts__label">Zalo</span></a>';
     }
     if (window.projectConfig.whatsappUrl && whatsapp) {

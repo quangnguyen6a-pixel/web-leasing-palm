@@ -1519,6 +1519,82 @@ unaffected.
 
 ---
 
+## 9t. Palm City amenities rebuilt (100 items, 4 new groups) + real Zalo logo
+
+**Palm City amenities.** `window.amenityGroups.palmCity` (`js/config.js`)
+replaces its old 4 photo-category keys (`retail`/`communityPark`/
+`riversidePromenade`/`sportWellness`, all with empty `items` — no
+approved list had existed for them) with 4 new keys —
+`sportsWellness`, `landscapeRiverside`, `retailCommunity`,
+`premiumPrivileges` — each carrying a compact `tabVi`/`tabEn` label
+for the sub-tab, the full official `titleVi`/`titleEn` heading shown
+in the panel, and its slice of the supplied 100-item list with global
+numbering preserved exactly (item 1 → item 100, never restarted per
+group: 35/24/30/11 items respectively). British English translations
+were generated for all 100 names (no existing EN wording to preserve
+for these). Palm River's own 4 floor groups/68 items are untouched.
+
+**List UX** (`renderAmenityList()`, `js/sections.js`) — the old
+"list not supplied yet" placeholder sentence is gone (every group now
+has real items). Each panel shows the full heading, a `35 tiện ích`/
+`35 amenities` count badge, and the first 12 items in a 3-column grid
+(2 columns ≤1023px, 1 column ≤767px, no internal scroll — the old
+`max-height:420px; overflow-y:auto` is removed). A glass "Xem tất cả
+N tiện ích"/"View all N amenities" button reveals the rest — moved to
+a new full-width `#amenity-list-full-slot` below the media row (not
+duplicated in the narrow column) so a 35-item list never stretches the
+carousel; the button becomes "Thu gọn"/"Collapse". Groups with ≤12
+items (only Premium Privileges, 11) show everything with no toggle.
+Switching groups always resets back to collapsed/first-12.
+
+**Carousel image mapping** — wellness photos → Sports & Wellness, all
+12 park+promenade photos → Landscape & Riverside, retail photos →
+Retail & Community. No local photography exists for Premium
+Privileges (a rooftop/executive-lounge scene) — rather than reuse an
+unrelated photo, that group's `images` stays `[]` and
+`renderAmenityCarousel()` now hides the entire media frame
+(`#amenity-media-frame[hidden]`, not the old empty-box placeholder
+icon) and adds `.amenities__layout--full` so the panel takes the full
+row width. Index resets to 0 and hidden/`--full` state re-evaluates
+on every group change; a genuine mid-session load failure still uses
+the separate `.amenity-carousel--empty` treatment (nav/dots/expand
+hidden, frame stays) rather than being treated as a content gap.
+
+**Zalo logo.** The generic inline chat-bubble SVG standing in for it
+is removed. The approved asset (`Logo Zalo (1).png`, transparent
+background, official brand blue, a wordmark rather than a square
+glyph) was found in the same Drive folder as the certificate/
+WhatsApp assets and transferred byte-for-byte intact — this file is
+49,234 bytes, large enough that the direct-transcription approach
+used for WhatsApp's smaller icon (§9p) silently corrupted it on the
+first attempt; the fix was reading the MCP tool's own oversized-result
+spillover file from disk with Python instead of retyping the base64,
+confirmed by an exact byte-count match against Drive's file metadata
+and a full pixel decode. Saved as `assets/icons/icon-zalo.png` (no
+leading slash, matching the existing `assets/icons/icon-whatsapp.png`
+convention so GitHub Pages resolves it under `/web-leasing-palm/`
+rather than the domain root) and wired into both the static
+`disabled` markup and `setupFloatingContacts()`'s runtime link-swap in
+`js/sections.js`. `.floating-contacts__btn--zalo img` is sized 28×28
+(vs. the shared 26×26 default) with `object-fit: contain` only — no
+`filter`/`invert`, no stretch, no crop — inside the still-56×56
+circular button; the wordmark's own 1200×420 proportions are preserved
+as-is. The Zalo URL (`https://zalo.me/1092029419951822931`) is
+unchanged.
+
+Verified at 1440/1024/768/430/390px, VI and EN: Palm City shows
+exactly the 4 new tabs; all 100 items appear once each (`n` 1–100, no
+gaps/duplicates, scripted check); the preview/expand/collapse
+interaction and the per-group carousel reset/clamp all work; the
+Premium Privileges group's media frame is fully hidden with the panel
+at full width and no broken-image icon; the Palm River tab (labels,
+68 items, its own carousel state) is unaffected; the Zalo image
+resolves 200 with `naturalWidth 1200`/`naturalHeight 420`, visibly
+distinct from the WhatsApp icon; zero horizontal overflow; zero failed
+(≥400) network requests.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or
