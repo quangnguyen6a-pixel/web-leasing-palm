@@ -1284,6 +1284,66 @@ tab, and both language states.
 
 ---
 
+## 9q. Amenities-image re-verification + certificate/caption contrast fix
+
+**"Thể thao & Sức khỏe" empty-container report re-diagnosed.** A full
+re-audit this pass — `js/config.js`'s `sportWellness` group, both
+`amenity-palmcity-wellness-*.jpg` files (byte-valid, PIL-decodable,
+1920×1367), the render pipeline (`renderAmenitySection` →
+`renderAmenityList`/`renderAmenityCarousel`, already independent —
+"decouple image from text" from §9p already held), the on-demand
+`data-src`→`src` promotion and per-image `error` handler added in
+§9p, and every `[data-depth-frame]` / `.glass-media-frame` CSS rule
+that could plausibly zero out opacity — found no code defect. Two
+independent Playwright reproductions (sequential tab clicks, and a
+direct jump straight to the wellness tab) both rendered it correctly,
+and this pass's own verification script clicked through all four
+`palmCity` tabs at 1440/768/390px: every tab, including wellness,
+resolved to `naturalWidth: 1920, naturalHeight: 1367`, `empty: false`,
+zero failed (≥400) requests. The one console error seen throughout —
+`net::ERR_CONNECTION_RESET` — was isolated to the Google Fonts
+stylesheet request (network egress blocked in this sandbox), not any
+`assets/amenities/*` file; it is unrelated to the reported symptom.
+Given §9p's own note that the standalone Artifact preview never
+serves `assets/amenities/*` at all (16MB inlining cap), the most
+likely explanation for the screenshot is that same preview limitation,
+not a live-site bug. `object-position: center` was added to
+`.amenity-carousel__img` regardless, to make the already-correct
+`cover` framing explicit per this pass's spec.
+
+**Certificate caption contrast fixed.** `.floorplan-media-frame__footer
+figcaption` and `.floorplan-zoom` are a shared component also used by
+the floor-plan-typical frame in the dark `.floorplans` section, so
+their base ivory-on-navy colors were correct there but unreadable on
+the certificate's card in the light `.residential` section. Added a
+`.residential__certificate`-scoped override only (the floor-plan-typical
+instance is untouched): caption `color: var(--savills-navy)` (`#001c3d`)
+at `opacity: 0.92`; the "Xem chi tiết" button uses the same navy for
+its default text, keeps the existing muted-gold border
+(`rgba(231,210,154,0.55)`), and swaps to a solid navy background with
+white text on hover/focus. Caption wording itself was not changed
+except reconciling the dash character (em dash → en dash, "–") to
+match the approved text exactly; no other characters altered.
+
+**Amenities fallback-text contrast fixed.** `.amenity-list__empty`
+(the "chưa được cung cấp trong tài liệu duyệt" message shown when a
+group's `items` array is empty) moved from `rgba(248,242,230,0.5)` to
+`#f5f1e8` at `opacity: 0.9` — same warm-off-white family, much higher
+contrast against the dark navy Amenities background. Confirmed no
+`palmCity` group has an approved `items` list to render instead (all
+four remain `items: []` by design, per §9m/§9o's own finding that no
+source text exists for them); `palmRiver`'s four groups already carry
+their real approved lists and were unaffected by this change.
+
+Re-verified at 1440×900, 768×1024 and 390×844: all four `palmCity`
+carousel tabs load correctly (0 failed requests, `naturalWidth` > 0
+each), certificate caption computes to `rgb(0,28,61)` at `opacity:
+0.92`, button hover computes to navy background / white text, and the
+amenities fallback text computes to `rgb(245,241,232)` at `opacity:
+0.9` — at every width tested, VI and EN.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

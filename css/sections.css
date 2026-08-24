@@ -687,6 +687,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   opacity: 0;
   transform: scale(1.02);
   transition: opacity 420ms ease, transform 420ms ease;
@@ -832,7 +833,8 @@
   font-family: var(--font-body-alt);
   font-size: 13.5px;
   line-height: 1.6;
-  color: rgba(248, 242, 230, 0.5);
+  color: #f5f1e8;
+  opacity: 0.9;
   font-style: italic;
 }
 
@@ -1465,6 +1467,25 @@
 }
 .residential__certificate.is-broken {
   display: none;
+}
+/* Footer text/CTA sit on the light .residential background, so the
+   shared dark-section footer colors (ivory-on-navy) are overridden
+   here for legibility; the floorplan-typical instance of the same
+   shared component is untouched. */
+.residential__certificate .floorplan-media-frame__footer figcaption {
+  color: var(--savills-navy);
+  opacity: 0.92;
+}
+.residential__certificate .floorplan-zoom {
+  color: var(--savills-navy);
+  background: transparent;
+  border-color: rgba(231, 210, 154, 0.55);
+}
+.residential__certificate .floorplan-zoom:hover,
+.residential__certificate .floorplan-zoom:focus-visible {
+  background: var(--savills-navy);
+  border-color: var(--savills-navy);
+  color: #fff;
 }
 .residential__points {
   display: flex;
