@@ -1177,6 +1177,52 @@ could be filled from assets already approved and in use elsewhere.
 
 ---
 
+## 9o. Palm City amenity galleries + Tier-1 certificate
+
+The user resized and re-uploaded the Drive folder's `Tiện ích` photos
+(now 1.5–2.9 MB each, all under the download tool's cap that blocked
+§9m/§9n) into a new `Tiện Ích ` subfolder — this pass fetched all 22,
+viewed every one at full resolution (most carry no OCR text, so this
+needed actual visual inspection, not just filename/caption matching),
+and populated the four empty `amenityGroups.palmCity.*.images` arrays:
+
+- **retail** (2): shopfront/plaza street scenes.
+- **communityPark** (8): lawns, tai-chi path, water-play area, garden
+  corners, pergola park.
+- **riversidePromenade** (4): riverside walking paths and waterfront
+  plazas — matches this category's own name most literally.
+- **sportWellness** (2): the two photos with a visible pool/tennis
+  court/outdoor-gym complex.
+
+Six photos from the same folder were deliberately left unassigned — a
+family rooftop BBQ scene (no clear category fit; assigning it to any
+of the four would be a guess), two building-facade shots, the
+amenities-legend/site-plan graphic (illegible at photo size, not a
+single-subject photo), the Palm City brand hero shot, and the
+resized location-connectivity map (visually nicer than the current
+`palm-city-location-map.webp`, but swapping it wasn't asked for and
+would mean replacing already-approved content, so it was left as an
+available alternate rather than substituted).
+
+**Tier-1 certificate**: no such slot existed anywhere in the site
+before this pass. `Chứng nhận F1.png` (downloaded in §9n, previously
+unused) is a real photo of the "Certificate of Recognition:
+International Strategic Partner" naming Savills as Palm River's F1
+distribution agent — directly matching the `Đại lý phân phối F1` row
+already in `window.projectDetails`. Added as a small, self-contained
+`.glass-media-frame` figure at the end of the "Về Savills" section
+(`.savills-section__certificate`, `object-fit: contain`, warm-ivory
+inner background so the full document stays visible and uncropped),
+wired to the existing `openZoomModal` lightbox via a new
+`setupTier1CertificateZoom()` — no new manifest, no layout changes
+elsewhere on the page.
+
+All 22 downloaded files, plus the certificate, together add ~37MB to
+the repo (`assets/amenities/`, `assets/media/`) — each is the
+resized web copy, never the 10–20MB Drive original.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

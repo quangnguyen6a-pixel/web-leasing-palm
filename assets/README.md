@@ -12,9 +12,14 @@ assets/
 ├── floorplan-2pn.jpg               # 2PN unit-type card, 85.9/76.9 m² (downloaded, not currently wired — see root README asset-mapping report)
 ├── floorplan-3pn.jpg               # 3PN unit-type card, 126.1/115.2 m² (floorPlanTypes "3pn")
 ├── floorplan-3pn-corner.jpg        # 3PN corner-unit card, 125.3/115.3 m² (downloaded, unassigned — no matching floorPlanTypes id; see report)
-└── media/
-    ├── palm-river-savills-partnership-event.jpg  # pressArticles[1].image
-    └── savills-partner-certificate.png           # downloaded, unassigned alternate for the same article
+├── media/
+│   ├── palm-river-savills-partnership-event.jpg  # pressArticles[1].image
+│   └── savills-partner-certificate.png           # .savills-section__certificate (Tier-1/F1 certificate, see root README §9o)
+└── amenities/                      # amenityGroups.palmCity.*.images — resized web copies, see root README §9o
+    ├── amenity-palmcity-retail-{1,2}.jpg
+    ├── amenity-palmcity-park-{1..8}.jpg
+    ├── amenity-palmcity-promenade-{1..4}.jpg
+    └── amenity-palmcity-wellness-{1,2}.jpg
 ```
 
 These are the raster files as supplied by the client (not SVGs). If a

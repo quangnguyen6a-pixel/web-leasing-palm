@@ -1255,6 +1255,19 @@
   gap: 20px;
   margin-bottom: 56px;
 }
+/* Tier-1 certificate — a supporting credibility badge, not a full
+   editorial image, so it stays compact rather than spanning the
+   section like the floor-plan/overview frames. */
+.savills-section__certificate {
+  width: min(100%, 300px);
+}
+.savills-section__certificate-inner {
+  aspect-ratio: 3 / 4;
+  background: var(--warm-ivory);
+}
+.savills-section__certificate-inner img {
+  object-fit: contain;
+}
 .pillar {
   display: flex;
   flex-direction: column;

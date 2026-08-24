@@ -163,11 +163,52 @@ window.connectivityData = {
    Palm River → 4 floor groups (Tầng G / 1 / 2 / 20), full 68-item
    list from D7, numbering and wording preserved exactly as supplied. */
 window.amenityGroups = {
+  /* images: web-ready photography from the "[Đã lọc] HÌNH ẢNH DỰ ÁN"
+     Drive folder → Tiện Ích (resized copies, each 1.5-2.9MB — the
+     originals in "Tiện ích" are 10-20MB and are never loaded here).
+     Sorted by category match, not by original filename order. Every
+     image's own embedded caption/visible subject was checked before
+     assignment; a few photos in that folder (a family rooftop BBQ
+     scene, two building-facade shots, the amenities-legend graphic,
+     the brand hero shot) didn't clearly belong to any one category
+     and were left out rather than guessed into one. */
   palmCity: {
-    retail: { titleVi: "Khu thương mại", titleEn: "Retail precinct", items: [], images: [] },
-    communityPark: { titleVi: "Công viên cộng đồng", titleEn: "Community park", items: [], images: [] },
-    riversidePromenade: { titleVi: "Tuyến dạo bờ sông sinh thái", titleEn: "Eco riverside promenade", items: [], images: [] },
-    sportWellness: { titleVi: "Thể thao & Sức khỏe", titleEn: "Sport & wellness", items: [], images: [] }
+    retail: {
+      titleVi: "Khu thương mại", titleEn: "Retail precinct", items: [],
+      images: [
+        "assets/amenities/amenity-palmcity-retail-1.jpg",
+        "assets/amenities/amenity-palmcity-retail-2.jpg"
+      ]
+    },
+    communityPark: {
+      titleVi: "Công viên cộng đồng", titleEn: "Community park", items: [],
+      images: [
+        "assets/amenities/amenity-palmcity-park-1.jpg",
+        "assets/amenities/amenity-palmcity-park-2.jpg",
+        "assets/amenities/amenity-palmcity-park-3.jpg",
+        "assets/amenities/amenity-palmcity-park-4.jpg",
+        "assets/amenities/amenity-palmcity-park-5.jpg",
+        "assets/amenities/amenity-palmcity-park-6.jpg",
+        "assets/amenities/amenity-palmcity-park-7.jpg",
+        "assets/amenities/amenity-palmcity-park-8.jpg"
+      ]
+    },
+    riversidePromenade: {
+      titleVi: "Tuyến dạo bờ sông sinh thái", titleEn: "Eco riverside promenade", items: [],
+      images: [
+        "assets/amenities/amenity-palmcity-promenade-1.jpg",
+        "assets/amenities/amenity-palmcity-promenade-2.jpg",
+        "assets/amenities/amenity-palmcity-promenade-3.jpg",
+        "assets/amenities/amenity-palmcity-promenade-4.jpg"
+      ]
+    },
+    sportWellness: {
+      titleVi: "Thể thao & Sức khỏe", titleEn: "Sport & wellness", items: [],
+      images: [
+        "assets/amenities/amenity-palmcity-wellness-1.jpg",
+        "assets/amenities/amenity-palmcity-wellness-2.jpg"
+      ]
+    }
   },
   palmRiver: {
     ground: {

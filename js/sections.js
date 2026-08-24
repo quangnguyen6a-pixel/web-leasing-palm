@@ -967,6 +967,20 @@
   }
 
   /* -----------------------------------------------------
+     TIER-1 CERTIFICATE ZOOM — static image (not config-driven, like
+     the location map), so this just wires the existing lightbox
+     utility once rather than needing its own render function.
+     ----------------------------------------------------- */
+  function setupTier1CertificateZoom() {
+    var btn = document.getElementById("savills-tier1-zoom");
+    var img = document.querySelector(".savills-section__certificate-inner img");
+    if (!btn || !img) return;
+    btn.addEventListener("click", function () {
+      openZoomModal(img.getAttribute("src"), img.getAttribute("alt"));
+    });
+  }
+
+  /* -----------------------------------------------------
      INIT
      ----------------------------------------------------- */
   function renderAll() {
@@ -986,6 +1000,7 @@
   setupFloatingContacts();
   setupFinalForm();
   setupDepthFrames();
+  setupTier1CertificateZoom();
 
   document.addEventListener("palmcity:langchange", function (e) {
     renderAll();
