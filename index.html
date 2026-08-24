@@ -377,7 +377,8 @@
       <div class="location__map" role="img" aria-label="Bản đồ kết nối vùng Palm River">
         <div class="location__map-frame">
           <img src="assets/palm-city-location-map.webp"
-               alt="Bản đồ kết nối vùng Palm River" class="location__map-image" loading="lazy">
+               alt="Bản đồ kết nối vùng Palm River" class="location__map-image" loading="lazy"
+               onerror="this.closest('.location__map-frame').classList.add('is-broken'); console.warn('Failed to load image:', this.src);">
           <span class="location__map-marker" style="left: 56.5%; top: 48.5%;" aria-hidden="true">
             <span class="location__map-pulse"></span>
           </span>
@@ -597,26 +598,6 @@
              data-lang-en="A highly trained advisory team, with absolute confidentiality and support throughout the entire transaction process.">Đội ngũ chuyên viên tư vấn được đào tạo chuyên sâu, bảo mật thông tin tuyệt đối và hỗ trợ xuyên suốt toàn bộ quy trình giao dịch.</p>
         </li>
       </ul>
-
-      <!-- Tier-1 (F1) distribution certificate — real photo of the
-           official "Certificate of Recognition: International
-           Strategic Partner" naming Savills as Palm River's F1 agent
-           (matches window.projectDetails' "Đại lý phân phối F1" row).
-           object-fit: contain, so the certificate is never cropped. -->
-      <figure class="glass-media-frame savills-section__certificate" data-depth-frame>
-        <div class="glass-media-inner savills-section__certificate-inner">
-          <img src="assets/media/savills-partner-certificate.png"
-               alt="Chứng nhận Đối tác Chiến lược Quốc tế — Savills là đại lý phân phối F1 chính thức của Palm River"
-               loading="lazy" decoding="async">
-        </div>
-        <div class="floorplan-media-frame__footer">
-          <figcaption data-lang-vi="Chứng nhận Đối tác Chiến lược Quốc tế — Savills, đại lý phân phối F1 của Palm River"
-                      data-lang-en="Certificate of Recognition: International Strategic Partner — Savills, Palm River's F1 distribution agent">Chứng nhận Đối tác Chiến lược Quốc tế — Savills, đại lý phân phối F1 của Palm River</figcaption>
-          <button type="button" class="floorplan-zoom" id="savills-tier1-zoom"
-                  aria-label="Phóng to chứng nhận" data-lang-vi-aria="Phóng to chứng nhận" data-lang-en-aria="Zoom certificate"
-                  data-lang-vi="Xem chi tiết" data-lang-en="View details">Xem chi tiết</button>
-        </div>
-      </figure>
     </div>
   </section>
 
@@ -653,11 +634,32 @@
        ========================================================= -->
   <section class="residential" id="residential" aria-labelledby="residential-title">
     <div class="section-container residential__container">
-      <div class="residential__media" aria-hidden="true">
-        <!-- Expected asset: assets/savills-residential-team.jpg -->
-        <div class="residential__image-frame">
-          <p class="residential__image-note" data-lang-vi="Hình ảnh đội ngũ đang được cập nhật" data-lang-en="Team image is being updated">Hình ảnh đội ngũ đang được cập nhật</p>
-        </div>
+      <div class="residential__media">
+        <!-- Tier-1 (F1) distribution certificate — real photo of the
+             official "Certificate of Recognition: International
+             Strategic Partner" naming Savills as Palm River's F1
+             agent (matches window.projectDetails' "Đại lý phân phối
+             F1" row). Not a team/event photo — no such photo exists;
+             this is the one real, on-topic asset available for this
+             frame. object-fit: contain, so the certificate is never
+             cropped. -->
+        <figure class="glass-media-frame residential__certificate" data-depth-frame>
+          <div class="glass-media-inner residential__certificate-inner">
+            <img src="assets/media/savills-partner-certificate.png"
+                 data-lang-vi-alt="Chứng nhận Đối tác Chiến lược Quốc tế của Savills tại Palm River"
+                 data-lang-en-alt="Savills International Strategic Partner recognition for Palm River"
+                 alt="Chứng nhận Đối tác Chiến lược Quốc tế của Savills tại Palm River"
+                 loading="lazy" decoding="async"
+                 onerror="this.closest('.residential__certificate').classList.add('is-broken'); console.warn('Failed to load image:', this.src);">
+          </div>
+          <div class="floorplan-media-frame__footer">
+            <figcaption data-lang-vi="Chứng nhận Đối tác Chiến lược Quốc tế — Savills, đại lý phân phối F1 của Palm River"
+                        data-lang-en="Certificate of Recognition: International Strategic Partner — Savills, Palm River's F1 distribution agent">Chứng nhận Đối tác Chiến lược Quốc tế — Savills, đại lý phân phối F1 của Palm River</figcaption>
+            <button type="button" class="floorplan-zoom" id="residential-certificate-zoom"
+                    aria-label="Phóng to chứng nhận" data-lang-vi-aria="Phóng to chứng nhận" data-lang-en-aria="Zoom certificate"
+                    data-lang-vi="Xem chi tiết" data-lang-en="View details">Xem chi tiết</button>
+          </div>
+        </figure>
       </div>
       <div class="residential__content">
         <p class="section-tag">SAVILLS RESIDENTIAL</p>

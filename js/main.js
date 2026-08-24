@@ -332,6 +332,7 @@
   var langButtons = document.querySelectorAll("[data-lang-set]");
   var langTextEls = document.querySelectorAll("[data-lang-vi][data-lang-en]");
   var langAriaEls = document.querySelectorAll("[data-lang-vi-aria][data-lang-en-aria]");
+  var langAltEls = document.querySelectorAll("[data-lang-vi-alt][data-lang-en-alt]");
 
   function applyLanguage(lang) {
     document.documentElement.setAttribute("lang", lang);
@@ -349,6 +350,11 @@
     langAriaEls.forEach(function (el) {
       var text = lang === "en" ? el.getAttribute("data-lang-en-aria") : el.getAttribute("data-lang-vi-aria");
       if (text !== null) el.setAttribute("aria-label", text);
+    });
+
+    langAltEls.forEach(function (el) {
+      var text = lang === "en" ? el.getAttribute("data-lang-en-alt") : el.getAttribute("data-lang-vi-alt");
+      if (text !== null) el.setAttribute("alt", text);
     });
 
     langButtons.forEach(function (btn) {

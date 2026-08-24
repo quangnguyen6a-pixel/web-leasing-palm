@@ -1223,6 +1223,67 @@ resized web copy, never the 10–20MB Drive original.
 
 ---
 
+## 9p. Certificate relocation + carousel loading fix
+
+**Root cause of the "broken" amenity images**: not a broken path, a
+missing file, or a case/casing mismatch — every asset, filename and
+`js/config.js` reference was verified byte-for-byte correct, and a
+live server + Playwright check showed zero 404s and every image
+eventually reaching `naturalWidth > 0`. The actual cause was a
+loading-order artifact: all of a carousel group's `<img>` elements
+(up to 8, at 1.5–2.9MB each) were created in the DOM at once, stacked
+absolutely on top of each other inside the same visible box. Native
+`loading="lazy"` decides whether to fetch based on an element's
+*position*, not its opacity or `is-active` state — so the moment the
+Amenities section scrolled into view, the browser judged all 8
+stacked images "near viewport" and fetched every one of them
+simultaneously. On a slow connection (or the standalone Artifact
+preview, which doesn't serve `assets/amenities/*` at all — see §9o's
+own note) that reads as several multi-MB requests stalling or
+failing together, which is what would show as the broken-image icon
++ literal alt text ("Công viên cộng đồng", etc.) the user saw.
+
+**Fix**: only the first slide in each carousel group gets a real
+`src` on render; every other slide's path is parked in `data-src`
+until the visitor actually navigates within one slide of it
+(`goToAmenityCarouselSlide()` in `js/sections.js`), so at most 2–3 of
+a group's images are ever in flight. Confirmed via network-request
+logging: scrolling the Amenities section into view now fires exactly
+1 request per visible carousel, not up to 8.
+
+**Certificate moved**: `assets/media/savills-partner-certificate.png`
+(same file, not re-fetched or duplicated) was removed from the "Về
+Savills" corporate section (added in §9o) and now fills the
+`.residential__media` frame in the Savills Residential section,
+replacing the "Hình ảnh đội ngũ đang được cập nhật" placeholder
+outright — no team/event photo was substituted, since none exists.
+Reuses the existing `.glass-media-frame` (single champagne-gold
+border + one top highlight, 12px padding, no duplicated outlines),
+`object-fit: contain` + `object-position: center` so the full
+certificate stays visible, and the existing `openZoomModal` lightbox
+via a renamed `setupTier1CertificateZoom()`. Bilingual alt text is a
+new small addition to `js/main.js`'s language switcher
+(`data-lang-vi-alt`/`data-lang-en-alt`, mirroring the existing
+`-aria` pattern) rather than a one-off inline script, since nothing
+in the codebase swapped `alt` text before this.
+
+**Defensive `onerror` added everywhere** an `<img>` is created —
+`handleImgError()` in `js/sections.js` hides the element and
+`console.warn`s the failed URL (the amenity carousel additionally
+retires that slide's dot and skips the active slide forward, or
+collapses to the empty state if every slide in a group has failed);
+the static location-map `<img>` in `index.html` got the same
+treatment. None of this fired in testing — the real assets are all
+intact — but it's now in place for the actual failure mode (a future
+broken/renamed file) rather than only the one diagnosed here.
+
+Verified at 1440/1024/768/430/390px, VI and EN: zero failed network
+requests, zero visible `<img>` with empty `src` or `naturalWidth`/
+`naturalHeight` of 0, across every amenity category, every floor-plan
+tab, and both language states.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

@@ -26,6 +26,18 @@
     container.scrollLeft = Math.max(0, target);
   }
 
+  // Shared failure handler for every dynamically-created <img>: hides
+  // the element (rather than leaving the browser's broken-image icon
+  // + alt text visible) and logs the failed URL for diagnosis. Never
+  // silently swaps in another image — a hidden slide is honest, a
+  // wrong photo is not.
+  function handleImgError(img) {
+    img.addEventListener("error", function () {
+      img.style.display = "none";
+      console.warn("Failed to load image:", img.getAttribute("src"));
+    });
+  }
+
   // Shared renderer for a .glass-media-inner box: shows the
   // image when a path is supplied, otherwise the neutral "being
   // updated" note already sitting in the DOM (never replaced with
@@ -44,6 +56,7 @@
       img.decoding = "async";
       img.style.objectFit = fit || "cover";
       img.style.objectPosition = objectPosition || "center";
+      handleImgError(img);
       inner.appendChild(img);
     } else {
       var note = document.createElement("p");
@@ -387,10 +400,22 @@
     images.forEach(function (src, index) {
       var img = document.createElement("img");
       img.className = "amenity-carousel__img" + (index === 0 ? " is-active" : "");
-      img.src = src;
       img.alt = title;
-      img.loading = index === 0 ? "eager" : "lazy";
       img.decoding = "async";
+      // Only the first slide fetches immediately; every other slide's
+      // path is parked in data-src and only becomes a real src once
+      // the visitor navigates to (or just before) it — see
+      // loadAmenitySlide() below. Stacking all slides in the same box
+      // means the native loading="lazy" viewport check can't tell
+      // them apart, so without this every multi-MB photo in the
+      // group would fetch the moment the carousel scrolls on screen.
+      if (index === 0) {
+        img.loading = "eager";
+        img.src = src;
+      } else {
+        img.loading = "lazy";
+        img.dataset.src = src;
+      }
       stage.appendChild(img);
 
       var dot = document.createElement("button");
@@ -404,6 +429,22 @@
         restartAmenityCarouselAutoplay();
       });
       dotsHost.appendChild(dot);
+
+      // A slide that fails to load is removed from rotation (image +
+      // its dot hidden) rather than left as a broken-image icon; if
+      // it was the active/only slide, advance off it immediately.
+      img.addEventListener("error", function () {
+        console.warn("Failed to load image:", img.getAttribute("src"));
+        img.style.display = "none";
+        dot.style.display = "none";
+        var remaining = stage.querySelectorAll(".amenity-carousel__img:not([style*='display: none'])");
+        if (!remaining.length) {
+          carousel.classList.add("amenity-carousel--empty");
+          stopAmenityCarouselAutoplay();
+        } else if (img.classList.contains("is-active")) {
+          goToAmenityCarouselSlide(index + 1);
+        }
+      });
     });
 
     if (expandBtn) {
@@ -422,6 +463,12 @@
     amenityCarouselIndex = (index + imgs.length) % imgs.length;
     imgs.forEach(function (img, i) {
       img.classList.toggle("is-active", i === amenityCarouselIndex);
+      // First time this slide becomes active (or its neighbour, for a
+      // smoother swipe/autoplay hand-off): fetch its real src.
+      var withinOne = Math.abs(i - amenityCarouselIndex) <= 1;
+      if (withinOne && !img.src && img.dataset.src) {
+        img.src = img.dataset.src;
+      }
     });
     var dots = document.querySelectorAll("#amenity-carousel-dots .amenity-carousel__dot");
     dots.forEach(function (dot, i) {
@@ -613,6 +660,7 @@
       img.alt = label;
       img.loading = "lazy";
       img.decoding = "async";
+      handleImgError(img);
       wrap.appendChild(img);
     } else {
       var note = document.createElement("p");
@@ -765,6 +813,7 @@
         img.alt = "";
         img.loading = "lazy";
         img.decoding = "async";
+        handleImgError(img);
         media.appendChild(img);
       } else {
         media.className = "press-card__media press-card__media--empty";
@@ -782,6 +831,7 @@
         logo.alt = article.publisher || "";
         logo.loading = "lazy";
         logo.decoding = "async";
+        handleImgError(logo);
         publisher.appendChild(logo);
       } else {
         var publisherName = document.createElement("span");
@@ -972,8 +1022,8 @@
      utility once rather than needing its own render function.
      ----------------------------------------------------- */
   function setupTier1CertificateZoom() {
-    var btn = document.getElementById("savills-tier1-zoom");
-    var img = document.querySelector(".savills-section__certificate-inner img");
+    var btn = document.getElementById("residential-certificate-zoom");
+    var img = document.querySelector(".residential__certificate-inner img");
     if (!btn || !img) return;
     btn.addEventListener("click", function () {
       openZoomModal(img.getAttribute("src"), img.getAttribute("alt"));
