@@ -839,52 +839,192 @@
     renderPolicyPanel(window.paymentPlans[activePolicyIndex], lang);
   }
 
+  // Dev-time-only sanity check — every plan's instalments (or, for the
+  // dual-track mortgage plan, each track) must sum to exactly 100%.
+  // Never silently flattens Đợt 5-9 into one 10% row: pct * repeat is
+  // what gets summed, matching the grouped-segment rendering below.
+  function validatePaymentPlans() {
+    if (!window.paymentPlans) return;
+    window.paymentPlans.forEach(function (plan) {
+      if (plan.id === "mortgage") {
+        var customer = 0, bank = 0;
+        plan.milestones.forEach(function (m) {
+          customer += m.customerPct || 0;
+          bank += m.bankPct || 0;
+        });
+        if (customer !== plan.customerTotal || bank !== plan.bankTotal || customer + bank !== 100) {
+          console.warn("Payment plan '" + plan.id + "' dual-track total is wrong: customer=" + customer + "% bank=" + bank + "% (expected 25% + 75% = 100%)");
+        }
+      } else {
+        var total = 0;
+        plan.milestones.forEach(function (m) { total += m.pct * (m.repeat || 1); });
+        if (total !== 100) {
+          console.warn("Payment plan '" + plan.id + "' milestones sum to " + total + "%, not 100%");
+        }
+      }
+    });
+  }
+
   function renderPolicyPanel(plan, lang) {
     var panel = document.getElementById("policy-panel");
     if (!panel) return;
     panel.innerHTML = "";
     panel.setAttribute("aria-labelledby", "policy-tab-" + plan.id);
 
-    // Always mount the three reusable containers so future content
-    // (an approved booking amount, milestone timeline, highlight
-    // metrics) has a slot to render into without any HTML/JS
-    // restructuring later. CSS collapses an empty one to zero height
-    // (see .payment-plan__header:empty etc. in sections.css) so no
-    // blank heading, bullet or timeline dot is ever visible now.
     var wrap = document.createElement("div");
     wrap.className = "payment-plan";
 
-    var header = document.createElement("header");
-    header.className = "payment-plan__header";
-    var title = lang === "en" ? plan.titleEn : plan.titleVi;
-    var booking = lang === "en" ? plan.bookingEn : plan.bookingVi;
-    if (title) {
-      var h = document.createElement("h3");
-      h.className = "payment-plan__title";
-      h.textContent = title;
-      header.appendChild(h);
-    }
-    if (booking) {
-      var b = document.createElement("p");
-      b.className = "payment-plan__booking";
-      b.textContent = booking;
-      header.appendChild(b);
-    }
-    wrap.appendChild(header);
+    // Shared registration-amount badge — identical position/wording
+    // on every plan, per the brief ("do not animate it repeatedly":
+    // it's plain static markup, no count-up).
+    var badge = document.createElement("p");
+    badge.className = "payment-plan__badge";
+    var badgeLabel = document.createElement("span");
+    badgeLabel.textContent = lang === "en" ? "Registration amount:" : "Đăng ký nhận thông tin:";
+    var badgeValue = document.createElement("strong");
+    badgeValue.className = "payment-plan__badge-value";
+    badgeValue.textContent = (lang === "en" ? "VND " : "") + plan.registrationAmount + (lang === "en" ? " million" : " triệu VNĐ");
+    badge.appendChild(badgeLabel);
+    badge.appendChild(badgeValue);
+    wrap.appendChild(badge);
 
-    // Milestone rows (dates/percentages) and highlight metrics render
-    // here once an approved schedule exists — plan.milestonesVi/En
-    // and plan.highlightsVi/En are intentionally left unbuilt (no
-    // invented dates/percentages) until then.
+    var isMortgage = plan.id === "mortgage";
+
+    if (isMortgage) {
+      var legend = document.createElement("div");
+      legend.className = "payment-plan__legend";
+      var legendCustomer = document.createElement("span");
+      legendCustomer.className = "payment-plan__legend-item payment-plan__legend-item--customer";
+      legendCustomer.textContent = lang === "en" ? "KH — Customer payment" : "KH — Khách hàng thanh toán";
+      var legendBank = document.createElement("span");
+      legendBank.className = "payment-plan__legend-item payment-plan__legend-item--bank";
+      legendBank.textContent = lang === "en" ? "NH — Bank disbursement" : "NH — Ngân hàng giải ngân";
+      legend.appendChild(legendCustomer);
+      legend.appendChild(legendBank);
+      wrap.appendChild(legend);
+    }
+
     var timeline = document.createElement("div");
-    timeline.className = "payment-plan__timeline";
-    timeline.setAttribute("data-content-slot", "payment-plan-timeline");
+    timeline.className = "payment-plan__timeline" + (isMortgage ? " payment-plan__timeline--dual" : "");
+    timeline.setAttribute("role", "list");
+
+    plan.milestones.forEach(function (m, index) {
+      var gapVi = m.gapVi, gapEn = m.gapEn;
+      if (index > 0 && (gapVi || gapEn)) {
+        var connector = document.createElement("div");
+        connector.className = "payment-plan__connector";
+        var connectorLabel = document.createElement("span");
+        connectorLabel.textContent = lang === "en" ? gapEn : gapVi;
+        connector.appendChild(connectorLabel);
+        timeline.appendChild(connector);
+      }
+
+      var step = document.createElement("div");
+      step.className = "payment-plan__step" + (m.repeat > 1 ? " payment-plan__step--grouped" : "") + (isMortgage ? " payment-plan__step--dual" : "");
+      step.setAttribute("role", "listitem");
+
+      var number = document.createElement("span");
+      number.className = "payment-plan__step-number";
+      number.textContent = lang === "en" ? m.numberEn : m.numberVi;
+      step.appendChild(number);
+
+      // Everything but the number lives in one wrapper so the mobile
+      // stepper (see the max-width:767px override) can lay the step
+      // out as "milestone on the left, value/time/chip on the right"
+      // without any markup change between breakpoints.
+      var values = document.createElement("div");
+      values.className = "payment-plan__step-values";
+
+      if (isMortgage) {
+        var dual = document.createElement("div");
+        dual.className = "payment-plan__dual-values";
+        var custVal = document.createElement("span");
+        custVal.className = "payment-plan__dual-value payment-plan__dual-value--customer";
+        custVal.textContent = m.customerPct ? m.customerPct + "%" : "—";
+        var bankVal = document.createElement("span");
+        bankVal.className = "payment-plan__dual-value payment-plan__dual-value--bank";
+        bankVal.textContent = m.bankPct ? m.bankPct + "%" : "—";
+        dual.appendChild(custVal);
+        dual.appendChild(bankVal);
+        values.appendChild(dual);
+      } else {
+        var pct = document.createElement("span");
+        pct.className = "payment-plan__step-pct";
+        pct.textContent = m.pct + "%";
+        values.appendChild(pct);
+        if (m.repeat > 1) {
+          var groupNote = document.createElement("span");
+          groupNote.className = "payment-plan__step-group-note";
+          groupNote.textContent = lang === "en"
+            ? "per instalment × " + m.repeat + " = " + (m.pct * m.repeat) + "%"
+            : "mỗi đợt × " + m.repeat + " = " + (m.pct * m.repeat) + "%";
+          values.appendChild(groupNote);
+        }
+      }
+
+      if (m.timeVi || m.timeEn) {
+        var time = document.createElement("span");
+        time.className = "payment-plan__step-time";
+        time.textContent = lang === "en" ? m.timeEn : m.timeVi;
+        values.appendChild(time);
+      }
+
+      if (m.chip) {
+        var chipData = window.paymentPlanMilestoneChips[m.chip];
+        var chip = document.createElement("span");
+        chip.className = "payment-plan__step-chip";
+        chip.textContent = lang === "en" ? chipData.en : chipData.vi;
+        values.appendChild(chip);
+        // Always visible (never hover-only), so the expanded meaning
+        // reaches keyboard/touch/mobile users the same as a mouse.
+        var chipFull = document.createElement("span");
+        chipFull.className = "payment-plan__step-chip-full";
+        chipFull.textContent = lang === "en" ? chipData.fullEn : chipData.fullVi;
+        values.appendChild(chipFull);
+      }
+
+      step.appendChild(values);
+      timeline.appendChild(step);
+    });
     wrap.appendChild(timeline);
 
-    var highlightsHost = document.createElement("div");
-    highlightsHost.className = "payment-plan__highlights";
-    highlightsHost.setAttribute("data-content-slot", "payment-plan-highlights");
-    wrap.appendChild(highlightsHost);
+    if (isMortgage) {
+      var totals = document.createElement("div");
+      totals.className = "payment-plan__track-totals";
+      var custTotal = document.createElement("span");
+      custTotal.className = "payment-plan__track-totals-item payment-plan__track-totals-item--customer";
+      custTotal.textContent = (lang === "en" ? "Customer total: " : "Tổng khách hàng: ") + plan.customerTotal + "%";
+      var bankTotal = document.createElement("span");
+      bankTotal.className = "payment-plan__track-totals-item payment-plan__track-totals-item--bank";
+      bankTotal.textContent = (lang === "en" ? "Bank total: " : "Tổng ngân hàng: ") + plan.bankTotal + "%";
+      totals.appendChild(custTotal);
+      totals.appendChild(bankTotal);
+      wrap.appendChild(totals);
+    }
+
+    var benefits = document.createElement("div");
+    benefits.className = "payment-plan__benefits";
+    var benefitList = lang === "en" ? plan.benefitsEn : plan.benefitsVi;
+    benefitList.forEach(function (item) {
+      var card = document.createElement("div");
+      card.className = "payment-plan__benefit";
+      var label = document.createElement("span");
+      label.className = "payment-plan__benefit-label";
+      label.textContent = item.label;
+      var value = document.createElement("span");
+      value.className = "payment-plan__benefit-value";
+      value.textContent = item.value;
+      card.appendChild(label);
+      card.appendChild(value);
+      if (item.note) {
+        var note = document.createElement("span");
+        note.className = "payment-plan__benefit-note";
+        note.textContent = item.note;
+        card.appendChild(note);
+      }
+      benefits.appendChild(card);
+    });
+    wrap.appendChild(benefits);
 
     panel.appendChild(wrap);
   }
@@ -1182,6 +1322,7 @@
     renderPressArticles(lang);
   }
 
+  validatePaymentPlans();
   renderAll();
   setupDetailsToggle();
   setupFloatingContacts();

@@ -559,54 +559,157 @@ window.savillsAbout = {
 
 /* -----------------------------------------------------
    PAYMENT PLANS — §chinh-sach (Chính sách thanh toán)
-   The four official plan names come from the supplied Palm River
-   payment poster; the poster's booking amounts, milestone dates/
-   percentages and loan terms are NOT transcribed here yet — no
-   approved source text for those exists, so every content field
-   stays empty rather than guessed. renderPolicySection() in
-   js/sections.js renders the tabs/panel from this array and leaves
-   an empty field's container out of the DOM entirely (no visible
-   heading, bullet or "Đang cập nhật" placeholder). Fill any field in
-   and it renders automatically — no other file needs to change.
-   ----------------------------------------------------- */
+   Transcribed from the approved Palm River payment-policy poster
+   ("ĐĂNG KÝ NHẬN THÔNG TIN: 100 TRIỆU VNĐ"). Every percentage/time
+   figure below matches that source exactly; nothing is invented.
+
+   Shape per plan: { id, number, labelVi/En, registrationAmount,
+   milestones[], benefitsVi/En[] } — mortgage additionally carries
+   customerTotal/bankTotal for its dual-track summary. A milestone is
+   { numberVi/En, pct, repeat, timeVi/En (elapsed time to reach this
+   step, first step only), gapVi/En (time-between-steps label shown on
+   the connector before this step), chipVi/En (short milestone code:
+   XNDK/VBTT/HDMB/HANDOVER/GCN — null if this step has none),
+   chipFullVi/En (its always-visible expanded label, never hover-only) }.
+   `pct * repeat` is this milestone's true share of 100% — Đợt 5–9 is
+   one grouped milestone with pct:10, repeat:5 (=50%), never flattened
+   to a single 10% entry. renderPolicyPanel() in js/sections.js
+   validates every plan sums to 100% (dev-console warning if not) and
+   builds the desktop-horizontal / mobile-vertical timeline from this
+   one array — no separate breakpoint markup. */
+window.paymentPlanMilestoneChips = {
+  XNDK: { vi: "XNĐK", en: "Confirmation", fullVi: "Xác nhận đăng ký", fullEn: "Confirmation of Registration" },
+  VBTT: { vi: "VBTT", en: "VBTT", fullVi: "Văn bản thỏa thuận", fullEn: "Agreement Document" },
+  HDMB: { vi: "HĐMB", en: "SPA", fullVi: "Hợp đồng mua bán", fullEn: "Sales and Purchase Agreement" },
+  HANDOVER: { vi: "Bàn giao", en: "Handover", fullVi: "Bàn giao", fullEn: "Handover" },
+  GCN: { vi: "GCN", en: "GCN", fullVi: "Giấy chứng nhận", fullEn: "Ownership Certificate" }
+};
+
 window.paymentPlans = [
   {
     id: "standard",
     number: "01",
     labelVi: "Thanh toán chuẩn", labelEn: "Standard Payment Plan",
-    titleVi: "", titleEn: "",
-    bookingVi: "", bookingEn: "",
-    milestonesVi: [], milestonesEn: [],
-    highlightsVi: [], highlightsEn: []
+    registrationAmount: 100,
+    milestones: [
+      { numberVi: "Đợt 1", numberEn: "Instalment 1", pct: 5, repeat: 1,
+        timeVi: "5 ngày", timeEn: "5 days", chip: "VBTT" },
+      { numberVi: "Đợt 2", numberEn: "Instalment 2", pct: 5, repeat: 1,
+        gapVi: "3 tháng", gapEn: "3 months", chip: "HDMB" },
+      { numberVi: "Đợt 3", numberEn: "Instalment 3", pct: 5, repeat: 1,
+        gapVi: "3 tháng", gapEn: "3 months" },
+      { numberVi: "Đợt 4", numberEn: "Instalment 4", pct: 5, repeat: 1,
+        gapVi: "3 tháng", gapEn: "3 months" },
+      { numberVi: "Đợt 5–9", numberEn: "Instalments 5–9", pct: 10, repeat: 5,
+        gapVi: "3 tháng/lần", gapEn: "every 3 months" },
+      { numberVi: "Đợt 10", numberEn: "Instalment 10", pct: 25, repeat: 1,
+        chip: "HANDOVER" },
+      { numberVi: "Đợt 11", numberEn: "Instalment 11", pct: 5, repeat: 1,
+        chip: "GCN" }
+    ],
+    benefitsVi: [
+      { label: "Ký HĐMB", value: "Chỉ 10%" },
+      { label: "Ưu đãi", value: "Lên đến 11%" },
+      { label: "Thanh toán", value: "Trong 26 tháng", note: "Đến khi nhận nhà" }
+    ],
+    benefitsEn: [
+      { label: "SPA signing", value: "Only 10%" },
+      { label: "Incentive", value: "Up to 11%" },
+      { label: "Payment term", value: "26 months", note: "Until handover" }
+    ]
   },
   {
     id: "special",
     number: "02",
     labelVi: "Thanh toán đặc biệt", labelEn: "Special Payment Plan",
-    titleVi: "", titleEn: "",
-    bookingVi: "", bookingEn: "",
-    milestonesVi: [], milestonesEn: [],
-    highlightsVi: [], highlightsEn: []
+    registrationAmount: 100,
+    milestones: [
+      { numberVi: "Đợt 1", numberEn: "Instalment 1", pct: 5, repeat: 1,
+        timeVi: "5 ngày", timeEn: "5 days", chip: "VBTT" },
+      { numberVi: "Đợt 2", numberEn: "Instalment 2", pct: 5, repeat: 1,
+        gapVi: "3 tháng", gapEn: "3 months", chip: "HDMB" },
+      { numberVi: "Đợt 3", numberEn: "Instalment 3", pct: 10, repeat: 1,
+        gapVi: "3 tháng", gapEn: "3 months" },
+      { numberVi: "Đợt 4", numberEn: "Instalment 4", pct: 10, repeat: 1,
+        gapVi: "3 tháng", gapEn: "3 months" },
+      { numberVi: "Đợt 5", numberEn: "Instalment 5", pct: 65, repeat: 1,
+        gapVi: "15 tháng", gapEn: "15 months", chip: "HANDOVER" },
+      { numberVi: "Đợt 6", numberEn: "Instalment 6", pct: 5, repeat: 1,
+        chip: "GCN" }
+    ],
+    benefitsVi: [
+      { label: "Ký HĐMB", value: "Chỉ 10%" },
+      { label: "Thanh toán 0%", value: "Trong 15 tháng", note: "Đến khi nhận nhà" },
+      { label: "Ưu đãi", value: "Lên đến 6,5%" },
+      { label: "Thanh toán", value: "30%", note: "Đến khi nhận nhà" }
+    ],
+    benefitsEn: [
+      { label: "SPA signing", value: "Only 10%" },
+      { label: "0% payment", value: "For 15 months", note: "Until handover" },
+      { label: "Incentive", value: "Up to 6.5%" },
+      { label: "Payment", value: "30%", note: "Until handover" }
+    ]
   },
   {
     id: "accelerated",
     number: "03",
     labelVi: "Thanh toán nhanh", labelEn: "Accelerated Payment Plan",
-    titleVi: "", titleEn: "",
-    bookingVi: "", bookingEn: "",
-    milestonesVi: [], milestonesEn: [],
-    highlightsVi: [], highlightsEn: []
+    registrationAmount: 100,
+    milestones: [
+      { numberVi: "Đợt 1", numberEn: "Instalment 1", pct: 5, repeat: 1,
+        timeVi: "5 ngày", timeEn: "5 days", chip: "VBTT" },
+      { numberVi: "Đợt 2", numberEn: "Instalment 2", pct: 65, repeat: 1,
+        gapVi: "3 tháng", gapEn: "3 months", chip: "HDMB" },
+      { numberVi: "Đợt 3", numberEn: "Instalment 3", pct: 25, repeat: 1,
+        gapVi: "24 tháng", gapEn: "24 months", chip: "HANDOVER" },
+      { numberVi: "Đợt 4", numberEn: "Instalment 4", pct: 5, repeat: 1,
+        chip: "GCN" }
+    ],
+    benefitsVi: [
+      { label: "Thanh toán sớm", value: "Ưu đãi 13%" }
+    ],
+    benefitsEn: [
+      { label: "Early payment", value: "13% incentive" }
+    ]
   },
   {
     id: "mortgage",
     number: "04",
     labelVi: "Thanh toán vay", labelEn: "Mortgage-assisted Payment Plan",
-    titleVi: "", titleEn: "",
-    bookingVi: "", bookingEn: "",
-    milestonesVi: [], milestonesEn: [],
-    highlightsVi: [], highlightsEn: []
+    registrationAmount: 100,
+    customerTotal: 25,
+    bankTotal: 75,
+    milestones: [
+      { numberVi: "Đợt 1", numberEn: "Instalment 1",
+        timeVi: "5 ngày", timeEn: "5 days", chip: "VBTT",
+        customerPct: 5, bankPct: null },
+      { numberVi: "Đợt 2", numberEn: "Instalment 2",
+        gapVi: "3 tháng", gapEn: "3 months", chip: "HDMB",
+        customerPct: 5, bankPct: 55 },
+      { numberVi: "Đợt 3", numberEn: "Instalment 3",
+        gapVi: "24 tháng", gapEn: "24 months", chip: "HANDOVER",
+        customerPct: 15, bankPct: 15 },
+      { numberVi: "Đợt 4", numberEn: "Instalment 4",
+        chip: "GCN",
+        customerPct: null, bankPct: 5 }
+    ],
+    benefitsVi: [
+      { label: "Ký HĐMB", value: "Chỉ 10%" },
+      { label: "Thanh toán", value: "Chỉ 10%", note: "Đến khi nhận nhà" },
+      { label: "Hỗ trợ lãi suất", value: "24 tháng" },
+      { label: "Ân hạn nợ gốc", value: "36–60 tháng" },
+      { label: "NH hỗ trợ", value: "75%", note: "Thanh toán" }
+    ],
+    benefitsEn: [
+      { label: "SPA signing", value: "Only 10%" },
+      { label: "Payment", value: "Only 10%", note: "Until handover" },
+      { label: "Interest support", value: "24 months" },
+      { label: "Principal grace period", value: "36–60 months" },
+      { label: "Bank supports", value: "75%", note: "of payment" }
+    ]
   }
 ];
+
 
 /* -----------------------------------------------------
    PRESS ARTICLES — Row 12 (D12)

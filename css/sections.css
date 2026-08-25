@@ -1289,38 +1289,296 @@
   opacity: 1;
 }
 
+.policy__intro {
+  max-width: 62ch;
+  margin: -6px 0 28px;
+  font-family: var(--font-body-alt);
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(248, 242, 230, 0.82);
+}
+
 .policy__panel-shell {
   min-height: 260px;
   padding: 36px 42px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   border-radius: 18px;
   position: relative;
   isolation: isolate;
-  background: linear-gradient(165deg, rgba(199, 155, 66, 0.08), rgba(0, 28, 61, 0.4) 60%);
-  border: 1px solid rgba(231, 210, 154, 0.24);
+  /* Deep-blue-to-navy glass surface (not the poster's white cards):
+     one champagne-gold border, one soft inner highlight, one outer
+     depth shadow — no stacked/overlapping frames. */
+  background: linear-gradient(165deg, rgba(0, 43, 73, 0.9), rgba(0, 28, 61, 0.75));
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  border: 1px solid rgba(231, 210, 154, 0.26);
   box-shadow: 0 22px 50px -30px rgba(0, 10, 26, 0.65), inset 0 1px 0 rgba(248, 242, 230, 0.1);
 }
 .payment-plan {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
+  animation: policyPanelFade 300ms ease;
 }
-.payment-plan__header:empty,
-.payment-plan__timeline:empty,
-.payment-plan__highlights:empty {
-  display: none;
+@keyframes policyPanelFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.payment-plan__title {
+@media (prefers-reduced-motion: reduce) {
+  .payment-plan { animation: none; }
+}
+
+/* Shared registration-amount badge — identical on every plan. */
+.payment-plan__badge {
+  align-self: flex-start;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(248, 242, 230, 0.05);
+  border: 1px solid rgba(231, 210, 154, 0.28);
+  font-family: var(--font-body-alt);
+  font-size: 13px;
+  color: rgba(248, 242, 230, 0.78);
+}
+.payment-plan__badge-value {
+  font-weight: 700;
+  font-size: 15px;
+  background-image: var(--gold-metallic);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Mortgage plan's KH (customer) / NH (bank) legend — champagne gold
+   vs. a cool silver-blue, never red (reserved for error states
+   elsewhere in the wider brand system). */
+.payment-plan__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  font-family: var(--font-body-alt);
+  font-size: 12.5px;
+  color: rgba(248, 242, 230, 0.75);
+}
+.payment-plan__legend-item {
+  position: relative;
+  padding-left: 18px;
+}
+.payment-plan__legend-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.payment-plan__legend-item--customer::before { background: var(--gold-champagne); }
+.payment-plan__legend-item--bank::before { background: #9fb8cc; }
+
+/* -----------------------------------------------------
+   TIMELINE — desktop: horizontal row of steps + connectors.
+   Mobile (see media query below): vertical stepper, same markup.
+   ----------------------------------------------------- */
+.payment-plan__timeline {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  row-gap: 20px;
+}
+.payment-plan__step {
+  flex: 1 1 0;
+  min-width: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  padding: 14px 10px;
+  border-radius: 12px;
+  background: rgba(248, 242, 230, 0.03);
+  border: 1px solid rgba(231, 210, 154, 0.16);
+}
+.payment-plan__step--grouped {
+  flex-basis: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 8px 14px;
+  padding: 16px 20px;
+  background: rgba(199, 155, 66, 0.08);
+  border-color: rgba(231, 210, 154, 0.3);
+}
+.payment-plan__step-number {
+  font-family: var(--font-body-alt);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(248, 242, 230, 0.6);
+}
+.payment-plan__step-values {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.payment-plan__step--grouped .payment-plan__step-values {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 14px;
+}
+.payment-plan__step-pct {
   font-family: var(--font-heading-alt);
   font-weight: 400;
-  font-size: clamp(20px, 2vw, 26px);
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1;
+  background-image: var(--gold-metallic);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.payment-plan__step-group-note {
+  font-family: var(--font-body-alt);
+  font-size: 12.5px;
+  color: var(--gold-champagne);
+  opacity: 0.9;
+}
+.payment-plan__step-time {
+  font-family: var(--font-body-alt);
+  font-size: 12px;
+  color: rgba(248, 242, 230, 0.6);
+}
+.payment-plan__step-chip {
+  margin-top: 2px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(231, 210, 154, 0.12);
+  border: 1px solid rgba(231, 210, 154, 0.32);
+  font-family: var(--font-body-alt);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
   color: var(--gold-champagne);
 }
-.payment-plan__booking {
+/* Always visible (never hover-only) expanded meaning of the chip
+   abbreviation — small, secondary, sits right under the chip. */
+.payment-plan__step-chip-full {
   font-family: var(--font-body-alt);
-  font-size: 14px;
-  color: rgba(248, 242, 230, 0.72);
-  margin-top: 6px;
+  font-size: 10.5px;
+  color: rgba(248, 242, 230, 0.5);
+  max-width: 12ch;
+  line-height: 1.3;
+}
+
+/* Time-interval connector between two steps. */
+.payment-plan__connector {
+  flex: 0 1 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-width: 48px;
+  padding-top: 2px;
+}
+.payment-plan__connector::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(231, 210, 154, 0.5), transparent);
+}
+.payment-plan__connector span {
+  position: relative;
+  z-index: 1;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--savills-navy);
+  font-family: var(--font-body-alt);
+  font-size: 10.5px;
+  color: rgba(248, 242, 230, 0.55);
+  white-space: nowrap;
+}
+
+/* Dual-track (mortgage) values — champagne gold for KH, cool
+   silver-blue for NH, shown side by side under each step. */
+.payment-plan__dual-values {
+  display: flex;
+  gap: 10px;
+}
+.payment-plan__dual-value {
+  font-family: var(--font-heading-alt);
+  font-weight: 400;
+  font-size: 20px;
+}
+.payment-plan__dual-value--customer { color: var(--gold-champagne); }
+.payment-plan__dual-value--bank { color: #9fb8cc; }
+.payment-plan__track-totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  font-family: var(--font-body-alt);
+  font-size: 13px;
+  font-weight: 700;
+}
+.payment-plan__track-totals-item--customer { color: var(--gold-champagne); }
+.payment-plan__track-totals-item--bank { color: #9fb8cc; }
+
+/* -----------------------------------------------------
+   BENEFIT SUMMARY — compact metric cards, not oversized USP cards.
+   ----------------------------------------------------- */
+.payment-plan__benefits {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+}
+.payment-plan__benefit {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(248, 242, 230, 0.04);
+  border: 1px solid rgba(231, 210, 154, 0.16);
+}
+.payment-plan__benefit-label {
+  font-family: var(--font-body-alt);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(248, 242, 230, 0.6);
+}
+.payment-plan__benefit-value {
+  font-family: var(--font-heading-alt);
+  font-weight: 400;
+  font-size: 19px;
+  color: var(--gold-champagne);
+}
+.payment-plan__benefit-note {
+  font-family: var(--font-body-alt);
+  font-size: 11.5px;
+  color: rgba(248, 242, 230, 0.55);
+}
+
+.policy__disclaimer {
+  margin-top: 16px;
+  font-family: var(--font-body-alt);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: rgba(248, 242, 230, 0.5);
+  max-width: 68ch;
 }
 
 .btn--policy-cta {
@@ -2025,6 +2283,37 @@
   .policy__tab { min-height: 56px; padding: 11px 14px; }
   .policy__tab-label { font-size: 13px; }
   .policy__panel-shell { min-height: 190px; padding: 22px; }
+  /* Vertical stepper — same markup as desktop, just re-flowed:
+     milestone label on the left, value/time/chip on the right, a
+     short vertical line (with its gap label) connecting each step. */
+  .payment-plan__timeline { flex-direction: column; gap: 0; }
+  .payment-plan__step {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+    border-radius: 10px;
+  }
+  .payment-plan__step--grouped { flex-direction: column; align-items: flex-start; text-align: left; }
+  .payment-plan__step-values { align-items: flex-end; }
+  .payment-plan__step--grouped .payment-plan__step-values { align-items: flex-start; }
+  .payment-plan__connector {
+    flex: 0 0 auto;
+    min-height: 30px;
+    padding: 0;
+    margin-left: 20px;
+  }
+  .payment-plan__connector::before {
+    left: 0;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    height: auto;
+    background: linear-gradient(180deg, transparent, rgba(231, 210, 154, 0.5), transparent);
+  }
+  .payment-plan__benefits { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
   .savills-section__pillars { grid-template-columns: 1fr; }
 

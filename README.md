@@ -1595,6 +1595,74 @@ distinct from the WhatsApp icon; zero horizontal overflow; zero failed
 
 ---
 
+## 9u. Payment Policy populated with the four real plans from the approved poster
+
+**Data** (`js/config.js`) — `window.paymentPlans`'s four entries (still
+`standard`/`special`/`accelerated`/`mortgage`) go from empty
+placeholders to every figure on the supplied "ĐĂNG KÝ NHẬN THÔNG TIN:
+100 TRIỆU VNĐ" poster, transcribed exactly: each plan's `milestones[]`
+carries `pct`/`repeat` (Đợt 5–9 is one grouped entry, `pct:10,
+repeat:5` — summed as 50%, never flattened to a single 10% row per
+the brief), the elapsed/gap time text, and an optional milestone chip
+(`VBTT`/`HDMB`/`HANDOVER`/`GCN`, looked up in the new
+`window.paymentPlanMilestoneChips` for its always-visible VI/EN
+expanded label — never hover-only). The mortgage plan additionally
+carries `customerPct`/`bankPct` per step plus `customerTotal: 25`/
+`bankTotal: 75` instead of a single `pct`, since its two tracks (KH
+paid directly, NH bank disbursement) are never combined into one
+percentage. `benefitsVi`/`benefitsEn` hold each plan's compact
+metric-card list. A new `validatePaymentPlans()` (`js/sections.js`,
+runs once at init) sums every plan — grouped instalments included —
+and `console.warn`s if any plan (or, for the mortgage plan, either
+track) doesn't total exactly 100%; all four currently pass.
+
+**Rendering** (`renderPolicyPanel()`, `js/sections.js`) — rebuilt to
+emit a registration-amount badge (identical wording/position on every
+plan, static — not re-animated per switch), the mortgage-only KH/NH
+legend, a timeline of step+connector elements (one `role="list"`,
+`.payment-plan__connector` between consecutive steps carrying that
+gap's time label), and the benefit-card grid. The old placeholder
+`titleVi/En`/`bookingVi/En`/`highlightsVi/En` fields are gone — this
+plan data always has real content now, so the earlier "mount but
+CSS-collapse an empty container" scaffold was replaced with content
+that's simply always rendered.
+
+**Timeline layout** (`css/sections.css`) — desktop/tablet:
+`.payment-plan__timeline` is a wrapping flex row of steps and
+connectors (a horizontal line pseudo-element + centred gap label);
+the grouped Đợt 5–9 step spans the full row with its instalment count
+and running total shown inline. Mobile (`≤767px`): the identical
+markup re-flows into a vertical stepper via one JS-authored wrapper
+(`.payment-plan__step-values`, holding everything but the step
+number) — milestone label left, value/time/chip right, a short
+vertical connector line with its gap label between steps, no
+horizontal scroll. `.payment-plan__dual-value--customer` is champagne
+gold, `--bank` a cool silver-blue (`#9fb8cc`) — not red, per the
+brief. Panel surface is a navy/deep-blue (`#002b49`→`#001c3d`) glass
+gradient with one champagne-gold border and one soft inner highlight,
+not the poster's white cards; Savills Yellow stays reserved for the
+CTA. A 300ms fade/slide plays on every panel swap
+(`prefers-reduced-motion` disables it), not a repeating shimmer.
+
+**Section copy** — added the intro paragraph (`.policy__intro`,
+between the heading and the tabs) and the disclaimer
+(`.policy__disclaimer`, small/muted, below the CTA), both exactly as
+specified; CTA English wording aligned to "Request Detailed Payment
+Policy". Anchor, eyebrow, popup behaviour, and every other section on
+the page are unchanged.
+
+Verified at 1440/1024/768/430/390px, VI and EN: all four plans render
+with zero `validatePaymentPlans()` warnings (every total is exactly
+100%, mortgage 25%+75%); the grouped Đợt 5–9 segment shows `10% ×5 =
+50%`, never a bare 10%; the mortgage plan's KH/NH values stay visibly
+separate at every step; desktop/tablet show the horizontal timeline,
+mobile the vertical stepper, with no clipped percentage/unit and no
+milestone overlap; arrow-key/Home/End tab navigation and VI↔EN
+switching both work; zero horizontal overflow; the CTA and
+registration popup are unaffected.
+
+---
+
 ## 10. What has no back-end
 
 - The Register Interest form does not submit, validate server-side, or

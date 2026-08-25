@@ -516,18 +516,27 @@
         <h2 class="section-title" id="policy-title" data-lang-vi="Chính sách thanh toán" data-lang-en="Payment Plans">Chính sách thanh toán</h2>
       </header>
 
-      <!-- Rendered by renderPolicySection() in js/sections.js from
-           window.paymentPlans (js/config.js) — do not hard-code tab
-           markup here, it is fully data-driven so VI/EN and future
-           content-field edits need no HTML changes. -->
+      <p class="policy__intro"
+         data-lang-vi="Lựa chọn phương án thanh toán phù hợp với kế hoạch tài chính và nhu cầu sở hữu tại Palm River."
+         data-lang-en="Explore the payment plan that best aligns with each buyer&rsquo;s financial strategy and ownership needs at Palm River.">Lựa chọn phương án thanh toán phù hợp với kế hoạch tài chính và nhu cầu sở hữu tại Palm River.</p>
+
+      <!-- Rendered by renderPolicySection()/renderPolicyPanel() in
+           js/sections.js from window.paymentPlans (js/config.js) — do
+           not hard-code tab or panel markup here, it is fully
+           data-driven so VI/EN and future content-field edits need no
+           HTML changes. -->
       <div class="policy__tabs" id="policy-tabs" role="tablist" aria-label="Chính sách thanh toán"></div>
 
       <div class="policy__panel-shell">
-        <div class="policy__panel" id="policy-panel" role="tabpanel" aria-live="polite"></div>
+        <article class="policy__panel" id="policy-panel" role="tabpanel" aria-live="polite"></article>
       </div>
 
       <button type="button" class="btn btn--policy-cta" data-open-popup
-              data-lang-vi="Nhận chính sách chi tiết" data-lang-en="Request the detailed policy">Nhận chính sách chi tiết</button>
+              data-lang-vi="Nhận chính sách chi tiết" data-lang-en="Request Detailed Payment Policy">Nhận chính sách chi tiết</button>
+
+      <p class="policy__disclaimer"
+         data-lang-vi="Thông tin mang tính tham khảo và có thể được điều chỉnh theo chính sách bán hàng chính thức của Chủ đầu tư tại từng thời điểm."
+         data-lang-en="Information is indicative and may be adjusted in accordance with the developer&rsquo;s official sales policy at the relevant time.">Thông tin mang tính tham khảo và có thể được điều chỉnh theo chính sách bán hàng chính thức của Chủ đầu tư tại từng thời điểm.</p>
     </div>
   </section>
 
