@@ -305,28 +305,36 @@
   });
 
   /* -----------------------------------------------------
-     5b. PRODUCT TYPE MULTI-SELECT (registration popup only)
-     Native <select multiple> can't be glass-styled and is awkward on
-     touch, so "Loại sản phẩm quan tâm" is a custom checkbox dropdown:
-     a button trigger (matches the other fields' height/padding/type)
-     plus a floating panel of real <input type="checkbox"> — native
-     checkboxes give correct keyboard/screen-reader behaviour for
-     free. The checkboxes themselves carry no name (so a closed panel
-     can never accidentally omit them from submission); their checked
-     state is mirrored into always-present hidden inputs instead, so
-     the field submits as name="unit-type" with one value per
-     selection — the same shape FormData.getAll("unit-type") would
-     see from a native multi-select.
+     5b. PRODUCT TYPE MULTI-SELECT — shared by both registration forms
+     (the popup here, and the final-form section — see setupFinalForm()
+     in js/sections.js, which calls window.setupProductMultiselect
+     since main.js runs first). Native <select multiple> can't be
+     glass-styled and is awkward on touch, so "Loại sản phẩm quan tâm"
+     is a custom checkbox dropdown: a button trigger (matches the
+     other fields' height/padding/type) plus a floating panel of real
+     <input type="checkbox"> — native checkboxes give correct
+     keyboard/screen-reader behaviour for free. The checkboxes
+     themselves carry no name (so a closed panel can never
+     accidentally omit them from submission); their checked state is
+     mirrored into always-present hidden inputs instead, so the field
+     submits as name="unit-type" with one value per selection — the
+     same shape FormData.getAll("unit-type") would see from a native
+     multi-select.
+
+     idPrefix identifies one instance's markup (e.g. "field-type" for
+     #field-type-field/-trigger/-panel/-hidden, "final-type" for the
+     final-form copy) — every instance is fully independent, so two
+     can coexist on the page with separate selection state.
      ----------------------------------------------------- */
-  function setupProductMultiselect() {
-    var field = document.getElementById("field-type-field");
+  function setupProductMultiselect(idPrefix) {
+    var field = document.getElementById(idPrefix + "-field");
     if (!field) return null;
     var multiselect = field.querySelector(".multiselect");
-    var trigger = document.getElementById("field-type-trigger");
-    var valueEl = document.getElementById("field-type-trigger-value");
-    var panel = document.getElementById("field-type-panel");
+    var trigger = document.getElementById(idPrefix + "-trigger");
+    var valueEl = document.getElementById(idPrefix + "-trigger-value");
+    var panel = document.getElementById(idPrefix + "-panel");
     var checkboxes = Array.prototype.slice.call(panel.querySelectorAll(".multiselect__checkbox"));
-    var hiddenHost = document.getElementById("field-type-hidden");
+    var hiddenHost = document.getElementById(idPrefix + "-hidden");
     var FIELD_NAME = "unit-type";
     var isOpen = false;
 
@@ -431,7 +439,8 @@
       }
     };
   }
-  var productMultiselect = setupProductMultiselect();
+  window.setupProductMultiselect = setupProductMultiselect;
+  var productMultiselect = setupProductMultiselect("field-type");
 
   // Prototype only.
   // Backend submission and validation will be implemented in production.

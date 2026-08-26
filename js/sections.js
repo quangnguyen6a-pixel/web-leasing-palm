@@ -1453,6 +1453,21 @@
     var PHONE_RE = /^[0-9+()\s-]{8,15}$/;
     var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+    // Second independent instance of the popup's product-type
+    // multi-select (see window.setupProductMultiselect in js/main.js,
+    // which runs first) — separate markup (#final-type-*), separate
+    // selection state, same component/behaviour. Not a modal, so it
+    // manages its own Escape-to-close here rather than layering into
+    // a shared popup-level handler like the popup instance does.
+    var typeMultiselect = window.setupProductMultiselect
+      ? window.setupProductMultiselect("final-type")
+      : null;
+    if (typeMultiselect) {
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && typeMultiselect.isOpen()) typeMultiselect.close();
+      });
+    }
+
     function setError(field, hasError) {
       var wrap = field.closest(".form-field");
       if (wrap) wrap.classList.toggle("has-error", hasError);
@@ -1474,12 +1489,17 @@
       setError(emailField, !emailOk);
       valid = valid && emailOk;
 
+      var typeOk = typeMultiselect ? typeMultiselect.validate() : true;
+      valid = valid && typeOk;
+
       var consentOk = consentField.checked;
       setError(consentField, !consentOk);
       valid = valid && consentOk;
 
       if (!valid) {
-        var firstInvalid = form.querySelector(".form-field.has-error input, .form-field.has-error select");
+        var firstInvalid = form.querySelector(
+          ".form-field.has-error input, .form-field.has-error select, .form-field.has-error .multiselect__trigger"
+        );
         if (firstInvalid) firstInvalid.focus();
         return;
       }

@@ -2187,20 +2187,18 @@
   display: grid;
   grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
   gap: 48px;
-  align-items: center;
+  /* start, not center: with the empty media frame gone,
+     .final-form__benefits is a short list — centering it against the
+     much taller form column would leave it floating in a large empty
+     void instead of reading as "moved up" into the freed space. */
+  align-items: start;
 }
-.final-form__media {
-  position: relative;
-}
-.final-form__media--empty {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  border-radius: 4px;
-  border: 1px solid rgba(231, 210, 154, 0.28);
-  background: rgba(248, 242, 230, 0.04);
-}
+/* No approved image was ever supplied for this slot (see README §9l
+   for the same call on the credibility section) — .final-form__media
+   and its empty placeholder frame have been removed outright rather
+   than kept as reserved blank space; .final-form__benefits is now the
+   grid's first child directly. */
 .final-form__benefits {
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -2273,6 +2271,28 @@
   border-color: var(--gold-champagne);
   outline: 2px solid var(--gold-champagne);
   outline-offset: 1px;
+}
+/* Custom chevron + hover/placeholder treatment layered on top of the
+   base select styling above (same as .popup__form .form-field select
+   — see styles.css) via padding-right/background-image only, so the
+   pre-existing 11px vertical padding stays untouched and both forms'
+   controls read as one consistent system without duplicating it. */
+.final-form .form-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: var(--select-chevron-icon);
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 8px;
+  padding-right: 34px;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.final-form .form-field select:hover {
+  background-color: rgba(248, 242, 230, 0.1);
+  border-color: rgba(231, 210, 154, 0.6);
+}
+.final-form .form-field select:has(option[value=""]:checked) {
+  color: rgba(248, 242, 230, 0.55);
 }
 .final-form .form-field--checkbox label {
   color: rgba(248, 242, 230, 0.75);
@@ -2616,7 +2636,6 @@
   .residential__container { grid-template-columns: 1fr; }
 
   .final-form__container { grid-template-columns: 1fr; }
-  .final-form__media--empty { aspect-ratio: 16 / 9; max-height: 220px; }
   .final-form__panel { padding: 28px 22px; }
 
   .floating-contacts { display: none; }
