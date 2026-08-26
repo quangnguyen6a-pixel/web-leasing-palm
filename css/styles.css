@@ -1034,7 +1034,7 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
    centres itself on its own row automatically instead of needing
    nth-child column placement. */
 .usp-card {
-  flex: 0 1 340px;
+  flex: 0 1 210px;
   display: grid;
   grid-template-rows: minmax(30px, auto) minmax(70px, auto) minmax(22px, auto);
   align-content: center;

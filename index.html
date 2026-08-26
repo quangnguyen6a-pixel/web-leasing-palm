@@ -270,9 +270,8 @@
           <div class="usp-value-row">
             <span class="usp-number" data-value="168" data-decimals="0">168</span>
             <span class="usp-plus" aria-hidden="true">+</span>
-            <span class="usp-unit" data-lang-vi="tiện ích" data-lang-en="amenities">tiện ích</span>
           </div>
-          <p class="usp-description" data-lang-vi="Tại Palm City và Palm River" data-lang-en="Across Palm City and Palm River">Tại Palm City và Palm River</p>
+          <p class="usp-description" data-lang-vi="Tiện ích nội khu" data-lang-en="Amenities within the complex">Tiện ích nội khu</p>
         </div>
 
         <div class="usp-card" data-reveal style="--reveal-delay: 180ms; --shine-delay: 450ms">
@@ -281,7 +280,7 @@
             <span class="usp-number" data-value="168" data-decimals="0">168</span>
             <span class="usp-unit" data-lang-vi="triệu/m²" data-lang-en="VND mil./m²">triệu/m²</span>
           </div>
-          <p class="usp-description" data-lang-vi="Theo diện tích thông thủy" data-lang-en="Based on carpet area">Theo diện tích thông thủy</p>
+          <p class="usp-description" data-lang-vi="Diện tích thông thủy" data-lang-en="Based on carpet area">Theo diện tích thông thủy</p>
         </div>
 
         <div class="usp-card" data-reveal style="--reveal-delay: 220ms; --shine-delay: 600ms">
@@ -430,24 +429,44 @@
 
         <!-- Group heading + count badge + a preview (first 12) of the
              active group's items, plus the expand/collapse toggle when
-             there are more than 12. The .amenity-list grid itself
-             (rendered by renderAmenityList() in js/sections.js) is
-             relocated here vs. #amenity-list-full-slot below depending
-             on expanded state — never duplicated in both places. -->
+             there are more than 12. On desktop, expanding swaps the
+             preview for the full list inside #amenity-list-scroll,
+             which becomes vertically scrollable and is height-matched
+             to the media frame via CSS (.amenities__layout--expanded)
+             — the list never spills below the image. On tablet/mobile
+             the same toggle instead opens the #amenity-sheet bottom
+             sheet (see renderAmenityList() in js/sections.js). -->
         <div class="amenity-panel">
           <div class="amenity-panel__head">
             <h3 class="amenity-panel__title" id="amenity-group-title"></h3>
             <span class="amenity-panel__count" id="amenity-group-count"></span>
           </div>
-          <div class="amenity-panel__list-slot" id="amenity-list-slot"></div>
+          <div class="amenity-panel__list-scroll" id="amenity-list-scroll">
+            <div class="amenity-panel__list-slot" id="amenity-list-slot"></div>
+          </div>
           <button type="button" class="amenity-toggle" id="amenity-toggle" hidden></button>
         </div>
       </div>
+    </div>
 
-      <!-- Full-width expanded list — used only while a group with more
-           than 12 items is expanded, so the carousel row never
-           stretches to match a long list. -->
-      <div class="amenity-list-full-slot" id="amenity-list-full-slot"></div>
+    <!-- Tablet/mobile "view all" bottom sheet — holds the complete
+         amenity list with its own scroll area so it never turns into
+         a long inline block on narrow viewports. Only opened below
+         the 1024px desktop breakpoint (see renderAmenityList() /
+         openAmenitySheet() in js/sections.js). -->
+    <div class="amenity-sheet" id="amenity-sheet" data-open="false" aria-hidden="true">
+      <div class="amenity-sheet__overlay" id="amenity-sheet-overlay"></div>
+      <div class="amenity-sheet__panel" role="dialog" aria-modal="true" aria-labelledby="amenity-sheet-title">
+        <div class="amenity-sheet__head">
+          <div>
+            <h3 class="amenity-sheet__title" id="amenity-sheet-title"></h3>
+            <span class="amenity-sheet__count" id="amenity-sheet-count"></span>
+          </div>
+          <button type="button" class="amenity-sheet__close" id="amenity-sheet-close"
+                  aria-label="Đóng" data-lang-vi-aria="Đóng" data-lang-en-aria="Close">&times;</button>
+        </div>
+        <div class="amenity-sheet__list-slot" id="amenity-sheet-list-slot"></div>
+      </div>
     </div>
   </section>
 
@@ -648,7 +667,7 @@
              agent (matches window.projectDetails' "Đại lý phân phối
              F1" row). Not a team/event photo — no such photo exists;
              this is the one real, on-topic asset available for this
-             frame. object-fit: contain, so the certificate is never
+             frame. , so the certificate is never
              cropped. -->
         <figure class="glass-media-frame residential__certificate" data-depth-frame>
           <div class="glass-media-inner residential__certificate-inner">

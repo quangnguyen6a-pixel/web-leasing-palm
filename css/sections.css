@@ -14,9 +14,18 @@
   --font-heading-alt: "Noto Serif Display", Georgia, serif;
   --font-body-alt: "Manrope", "Gotham", "SVN-Gotham", Arial, sans-serif;
   --color-ivory: var(--warm-ivory);
-  --section-space-desktop: 130px;
-  --section-space-tablet: 90px;
-  --section-space-mobile: 72px;
+  /* One section's own top padding is the WHOLE visual gap before it —
+     see the padding-top/padding-bottom split below. Values match
+     .project-overview's already-approved 88/72/56 rhythm above the
+     fold, so the gap reads the same size end-to-end down the page:
+     ~72-96px desktop, ~56-72px tablet, ~40-56px mobile (project brief
+     spacing audit). --space-lg/md/sm (styles.css) are reused as each
+     section's own small "closing" bottom pad so a boundary between
+     two padded sections still lands in that same range instead of
+     stacking two full paddings (was 130+130=260px desktop). */
+  --section-space-desktop: 72px;
+  --section-space-tablet: 56px;
+  --section-space-mobile: 40px;
 }
 
 /* -----------------------------------------------------
@@ -102,8 +111,21 @@
   color: #17324d;
 }
 
+/* Each section's own top padding is the ONLY thing that creates the
+   gap before it — the previous section contributes just a small
+   closing pad (--space-lg here), not a second full padding, so
+   adjacent boundaries never stack two large paddings into one huge
+   blank void (see --section-space-desktop above). .final-form keeps
+   full symmetric padding instead: it's the closing CTA, its trailing
+   breathing room before the footer is intentional, not a boundary
+   that's shared with another padded section below it. */
 .details, .location, .amenities, .floorplans, .policy,
-.progress-section, .savills-section, .residential, .final-form {
+.progress-section, .savills-section, .residential, .credibility-section {
+  padding-top: var(--section-space-desktop);
+  padding-bottom: var(--space-lg);
+  overflow-x: hidden;
+}
+.final-form {
   padding: var(--section-space-desktop) 0;
   overflow-x: hidden;
 }
@@ -676,6 +698,13 @@
 .amenities__layout--full {
   grid-template-columns: minmax(0, 1fr);
 }
+/* Desktop expanded state (see amenity-toggle / syncAmenityListScrollHeight()
+   in js/sections.js): the media frame's own rendered height is measured
+   in JS and applied to .amenity-panel__list-scroll as an inline
+   max-height, so the list caps at ~image height and scrolls internally
+   instead of pushing the section taller. Left at "start" (unchanged
+   from the base rule) rather than "stretch" — stretching would also
+   grow the media frame itself to match the list's full content height. */
 
 /* Media frame: uses the shared .glass-media-frame component (see its
    definition above). Fully independent of the amenity list beside it:
@@ -812,12 +841,43 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-height: 0;
 }
 .amenity-panel__head {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 10px 14px;
+  flex: 0 0 auto;
+}
+/* Plain wrapper at rest. In the expanded state its inline max-height
+   (set by syncAmenityListScrollHeight() in js/sections.js, matched to
+   the media frame's rendered height) takes over and it scrolls its
+   own content — the head above and the toggle below stay put outside
+   it, never scrolling away. */
+.amenity-panel__list-scroll {
+  min-height: 0;
+}
+.amenities__layout--expanded .amenity-panel__list-scroll {
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-right: -8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(231, 210, 154, 0.45) rgba(248, 242, 230, 0.08);
+}
+.amenities__layout--expanded .amenity-panel__list-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.amenities__layout--expanded .amenity-panel__list-scroll::-webkit-scrollbar-track {
+  background: rgba(248, 242, 230, 0.08);
+  border-radius: 999px;
+}
+.amenities__layout--expanded .amenity-panel__list-scroll::-webkit-scrollbar-thumb {
+  background: rgba(231, 210, 154, 0.45);
+  border-radius: 999px;
+}
+.amenities__layout--expanded .amenity-toggle {
+  flex: 0 0 auto;
 }
 .amenity-panel__title {
   font-family: var(--font-heading-alt);
@@ -860,8 +920,9 @@
 }
 
 /* Plain amenity list — natural numbered text, not interactive; no
-   button, no active state, no click-to-change-image, no internal
-   scroll (a long list expands the page, it never scrolls in place). */
+   button, no active state, no click-to-change-image. Scrolling, when
+   it happens, is applied by the ancestor .amenity-panel__list-scroll
+   or .amenity-sheet__list-slot, never by this grid itself. */
 .amenity-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -886,14 +947,103 @@
   color: var(--gold-champagne);
   min-width: 20px;
 }
-/* Full-width expanded list — see #amenity-list-full-slot in
-   index.html and renderAmenityList() in js/sections.js. Empty and
-   collapses to nothing while no group is expanded. */
-.amenity-list-full-slot:empty {
-  display: none;
+
+/* Tablet/mobile "view all" bottom sheet — see #amenity-sheet in
+   index.html and openAmenitySheet()/closeAmenitySheet() in
+   js/sections.js. Only ever opened below the 1024px desktop
+   breakpoint; holds the same .amenity-list markup as the panel, just
+   inside its own scroll area so the page behind never grows. */
+.amenity-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease, visibility 220ms ease;
 }
-.amenity-list-full-slot {
-  margin-top: 28px;
+.amenity-sheet[data-open="true"] {
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+}
+.amenity-sheet__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 28, 61, 0.82);
+}
+.amenity-sheet__panel {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: linear-gradient(160deg, rgba(0, 42, 79, 0.98), rgba(0, 20, 43, 0.98));
+  border: 1px solid rgba(231, 210, 154, 0.3);
+  border-radius: 20px 20px 0 0;
+  padding: 22px clamp(18px, 4vw, 28px) calc(env(safe-area-inset-bottom, 0px) + 18px);
+  transform: translateY(16px);
+  transition: transform 240ms ease;
+}
+.amenity-sheet[data-open="true"] .amenity-sheet__panel {
+  transform: translateY(0);
+}
+.amenity-sheet__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+  flex: 0 0 auto;
+}
+.amenity-sheet__title {
+  font-family: var(--font-heading-alt);
+  font-weight: 400;
+  font-size: 19px;
+  color: var(--color-white);
+  margin: 0 0 4px;
+}
+.amenity-sheet__count {
+  font-family: var(--font-body-alt);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gold-champagne);
+  opacity: 0.85;
+}
+.amenity-sheet__close {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(248, 242, 230, 0.3);
+  background: rgba(248, 242, 230, 0.08);
+  color: var(--color-white);
+  font-size: 20px;
+  line-height: 1;
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+.amenity-sheet__close:hover, .amenity-sheet__close:focus-visible {
+  background: var(--gold-champagne);
+  border-color: var(--gold-champagne);
+  color: var(--color-navy-primary);
+}
+.amenity-sheet__close:focus-visible {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 2px;
+}
+.amenity-sheet__list-slot {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
+  margin-right: -6px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1706,15 +1856,12 @@
    The media-coverage placeholder frame that used to sit above
    .press-section (no approved image was ever supplied for it) has
    been removed outright — see README §9l. .press-section is now the
-   section's first child, so the section's own top padding
-   (--section-space-desktop/tablet/mobile, already 72px+ at every
-   breakpoint) is the only spacing above the heading; no extra
-   margin-top is stacked on top of it.
+   section's first child, so the section's own top padding (shared
+   with the other sections above — see .credibility-section in the
+   padding-top/padding-bottom rule near the top of this file) is the
+   only spacing above the heading; no extra margin-top is stacked on
+   top of it.
    ========================================================= */
-.credibility-section {
-  padding: var(--section-space-desktop) 0;
-  overflow-x: hidden;
-}
 .press-section-header {
   margin-bottom: 28px;
 }
@@ -1837,7 +1984,6 @@
   .press-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 767px) {
-  .credibility-section { padding: var(--section-space-mobile) 0; }
   .press-grid { grid-template-columns: 1fr; }
 }
 
@@ -2174,7 +2320,11 @@
    ========================================================= */
 @media (min-width: 768px) and (max-width: 1023px) {
   .details, .location, .amenities, .floorplans, .policy,
-  .progress-section, .savills-section, .residential, .final-form {
+  .progress-section, .savills-section, .residential, .credibility-section {
+    padding-top: var(--section-space-tablet);
+    padding-bottom: var(--space-md);
+  }
+  .final-form {
     padding: var(--section-space-tablet) 0;
   }
   .details__grid,
@@ -2203,7 +2353,11 @@
    ========================================================= */
 @media (max-width: 767px) {
   .details, .location, .amenities, .floorplans, .policy,
-  .progress-section, .savills-section, .residential, .final-form {
+  .progress-section, .savills-section, .residential, .credibility-section {
+    padding-top: var(--section-space-mobile);
+    padding-bottom: var(--space-sm);
+  }
+  .final-form {
     padding: var(--section-space-mobile) 0;
   }
   .section-container { max-width: 92vw; }

@@ -54,7 +54,6 @@
       img.alt = alt || "";
       img.loading = "lazy";
       img.decoding = "async";
-      img.style.objectFit = fit || "cover";
       img.style.objectPosition = objectPosition || "center";
       handleImgError(img);
       inner.appendChild(img);
@@ -303,7 +302,18 @@
     var groupKey = activeAmenityTab + ":" + activeAmenityGroup;
     var groupChanged = groupKey !== lastRenderedAmenityGroupKey;
     lastRenderedAmenityGroupKey = groupKey;
-    if (groupChanged) amenityListExpanded = false;
+    if (groupChanged) {
+      amenityListExpanded = false;
+      if (amenitySheetOpen) {
+        amenitySheetOpen = false;
+        var openSheet = document.getElementById("amenity-sheet");
+        if (openSheet) {
+          openSheet.setAttribute("data-open", "false");
+          openSheet.setAttribute("aria-hidden", "true");
+        }
+        document.body.style.overflow = "";
+      }
+    }
 
     renderAmenityList(lang);
     renderAmenityCarousel(lang, groupChanged);
@@ -312,37 +322,27 @@
   // Group heading + count badge + a numbered list (global numbering,
   // never restarted per group). Plain text, not interactive — clicking
   // an item never changes the carousel. Only the first 12 items show
-  // by default; a glass "view all" toggle reveals the rest in a
-  // full-width block below the media row so the carousel never
-  // stretches to match a long list. Every Palm City/Palm River group
-  // always has an approved items array now, so there is no empty-list
-  // placeholder branch to render any more.
+  // by default. Past 12 items, the "view all" toggle behaves
+  // differently by breakpoint (see isAmenityDesktop()):
+  //  - desktop: swaps the preview for the full list in place, inside
+  //    #amenity-list-scroll, which is height-matched to the media
+  //    frame and scrolls internally (.amenities__layout--expanded).
+  //  - tablet/mobile: opens the #amenity-sheet bottom sheet instead,
+  //    so a long list never grows the page itself.
+  // Every Palm City/Palm River group always has an approved items
+  // array now, so there is no empty-list placeholder branch to render.
   var amenityListExpanded = false;
+  var amenitySheetOpen = false;
 
-  function renderAmenityList(lang) {
-    var titleHost = document.getElementById("amenity-group-title");
-    var countHost = document.getElementById("amenity-group-count");
-    var previewSlot = document.getElementById("amenity-list-slot");
-    var fullSlot = document.getElementById("amenity-list-full-slot");
-    var toggle = document.getElementById("amenity-toggle");
-    if (!titleHost || !countHost || !previewSlot || !fullSlot || !toggle) return;
+  function isAmenityDesktop() {
+    return !!(window.matchMedia && window.matchMedia("(min-width: 1024px)").matches);
+  }
 
-    var group = currentAmenityGroup();
-    var items = group ? group.items : [];
-    var total = items.length;
-
-    titleHost.textContent = group ? (lang === "en" ? group.titleEn : group.titleVi) : "";
-    countHost.textContent = total
-      ? (lang === "en" ? total + " amenities" : total + " tiện ích")
-      : "";
-
-    var showAll = amenityListExpanded || total <= 12;
-    var visible = showAll ? items : items.slice(0, 12);
-
+  function buildAmenityListEl(items, lang) {
     var list = document.createElement("div");
     list.className = "amenity-list";
     list.setAttribute("aria-label", lang === "en" ? "Amenity list" : "Danh sách tiện ích");
-    visible.forEach(function (item) {
+    items.forEach(function (item) {
       var row = document.createElement("p");
       row.className = "amenity-list__item";
       var idx = document.createElement("span");
@@ -355,28 +355,177 @@
       row.appendChild(name);
       list.appendChild(row);
     });
+    return list;
+  }
+
+  function openAmenitySheet() {
+    var sheet = document.getElementById("amenity-sheet");
+    if (!sheet) return;
+    amenitySheetOpen = true;
+    sheet.setAttribute("data-open", "true");
+    sheet.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    renderAmenityList(currentLang());
+    var closeBtn = document.getElementById("amenity-sheet-close");
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeAmenitySheet() {
+    if (!amenitySheetOpen) return;
+    amenitySheetOpen = false;
+    var sheet = document.getElementById("amenity-sheet");
+    if (sheet) {
+      sheet.setAttribute("data-open", "false");
+      sheet.setAttribute("aria-hidden", "true");
+    }
+    document.body.style.overflow = "";
+    var sheetListSlot = document.getElementById("amenity-sheet-list-slot");
+    if (sheetListSlot) sheetListSlot.scrollTop = 0;
+    renderAmenityList(currentLang());
+    var toggle = document.getElementById("amenity-toggle");
+    if (toggle) toggle.focus();
+  }
+
+  // Caps #amenity-list-scroll's height so the *whole panel* (head +
+  // list + toggle) lands at the media frame's own rendered height —
+  // not just the list itself — so the row never grows taller than the
+  // image and the section's overall height never shifts. The frame's
+  // height is measured (its aspect-ratio makes it a function of
+  // viewport width), then the head/toggle/gaps "chrome" already
+  // sharing the panel's flex column is subtracted from it. Grid
+  // align-items: stretch was tried first but also stretched the media
+  // frame itself to match the list's full content height, defeating
+  // the point — an explicit measured max-height avoids that.
+  function syncAmenityListScrollHeight() {
+    var layout = document.getElementById("amenities-layout");
+    var panel = document.querySelector(".amenity-panel");
+    var scrollHost = document.getElementById("amenity-list-scroll");
+    var frame = document.getElementById("amenity-media-frame");
+    var head = document.querySelector(".amenity-panel__head");
+    var toggle = document.getElementById("amenity-toggle");
+    if (!layout || !panel || !scrollHost) return;
+    if (frame && layout.classList.contains("amenities__layout--expanded")) {
+      var frameHeight = frame.getBoundingClientRect().height;
+      var gap = parseFloat(getComputedStyle(panel).rowGap) || 0;
+      var headHeight = head ? head.getBoundingClientRect().height : 0;
+      var toggleHeight = toggle && !toggle.hidden ? toggle.getBoundingClientRect().height : 0;
+      var chrome = headHeight + toggleHeight + gap * 2;
+      var available = frameHeight - chrome;
+      scrollHost.style.maxHeight = Math.max(available, 80) + "px";
+    } else {
+      scrollHost.style.maxHeight = "";
+    }
+  }
+
+  function renderAmenityList(lang) {
+    var titleHost = document.getElementById("amenity-group-title");
+    var countHost = document.getElementById("amenity-group-count");
+    var previewSlot = document.getElementById("amenity-list-slot");
+    var scrollHost = document.getElementById("amenity-list-scroll");
+    var toggle = document.getElementById("amenity-toggle");
+    var layout = document.getElementById("amenities-layout");
+    var sheetTitleHost = document.getElementById("amenity-sheet-title");
+    var sheetCountHost = document.getElementById("amenity-sheet-count");
+    var sheetListSlot = document.getElementById("amenity-sheet-list-slot");
+    if (!titleHost || !countHost || !previewSlot || !toggle) return;
+
+    var group = currentAmenityGroup();
+    var items = group ? group.items : [];
+    var total = items.length;
+
+    var titleText = group ? (lang === "en" ? group.titleEn : group.titleVi) : "";
+    var countText = total
+      ? (lang === "en" ? total + " amenities" : total + " tiện ích")
+      : "";
+    titleHost.textContent = titleText;
+    countHost.textContent = countText;
+    if (sheetTitleHost) sheetTitleHost.textContent = titleText;
+    if (sheetCountHost) sheetCountHost.textContent = countText;
+
+    var hasOverflow = total > 12;
+    var desktop = isAmenityDesktop();
+    var inlineExpanded = desktop && amenityListExpanded && hasOverflow;
+    var visible = inlineExpanded || !hasOverflow ? items : items.slice(0, 12);
 
     previewSlot.innerHTML = "";
-    fullSlot.innerHTML = "";
-    if (showAll && total > 12) {
-      fullSlot.appendChild(list);
-    } else {
-      previewSlot.appendChild(list);
+    previewSlot.appendChild(buildAmenityListEl(visible, lang));
+    if (scrollHost && !inlineExpanded) scrollHost.scrollTop = 0;
+
+    if (sheetListSlot) {
+      sheetListSlot.innerHTML = "";
+      sheetListSlot.appendChild(buildAmenityListEl(items, lang));
     }
 
-    if (total > 12) {
+    if (layout) layout.classList.toggle("amenities__layout--expanded", inlineExpanded);
+
+    if (hasOverflow) {
+      var expandedState = desktop ? amenityListExpanded : amenitySheetOpen;
       toggle.hidden = false;
-      toggle.textContent = amenityListExpanded
+      toggle.textContent = expandedState
         ? (lang === "en" ? "Collapse" : "Thu gọn")
         : (lang === "en" ? "View all " + total + " amenities" : "Xem tất cả " + total + " tiện ích");
-      toggle.setAttribute("aria-expanded", amenityListExpanded ? "true" : "false");
+      toggle.setAttribute("aria-expanded", expandedState ? "true" : "false");
       toggle.onclick = function () {
-        amenityListExpanded = !amenityListExpanded;
-        renderAmenityList(currentLang());
+        if (isAmenityDesktop()) {
+          amenityListExpanded = !amenityListExpanded;
+          renderAmenityList(currentLang());
+        } else if (amenitySheetOpen) {
+          closeAmenitySheet();
+        } else {
+          openAmenitySheet();
+        }
       };
     } else {
       toggle.hidden = true;
       toggle.onclick = null;
+    }
+    syncAmenityListScrollHeight();
+  }
+
+  // Keeps the expanded list's cap in sync with the media frame's
+  // height as it changes — window resize, or the frame's own
+  // aspect-ratio recomputing on a width change (e.g. scrollbar
+  // appearing/disappearing). syncAmenityListScrollHeight() itself is a
+  // no-op while not expanded, so this is cheap to leave running.
+  function setupAmenityListHeightSync() {
+    var frame = document.getElementById("amenity-media-frame");
+    if (!frame) return;
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(function () { syncAmenityListScrollHeight(); });
+      ro.observe(frame);
+    } else {
+      window.addEventListener("resize", syncAmenityListScrollHeight);
+    }
+  }
+
+  function setupAmenitySheet() {
+    var sheet = document.getElementById("amenity-sheet");
+    if (!sheet) return;
+    var overlay = document.getElementById("amenity-sheet-overlay");
+    var closeBtn = document.getElementById("amenity-sheet-close");
+    if (overlay) overlay.addEventListener("click", closeAmenitySheet);
+    if (closeBtn) closeBtn.addEventListener("click", closeAmenitySheet);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && amenitySheetOpen) closeAmenitySheet();
+    });
+    // A live resize/orientation change across the 1024px breakpoint is
+    // rare but should never leave the UI stuck (sheet open with no
+    // way to reach it behind a desktop layout, or the inline panel
+    // stretched with no image-height match on a stacked mobile one).
+    if (window.matchMedia) {
+      var desktopQuery = window.matchMedia("(min-width: 1024px)");
+      var onBreakpointChange = function () {
+        if (amenitySheetOpen) closeAmenitySheet();
+        if (amenityListExpanded) {
+          amenityListExpanded = false;
+          renderAmenityList(currentLang());
+        }
+      };
+      if (desktopQuery.addEventListener) {
+        desktopQuery.addEventListener("change", onBreakpointChange);
+      } else if (desktopQuery.addListener) {
+        desktopQuery.addListener(onBreakpointChange);
+      }
     }
   }
 
@@ -1325,6 +1474,8 @@
   validatePaymentPlans();
   renderAll();
   setupDetailsToggle();
+  setupAmenitySheet();
+  setupAmenityListHeightSync();
   setupFloatingContacts();
   setupFinalForm();
   setupDepthFrames();
