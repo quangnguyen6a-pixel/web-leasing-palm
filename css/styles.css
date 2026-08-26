@@ -1398,6 +1398,293 @@ h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
   gap: 8px;
 }
 .form-field--checkbox label { font-weight: 400; font-size: 13px; }
+
+/* =========================================================
+   REGISTRATION POPUP — DROPDOWNS
+   Restyles the two native <select> fields (purpose, budget) to match
+   the glass form, and replaces the third ("Loại sản phẩm quan tâm")
+   with a custom checkbox multi-select — see #field-type-field in
+   index.html and setupProductMultiselect() in js/main.js. Scoped to
+   .popup__form only so .final-form's own (already-styled) selects and
+   checkbox are never touched by this pass.
+   ========================================================= */
+.popup__form .form-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: rgba(248, 242, 230, 0.06);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23f3e2b3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 8px;
+  color: var(--warm-ivory);
+  border: 1px solid rgba(231, 210, 154, 0.4);
+  border-radius: 2px;
+  padding: 10px 34px 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.popup__form .form-field select:hover {
+  background-color: rgba(248, 242, 230, 0.1);
+  border-color: rgba(231, 210, 154, 0.6);
+}
+.popup__form .form-field select:focus-visible {
+  border-color: var(--gold-champagne);
+  outline: 2px solid rgba(231, 210, 154, 0.35);
+  outline-offset: 1px;
+}
+.popup__form .form-field select:has(option[value=""]:checked) {
+  color: rgba(248, 242, 230, 0.55);
+}
+.popup__form .form-field select option {
+  color: var(--color-navy-primary);
+  background: var(--warm-ivory);
+}
+
+/* Privacy-consent checkbox — kept visually distinct (thin outline,
+   gold tick, no fill) from the bolder yellow product-selection boxes
+   below, per brief: the two must read as different kinds of choice. */
+.popup__form .form-field--checkbox {
+  align-items: center;
+}
+.popup__form .form-field--checkbox input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border: 1px solid rgba(231, 210, 154, 0.5);
+  border-radius: 3px;
+  background: rgba(248, 242, 230, 0.06);
+  position: relative;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+.popup__form .form-field--checkbox input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid var(--gold-champagne);
+  border-bottom: 2px solid var(--gold-champagne);
+  transform: rotate(-45deg) scale(0);
+  transition: transform 120ms ease;
+}
+.popup__form .form-field--checkbox input[type="checkbox"]:checked {
+  border-color: var(--gold-champagne);
+  background: rgba(243, 226, 179, 0.14);
+}
+.popup__form .form-field--checkbox input[type="checkbox"]:checked::after {
+  transform: rotate(-45deg) scale(1);
+}
+.popup__form .form-field--checkbox input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 2px;
+}
+.popup__form .form-field--checkbox label {
+  padding-top: 1px;
+  line-height: 1.4;
+}
+
+/* Checkbox multi-select ("Loại sản phẩm quan tâm") — a button trigger
+   matching the other fields' height/padding/typography exactly, plus
+   a floating panel of real checkboxes. The panel is width-matched to
+   the trigger and opens downward inside .popup__dialog's own
+   overflow-y:auto, so it can never escape the popup or get hard-
+   clipped — see .popup__dialog in this file. */
+.multiselect {
+  position: relative;
+}
+.multiselect__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(248, 242, 230, 0.06);
+  color: var(--warm-ivory);
+  border: 1px solid rgba(231, 210, 154, 0.4);
+  border-radius: 2px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  text-align: left;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.multiselect__trigger:hover {
+  background: rgba(248, 242, 230, 0.1);
+  border-color: rgba(231, 210, 154, 0.6);
+}
+.multiselect__trigger:focus-visible {
+  border-color: var(--gold-champagne);
+  outline: 2px solid rgba(231, 210, 154, 0.35);
+  outline-offset: 1px;
+}
+.multiselect[data-open="true"] .multiselect__trigger {
+  border-color: var(--gold-champagne);
+}
+.multiselect__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.multiselect__value.is-placeholder {
+  color: rgba(248, 242, 230, 0.55);
+}
+.multiselect__chevron {
+  flex: 0 0 auto;
+  color: var(--gold-champagne);
+  transition: transform 160ms ease;
+}
+.multiselect[data-open="true"] .multiselect__chevron {
+  transform: rotate(180deg);
+}
+.multiselect__panel {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  background: linear-gradient(160deg, rgba(0, 42, 79, 0.98), rgba(0, 20, 43, 0.98));
+  border: 1px solid rgba(231, 210, 154, 0.35);
+  border-radius: 4px;
+  box-shadow: 0 16px 36px rgba(0, 12, 30, 0.35);
+  padding: 10px;
+}
+.multiselect__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 4px 8px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(248, 242, 230, 0.12);
+}
+.multiselect__action {
+  background: none;
+  border: none;
+  padding: 2px 0;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--gold-champagne);
+  position: relative;
+}
+.multiselect__action + .multiselect__action::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  background: rgba(248, 242, 230, 0.2);
+}
+.multiselect__action:hover,
+.multiselect__action:focus-visible {
+  color: var(--gold-specular);
+  text-decoration: underline;
+}
+.multiselect__options {
+  max-height: 216px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(231, 210, 154, 0.45) rgba(248, 242, 230, 0.08);
+}
+.multiselect__options::-webkit-scrollbar { width: 6px; }
+.multiselect__options::-webkit-scrollbar-thumb {
+  background: rgba(231, 210, 154, 0.45);
+  border-radius: 999px;
+}
+.multiselect__option label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 6px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--warm-ivory);
+  transition: background-color 120ms ease;
+}
+.multiselect__option label:hover {
+  background: rgba(248, 242, 230, 0.07);
+}
+.multiselect__checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.multiselect__box {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(231, 210, 154, 0.5);
+  background: rgba(248, 242, 230, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+.multiselect__tick {
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+.multiselect__checkbox:checked + .multiselect__box {
+  background: var(--savills-yellow);
+  border-color: var(--savills-yellow);
+}
+.multiselect__checkbox:checked + .multiselect__box .multiselect__tick {
+  opacity: 1;
+  transform: scale(1);
+}
+.multiselect__checkbox:focus-visible + .multiselect__box {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 2px;
+}
+.multiselect__option-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.multiselect__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  margin-top: 4px;
+  border-top: 1px solid rgba(248, 242, 230, 0.12);
+}
+.multiselect__done {
+  background: rgba(248, 242, 230, 0.08);
+  border: 1px solid rgba(231, 210, 154, 0.4);
+  border-radius: 999px;
+  padding: 7px 18px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--warm-ivory);
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.multiselect__done:hover,
+.multiselect__done:focus-visible {
+  background: var(--gold-champagne);
+  border-color: var(--gold-champagne);
+  color: var(--color-navy-primary);
+}
+.form-field.has-error .multiselect__trigger {
+  border-color: #ff6b6b;
+}
+
+@media (max-width: 480px) {
+  .multiselect__options { max-height: 180px; }
+}
+
 .btn--submit {
   background: var(--color-savills-yellow);
   border-color: var(--color-savills-yellow);

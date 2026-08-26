@@ -272,6 +272,7 @@
     popup.setAttribute("data-open", "false");
     popup.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+    if (productMultiselect) productMultiselect.close();
     if (lastFocusedBeforePopup) lastFocusedBeforePopup.focus();
   }
 
@@ -303,10 +304,140 @@
     }
   });
 
+  /* -----------------------------------------------------
+     5b. PRODUCT TYPE MULTI-SELECT (registration popup only)
+     Native <select multiple> can't be glass-styled and is awkward on
+     touch, so "Loại sản phẩm quan tâm" is a custom checkbox dropdown:
+     a button trigger (matches the other fields' height/padding/type)
+     plus a floating panel of real <input type="checkbox"> — native
+     checkboxes give correct keyboard/screen-reader behaviour for
+     free. The checkboxes themselves carry no name (so a closed panel
+     can never accidentally omit them from submission); their checked
+     state is mirrored into always-present hidden inputs instead, so
+     the field submits as name="unit-type" with one value per
+     selection — the same shape FormData.getAll("unit-type") would
+     see from a native multi-select.
+     ----------------------------------------------------- */
+  function setupProductMultiselect() {
+    var field = document.getElementById("field-type-field");
+    if (!field) return null;
+    var multiselect = field.querySelector(".multiselect");
+    var trigger = document.getElementById("field-type-trigger");
+    var valueEl = document.getElementById("field-type-trigger-value");
+    var panel = document.getElementById("field-type-panel");
+    var checkboxes = Array.prototype.slice.call(panel.querySelectorAll(".multiselect__checkbox"));
+    var hiddenHost = document.getElementById("field-type-hidden");
+    var FIELD_NAME = "unit-type";
+    var isOpen = false;
+
+    function lang() {
+      return document.documentElement.getAttribute("lang") === "en" ? "en" : "vi";
+    }
+
+    function selectedCheckboxes() {
+      return checkboxes.filter(function (cb) { return cb.checked; });
+    }
+
+    function optionLabel(cb) {
+      var textEl = cb.closest(".multiselect__option").querySelector(".multiselect__option-text");
+      return lang() === "en" ? textEl.getAttribute("data-lang-en") : textEl.getAttribute("data-lang-vi");
+    }
+
+    function syncHiddenInputs() {
+      hiddenHost.innerHTML = "";
+      selectedCheckboxes().forEach(function (cb) {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = FIELD_NAME;
+        input.value = cb.getAttribute("data-value");
+        hiddenHost.appendChild(input);
+      });
+    }
+
+    function updateTriggerValue() {
+      var selected = selectedCheckboxes();
+      if (!selected.length) {
+        valueEl.textContent = trigger.getAttribute(lang() === "en" ? "data-placeholder-en" : "data-placeholder-vi");
+        valueEl.classList.add("is-placeholder");
+      } else if (selected.length <= 2) {
+        valueEl.textContent = selected.map(optionLabel).join(", ");
+        valueEl.classList.remove("is-placeholder");
+      } else {
+        valueEl.textContent = lang() === "en"
+          ? selected.length + " product types selected"
+          : selected.length + " loại sản phẩm đã chọn";
+        valueEl.classList.remove("is-placeholder");
+      }
+    }
+
+    function onCheckboxChange() {
+      syncHiddenInputs();
+      updateTriggerValue();
+      if (selectedCheckboxes().length) field.classList.remove("has-error");
+    }
+    checkboxes.forEach(function (cb) { cb.addEventListener("change", onCheckboxChange); });
+
+    panel.querySelector('[data-ms-action="select-all"]').addEventListener("click", function () {
+      checkboxes.forEach(function (cb) { cb.checked = true; });
+      onCheckboxChange();
+    });
+    panel.querySelector('[data-ms-action="clear"]').addEventListener("click", function () {
+      checkboxes.forEach(function (cb) { cb.checked = false; });
+      onCheckboxChange();
+    });
+    panel.querySelector('[data-ms-action="done"]').addEventListener("click", function () {
+      closePanel(true);
+    });
+
+    function openPanel() {
+      if (isOpen) return;
+      isOpen = true;
+      panel.hidden = false;
+      trigger.setAttribute("aria-expanded", "true");
+      multiselect.setAttribute("data-open", "true");
+    }
+    function closePanel(returnFocus) {
+      if (!isOpen) return;
+      isOpen = false;
+      panel.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      multiselect.setAttribute("data-open", "false");
+      if (returnFocus) trigger.focus();
+    }
+
+    trigger.addEventListener("click", function () {
+      if (isOpen) closePanel(false); else openPanel();
+    });
+
+    // Delegated on document (not just an outside-of-panel check) so a
+    // click anywhere else in the popup — or the popup overlay itself
+    // — closes the panel without needing its own per-element wiring.
+    document.addEventListener("click", function (e) {
+      if (!isOpen || field.contains(e.target)) return;
+      closePanel(false);
+    });
+
+    document.addEventListener("palmcity:langchange", updateTriggerValue);
+    updateTriggerValue();
+
+    return {
+      isOpen: function () { return isOpen; },
+      close: function () { closePanel(false); },
+      validate: function () {
+        var ok = selectedCheckboxes().length > 0;
+        field.classList.toggle("has-error", !ok);
+        if (!ok) trigger.focus();
+        return ok;
+      }
+    };
+  }
+  var productMultiselect = setupProductMultiselect();
+
   // Prototype only.
   // Backend submission and validation will be implemented in production.
   registerForm.addEventListener("submit", function (e) {
     e.preventDefault();
+    if (productMultiselect && !productMultiselect.validate()) return;
     closePopup();
   });
 
@@ -315,6 +446,10 @@
      ----------------------------------------------------- */
   document.addEventListener("keydown", function (e) {
     if (e.key !== "Escape") return;
+    if (productMultiselect && productMultiselect.isOpen()) {
+      productMultiselect.close();
+      return;
+    }
     if (popup.getAttribute("data-open") === "true") {
       closePopup();
     } else if (mobileMenu.getAttribute("data-open") === "true") {

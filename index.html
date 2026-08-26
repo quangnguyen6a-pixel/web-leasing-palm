@@ -867,16 +867,93 @@
           <option value="cho-thue" data-lang-vi="Cho thuê" data-lang-en="Rental">Cho thuê</option>
         </select>
       </div>
-      <div class="form-field">
-        <label for="field-type" data-lang-vi="Loại sản phẩm quan tâm" data-lang-en="Product type of interest">Loại sản phẩm quan tâm</label>
-        <select id="field-type" name="unit-type">
-          <option value="" data-lang-vi="Chọn loại sản phẩm" data-lang-en="Select a product type">Chọn loại sản phẩm</option>
-          <option value="1pn" data-lang-vi="1 phòng ngủ (1PN)" data-lang-en="1 bedroom (1BR)">1 phòng ngủ (1PN)</option>
-          <option value="2pn" data-lang-vi="2 phòng ngủ (2PN)" data-lang-en="2 bedrooms (2BR)">2 phòng ngủ (2PN)</option>
-          <option value="3pn" data-lang-vi="3 phòng ngủ (3PN)" data-lang-en="3 bedrooms (3BR)">3 phòng ngủ (3PN)</option>
-          <option value="duplex-penthouse">Duplex/Penthouse</option>
-          <option value="shophouse">Shophouse</option>
-        </select>
+      <!-- Custom checkbox multi-select (native <select multiple> can't be
+           glass-styled and is poor on touch). Real checkboxes live inside
+           #field-type-panel for interaction/accessibility; their state is
+           mirrored into always-present hidden inputs in #field-type-hidden
+           so the field still submits as name="unit-type" with one value
+           per selection, same shape a native multi-select would produce.
+           See setupProductMultiselect() in js/main.js. -->
+      <div class="form-field form-field--multiselect" id="field-type-field">
+        <label id="field-type-label" data-lang-vi="Loại sản phẩm quan tâm" data-lang-en="Product type of interest">Loại sản phẩm quan tâm</label>
+        <div class="multiselect">
+          <button type="button" class="multiselect__trigger" id="field-type-trigger"
+                  aria-expanded="false" aria-controls="field-type-panel"
+                  aria-labelledby="field-type-label field-type-trigger-value"
+                  data-placeholder-vi="Chọn loại sản phẩm" data-placeholder-en="Select a product type">
+            <span class="multiselect__value is-placeholder" id="field-type-trigger-value">Chọn loại sản phẩm</span>
+            <svg class="multiselect__chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+              <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="multiselect__panel" id="field-type-panel" hidden>
+            <div class="multiselect__actions">
+              <button type="button" class="multiselect__action" data-ms-action="select-all" data-lang-vi="Chọn tất cả" data-lang-en="Select all">Chọn tất cả</button>
+              <button type="button" class="multiselect__action" data-ms-action="clear" data-lang-vi="Xóa lựa chọn" data-lang-en="Clear selection">Xóa lựa chọn</button>
+            </div>
+            <ul class="multiselect__options" id="field-type-options">
+              <li class="multiselect__option">
+                <label>
+                  <input type="checkbox" class="multiselect__checkbox" data-value="studio">
+                  <span class="multiselect__box" aria-hidden="true">
+                    <svg class="multiselect__tick" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.7 6.5L9 1" stroke="#001c3d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="multiselect__option-text" data-lang-vi="Studio" data-lang-en="Studio">Studio</span>
+                </label>
+              </li>
+              <li class="multiselect__option">
+                <label>
+                  <input type="checkbox" class="multiselect__checkbox" data-value="1pn">
+                  <span class="multiselect__box" aria-hidden="true">
+                    <svg class="multiselect__tick" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.7 6.5L9 1" stroke="#001c3d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="multiselect__option-text" data-lang-vi="1 phòng ngủ" data-lang-en="1-bedroom">1 phòng ngủ</span>
+                </label>
+              </li>
+              <li class="multiselect__option">
+                <label>
+                  <input type="checkbox" class="multiselect__checkbox" data-value="2pn">
+                  <span class="multiselect__box" aria-hidden="true">
+                    <svg class="multiselect__tick" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.7 6.5L9 1" stroke="#001c3d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="multiselect__option-text" data-lang-vi="2 phòng ngủ" data-lang-en="2-bedroom">2 phòng ngủ</span>
+                </label>
+              </li>
+              <li class="multiselect__option">
+                <label>
+                  <input type="checkbox" class="multiselect__checkbox" data-value="2pn-dac-biet">
+                  <span class="multiselect__box" aria-hidden="true">
+                    <svg class="multiselect__tick" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.7 6.5L9 1" stroke="#001c3d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="multiselect__option-text" data-lang-vi="2 phòng ngủ đặc biệt" data-lang-en="Special 2-bedroom">2 phòng ngủ đặc biệt</span>
+                </label>
+              </li>
+              <li class="multiselect__option">
+                <label>
+                  <input type="checkbox" class="multiselect__checkbox" data-value="3pn">
+                  <span class="multiselect__box" aria-hidden="true">
+                    <svg class="multiselect__tick" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.7 6.5L9 1" stroke="#001c3d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="multiselect__option-text" data-lang-vi="3 phòng ngủ" data-lang-en="3-bedroom">3 phòng ngủ</span>
+                </label>
+              </li>
+              <li class="multiselect__option">
+                <label>
+                  <input type="checkbox" class="multiselect__checkbox" data-value="3pn-dac-biet">
+                  <span class="multiselect__box" aria-hidden="true">
+                    <svg class="multiselect__tick" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.7 6.5L9 1" stroke="#001c3d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="multiselect__option-text" data-lang-vi="3 phòng ngủ đặc biệt" data-lang-en="Special 3-bedroom">3 phòng ngủ đặc biệt</span>
+                </label>
+              </li>
+            </ul>
+            <div class="multiselect__footer">
+              <button type="button" class="multiselect__done" data-ms-action="done" data-lang-vi="Xong" data-lang-en="Done">Xong</button>
+            </div>
+          </div>
+        </div>
+        <div id="field-type-hidden" hidden></div>
+        <span class="form-field__error" id="field-type-error" data-lang-vi="Vui lòng chọn ít nhất một loại sản phẩm" data-lang-en="Please select at least one product type"></span>
       </div>
       <div class="form-field">
         <label for="field-budget" data-lang-vi="Ngân sách dự kiến" data-lang-en="Expected budget">Ngân sách dự kiến</label>
