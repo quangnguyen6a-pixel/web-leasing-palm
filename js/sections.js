@@ -1014,6 +1014,61 @@
     });
   }
 
+  // Groups milestones into rows of at most `size` items (Infinity = a
+  // single row). Wide desktop (>=1280px) and mobile (<768px) both use
+  // one row — mobile just reflows it vertically via CSS, see the
+  // max-width:767px override below — only the 768-1279px tier chunks
+  // into rows of 4, so a 7- or 6-milestone plan gets a clean two-row
+  // fallback instead of the text shrinking to fit. Re-chunked (via
+  // setupPolicyResponsiveReflow()'s matchMedia listener, see INIT)
+  // whenever a resize crosses that boundary.
+  function chunkMilestones(milestones, size) {
+    if (!isFinite(size)) return [milestones];
+    var rows = [];
+    for (var i = 0; i < milestones.length; i += size) {
+      rows.push(milestones.slice(i, i + size));
+    }
+    return rows;
+  }
+  function policyRowSize() {
+    return (window.matchMedia && window.matchMedia("(min-width: 768px) and (max-width: 1279px)").matches)
+      ? 4
+      : Infinity;
+  }
+  var POLICY_ACTIVE_CHIPS = { HDMB: true, HANDOVER: true, GCN: true };
+  var POLICY_GAP_ARROW_SVG =
+    '<svg viewBox="0 0 10 8" width="9" height="7" aria-hidden="true" focusable="false">' +
+    '<path d="M0.5 4H8.5M8.5 4L5.5 1M8.5 4L5.5 7" stroke="currentColor" stroke-width="1.3" ' +
+    'stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+  var POLICY_ROW_TURN_SVG =
+    '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">' +
+    '<path d="M8 1V11M8 11L4.5 7.5M8 11L11.5 7.5" stroke="currentColor" stroke-width="1.4" ' +
+    'stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+
+  // Scroll-triggered reveal — the line "draws" and nodes light up in
+  // sequence via CSS transitions (see .payment-plan__row.is-visible
+  // in css/sections.css); prefers-reduced-motion is handled globally
+  // (styles.css zeroes all transition/animation durations), so no
+  // special-casing is needed here beyond the no-IntersectionObserver
+  // fallback. Re-observes on every render (tab switch/resize reflow),
+  // which intentionally replays the reveal for the freshly mounted row.
+  function setupPolicyTimelineReveal(rows) {
+    if (!rows.length) return;
+    if (!("IntersectionObserver" in window)) {
+      rows.forEach(function (row) { row.classList.add("is-visible"); });
+      return;
+    }
+    var observer = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.35 });
+    rows.forEach(function (row) { observer.observe(row); });
+  }
+
   function renderPolicyPanel(plan, lang) {
     var panel = document.getElementById("policy-panel");
     if (!panel) return;
@@ -1053,89 +1108,144 @@
       wrap.appendChild(legend);
     }
 
+    // Line-based timeline: one continuous metallic-gold line running
+    // through every node's centre. Each step draws ONE full-column-
+    // width line segment (see .payment-plan__step::before) — since
+    // every step in a row is an equal-width flex column with its node
+    // centred, step N's segment starts exactly at step N-1's node and
+    // ends at step N's own node, so consecutive segments meet with no
+    // gap or overlap. Rows (see chunkMilestones()) let a plan with
+    // more milestones than fit on one line wrap to a clean second row
+    // instead of shrinking text; .payment-plan__row-turn marks that
+    // hand-off visually. Renders through the exact same milestone data
+    // as before — see window.paymentPlans in js/config.js — so every
+    // percentage/timing/chip is unchanged, just redrawn as a timeline.
     var timeline = document.createElement("div");
     timeline.className = "payment-plan__timeline" + (isMortgage ? " payment-plan__timeline--dual" : "");
-    timeline.setAttribute("role", "list");
 
-    plan.milestones.forEach(function (m, index) {
-      var gapVi = m.gapVi, gapEn = m.gapEn;
-      if (index > 0 && (gapVi || gapEn)) {
-        var connector = document.createElement("div");
-        connector.className = "payment-plan__connector";
-        var connectorLabel = document.createElement("span");
-        connectorLabel.textContent = lang === "en" ? gapEn : gapVi;
-        connector.appendChild(connectorLabel);
-        timeline.appendChild(connector);
-      }
+    var rows = chunkMilestones(plan.milestones, policyRowSize());
+    var reflowRows = [];
+    var globalIndex = 0;
 
-      var step = document.createElement("div");
-      step.className = "payment-plan__step" + (m.repeat > 1 ? " payment-plan__step--grouped" : "") + (isMortgage ? " payment-plan__step--dual" : "");
-      step.setAttribute("role", "listitem");
+    rows.forEach(function (rowMilestones, rowIndex) {
+      var row = document.createElement("div");
+      row.className = "payment-plan__row";
+      row.setAttribute("role", "list");
+      row.style.setProperty("--row-items", rowMilestones.length);
 
-      var number = document.createElement("span");
-      number.className = "payment-plan__step-number";
-      number.textContent = lang === "en" ? m.numberEn : m.numberVi;
-      step.appendChild(number);
+      rowMilestones.forEach(function (m, indexInRow) {
+        var isActive = !!(m.chip && POLICY_ACTIVE_CHIPS[m.chip]);
+        var step = document.createElement("div");
+        step.className = "payment-plan__step" +
+          (m.repeat > 1 ? " payment-plan__step--grouped" : "") +
+          (isActive ? " payment-plan__step--active" : "") +
+          (indexInRow === 0 ? " payment-plan__step--row-start" : "");
+        step.style.setProperty("--i", globalIndex);
+        step.setAttribute("role", "listitem");
 
-      // Everything but the number lives in one wrapper so the mobile
-      // stepper (see the max-width:767px override) can lay the step
-      // out as "milestone on the left, value/time/chip on the right"
-      // without any markup change between breakpoints.
-      var values = document.createElement("div");
-      values.className = "payment-plan__step-values";
+        // The gap-to-here label sits on this step's own incoming line
+        // segment — except for a row's first step, whose incoming gap
+        // (if any) is shown on the .payment-plan__row-turn connector
+        // instead, so it's never rendered twice.
+        var gapVi = m.gapVi, gapEn = m.gapEn;
+        if (indexInRow > 0 && (gapVi || gapEn)) {
+          var gap = document.createElement("span");
+          gap.className = "payment-plan__step-gap";
+          gap.innerHTML = POLICY_GAP_ARROW_SVG;
+          var gapText = document.createElement("span");
+          gapText.textContent = lang === "en" ? gapEn : gapVi;
+          gap.appendChild(gapText);
+          step.appendChild(gap);
+        }
 
-      if (isMortgage) {
-        var dual = document.createElement("div");
-        dual.className = "payment-plan__dual-values";
-        var custVal = document.createElement("span");
-        custVal.className = "payment-plan__dual-value payment-plan__dual-value--customer";
-        custVal.textContent = m.customerPct ? m.customerPct + "%" : "—";
-        var bankVal = document.createElement("span");
-        bankVal.className = "payment-plan__dual-value payment-plan__dual-value--bank";
-        bankVal.textContent = m.bankPct ? m.bankPct + "%" : "—";
-        dual.appendChild(custVal);
-        dual.appendChild(bankVal);
-        values.appendChild(dual);
-      } else {
-        var pct = document.createElement("span");
-        pct.className = "payment-plan__step-pct";
-        pct.textContent = m.pct + "%";
-        values.appendChild(pct);
+        var node = document.createElement("div");
+        node.className = "payment-plan__step-node";
+        if (isMortgage) {
+          var dual = document.createElement("span");
+          dual.className = "payment-plan__step-node-dual";
+          var custVal = document.createElement("b");
+          custVal.className = "payment-plan__step-node-customer";
+          custVal.textContent = m.customerPct ? m.customerPct + "%" : "—";
+          var bankVal = document.createElement("b");
+          bankVal.className = "payment-plan__step-node-bank";
+          bankVal.textContent = m.bankPct ? m.bankPct + "%" : "—";
+          dual.appendChild(custVal);
+          dual.appendChild(bankVal);
+          node.appendChild(dual);
+        } else {
+          var pct = document.createElement("b");
+          pct.className = "payment-plan__step-pct";
+          pct.textContent = m.pct + "%";
+          node.appendChild(pct);
+        }
+        step.appendChild(node);
+
+        // Everything but the node lives in one wrapper so the mobile
+        // stepper (see the max-width:767px override) can lay the step
+        // out as "node on the left, name/time/chip on the right"
+        // without any markup change between breakpoints.
+        var body = document.createElement("div");
+        body.className = "payment-plan__step-body";
+
+        var name = document.createElement("span");
+        name.className = "payment-plan__step-name";
+        name.textContent = lang === "en" ? m.numberEn : m.numberVi;
+        body.appendChild(name);
+
+        if (m.timeVi || m.timeEn) {
+          var time = document.createElement("span");
+          time.className = "payment-plan__step-time";
+          time.textContent = lang === "en" ? m.timeEn : m.timeVi;
+          body.appendChild(time);
+        }
+
         if (m.repeat > 1) {
           var groupNote = document.createElement("span");
           groupNote.className = "payment-plan__step-group-note";
           groupNote.textContent = lang === "en"
-            ? "per instalment × " + m.repeat + " = " + (m.pct * m.repeat) + "%"
-            : "mỗi đợt × " + m.repeat + " = " + (m.pct * m.repeat) + "%";
-          values.appendChild(groupNote);
+            ? "× " + m.repeat + " instalments = " + (m.pct * m.repeat) + "%"
+            : "× " + m.repeat + " đợt = " + (m.pct * m.repeat) + "%";
+          body.appendChild(groupNote);
         }
-      }
 
-      if (m.timeVi || m.timeEn) {
-        var time = document.createElement("span");
-        time.className = "payment-plan__step-time";
-        time.textContent = lang === "en" ? m.timeEn : m.timeVi;
-        values.appendChild(time);
-      }
+        if (m.chip) {
+          var chipData = window.paymentPlanMilestoneChips[m.chip];
+          var chip = document.createElement("span");
+          chip.className = "payment-plan__step-chip";
+          chip.textContent = lang === "en" ? chipData.en : chipData.vi;
+          body.appendChild(chip);
+          // Always visible (never hover-only), so the expanded meaning
+          // reaches keyboard/touch/mobile users the same as a mouse.
+          var chipFull = document.createElement("span");
+          chipFull.className = "payment-plan__step-chip-full";
+          chipFull.textContent = lang === "en" ? chipData.fullEn : chipData.fullVi;
+          body.appendChild(chipFull);
+        }
 
-      if (m.chip) {
-        var chipData = window.paymentPlanMilestoneChips[m.chip];
-        var chip = document.createElement("span");
-        chip.className = "payment-plan__step-chip";
-        chip.textContent = lang === "en" ? chipData.en : chipData.vi;
-        values.appendChild(chip);
-        // Always visible (never hover-only), so the expanded meaning
-        // reaches keyboard/touch/mobile users the same as a mouse.
-        var chipFull = document.createElement("span");
-        chipFull.className = "payment-plan__step-chip-full";
-        chipFull.textContent = lang === "en" ? chipData.fullEn : chipData.fullVi;
-        values.appendChild(chipFull);
-      }
+        step.appendChild(body);
+        row.appendChild(step);
+        globalIndex++;
+      });
 
-      step.appendChild(values);
-      timeline.appendChild(step);
+      timeline.appendChild(row);
+      reflowRows.push(row);
+
+      if (rowIndex < rows.length - 1) {
+        var nextFirst = rows[rowIndex + 1][0];
+        var turn = document.createElement("div");
+        turn.className = "payment-plan__row-turn";
+        turn.innerHTML = POLICY_ROW_TURN_SVG;
+        if (nextFirst.gapVi || nextFirst.gapEn) {
+          var turnText = document.createElement("span");
+          turnText.textContent = lang === "en" ? nextFirst.gapEn : nextFirst.gapVi;
+          turn.appendChild(turnText);
+        }
+        timeline.appendChild(turn);
+      }
     });
+
     wrap.appendChild(timeline);
+    setupPolicyTimelineReveal(reflowRows);
 
     if (isMortgage) {
       var totals = document.createElement("div");
@@ -1456,6 +1566,19 @@
     });
   }
 
+  // Re-chunks the payment timeline's rows (see policyRowSize()) when a
+  // resize crosses the 768px/1280px boundaries that change how many
+  // milestones fit per row — a plain CSS media query can't do this
+  // since it needs to change how many *elements* JS renders, not just
+  // how they're styled.
+  function setupPolicyResponsiveReflow() {
+    if (!window.matchMedia) return;
+    var query = window.matchMedia("(min-width: 768px) and (max-width: 1279px)");
+    var onChange = function () { renderPolicySection(currentLang()); };
+    if (query.addEventListener) query.addEventListener("change", onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+
   /* -----------------------------------------------------
      INIT
      ----------------------------------------------------- */
@@ -1476,6 +1599,7 @@
   setupDetailsToggle();
   setupAmenitySheet();
   setupAmenityListHeightSync();
+  setupPolicyResponsiveReflow();
   setupFloatingContacts();
   setupFinalForm();
   setupDepthFrames();

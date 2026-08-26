@@ -1449,8 +1449,8 @@
 }
 
 .policy__panel-shell {
-  min-height: 260px;
-  padding: 36px 42px;
+  min-height: 200px;
+  padding: 30px 38px;
   margin-bottom: 24px;
   border-radius: 18px;
   position: relative;
@@ -1467,7 +1467,7 @@
 .payment-plan {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 22px;
   animation: policyPanelFade 300ms ease;
 }
 @keyframes policyPanelFade {
@@ -1532,63 +1532,101 @@
 .payment-plan__legend-item--bank::before { background: #9fb8cc; }
 
 /* -----------------------------------------------------
-   TIMELINE — desktop: horizontal row of steps + connectors.
-   Mobile (see media query below): vertical stepper, same markup.
+   TIMELINE — one continuous metallic-gold line running through every
+   node's centre. Desktop: horizontal row(s) of nodes (see
+   .payment-plan__row and chunkMilestones() in js/sections.js — a plan
+   with more milestones than fit on one line wraps to a clean second
+   row via .payment-plan__row-turn instead of shrinking text). Mobile
+   (see media query below): the same markup reflows into a vertical
+   stepper, line on the left.
+
+   The "continuous line" itself is drawn per-step, not as one giant
+   background: every .payment-plan__step is an equal-width flex
+   column with its node centred at the column's mid-point, and
+   ::before spans exactly ONE column width, offset left by half a
+   column (left:-50%; width:100%) — so it runs from the *previous*
+   step's node-centre to *this* step's node-centre. Consecutive
+   segments therefore meet exactly at each node with no gap or
+   overlap, for any number of equal-width columns, with no JS
+   measurement needed. The first step in a row has nothing before it,
+   so its segment is hidden (.payment-plan__step--row-start).
    ----------------------------------------------------- */
 .payment-plan__timeline {
   display: flex;
-  align-items: stretch;
-  flex-wrap: wrap;
-  row-gap: 20px;
+  flex-direction: column;
+  gap: 4px;
+}
+.payment-plan__row {
+  display: flex;
+  align-items: flex-start;
 }
 .payment-plan__step {
+  position: relative;
   flex: 1 1 0;
-  min-width: 84px;
+  min-width: 96px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 4px;
-  padding: 14px 10px;
-  border-radius: 12px;
-  background: rgba(248, 242, 230, 0.03);
-  border: 1px solid rgba(231, 210, 154, 0.16);
+  padding: 6px 6px 4px;
 }
-.payment-plan__step--grouped {
-  flex-basis: 100%;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: baseline;
-  gap: 8px 14px;
-  padding: 16px 20px;
-  background: rgba(199, 155, 66, 0.08);
-  border-color: rgba(231, 210, 154, 0.3);
+.payment-plan__step::before {
+  content: "";
+  position: absolute;
+  left: -50%;
+  width: 100%;
+  top: 34px;
+  height: 2px;
+  background: linear-gradient(90deg, #8a641f 0%, #e7c36a 34%, #fff0b8 66%, #b9872f 100%);
+  z-index: 1;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 650ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-.payment-plan__step-number {
-  font-family: var(--font-body-alt);
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: rgba(248, 242, 230, 0.6);
+.payment-plan__row.is-visible .payment-plan__step::before {
+  transform: scaleX(1);
+  transition-delay: calc(var(--i, 0) * 90ms);
 }
-.payment-plan__step-values {
+.payment-plan__step--row-start::before {
+  display: none;
+}
+
+/* Percentage node — the strongest visual element on the timeline. */
+.payment-plan__step-node {
+  position: relative;
+  z-index: 2;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  margin: 4px auto 12px;
+  background: linear-gradient(160deg, rgba(0, 42, 79, 0.96), rgba(0, 18, 40, 0.96));
+  border: 1.5px solid rgba(231, 210, 154, 0.55);
+  box-shadow: 0 8px 18px rgba(0, 10, 26, 0.4), inset 0 1px 0 rgba(248, 242, 230, 0.1);
+  opacity: 0;
+  transform: scale(0.55);
+  transition: opacity 380ms ease, transform 380ms cubic-bezier(0.34, 1.4, 0.64, 1);
 }
-.payment-plan__step--grouped .payment-plan__step-values {
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px 14px;
+.payment-plan__row.is-visible .payment-plan__step-node {
+  opacity: 1;
+  transform: scale(1);
+  transition-delay: calc(var(--i, 0) * 90ms + 160ms);
+}
+/* Brighter highlight reserved for the legally significant milestones
+   (HĐMB / Bàn giao / GCN) — a filled metallic node instead of the
+   regular outlined-glass one, never a generic "current step" state. */
+.payment-plan__step--active .payment-plan__step-node {
+  background: var(--gold-metallic);
+  border-color: var(--gold-specular);
+  box-shadow: 0 0 0 5px rgba(231, 210, 154, 0.16), 0 10px 28px rgba(138, 100, 31, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 .payment-plan__step-pct {
   font-family: var(--font-heading-alt);
-  font-weight: 400;
-  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 600;
+  font-size: clamp(15px, 1.3vw, 18px);
   line-height: 1;
   background-image: var(--gold-metallic);
   background-size: 200% 100%;
@@ -1597,83 +1635,153 @@
   color: transparent;
   -webkit-text-fill-color: transparent;
 }
-.payment-plan__step-group-note {
+.payment-plan__step--active .payment-plan__step-pct {
+  background: none;
+  color: var(--color-navy-primary);
+  -webkit-text-fill-color: var(--color-navy-primary);
+  font-weight: 700;
+}
+.payment-plan__step-node-dual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  line-height: 1.1;
+}
+.payment-plan__step-node-customer,
+.payment-plan__step-node-bank {
+  font-family: var(--font-heading-alt);
+  font-weight: 600;
+  font-size: 12px;
+}
+.payment-plan__step-node-customer { color: var(--gold-champagne); }
+.payment-plan__step-node-bank { color: #9fb8cc; }
+.payment-plan__step--active .payment-plan__step-node-customer,
+.payment-plan__step--active .payment-plan__step-node-bank {
+  color: var(--color-navy-primary);
+}
+
+/* Instalment name / timing / legal-milestone chip — smaller than the
+   percentage, still clearly readable, sitting close to its node. */
+.payment-plan__step-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  max-width: 128px;
+}
+.payment-plan__step-name {
   font-family: var(--font-body-alt);
-  font-size: 12.5px;
-  color: var(--gold-champagne);
-  opacity: 0.9;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(248, 242, 230, 0.62);
+}
+.payment-plan__step--active .payment-plan__step-name {
+  color: var(--gold-bright);
 }
 .payment-plan__step-time {
   font-family: var(--font-body-alt);
-  font-size: 12px;
-  color: rgba(248, 242, 230, 0.6);
+  font-size: 11.5px;
+  color: rgba(248, 242, 230, 0.55);
+}
+.payment-plan__step-group-note {
+  font-family: var(--font-body-alt);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--gold-champagne);
+  opacity: 0.9;
 }
 .payment-plan__step-chip {
-  margin-top: 2px;
-  padding: 3px 10px;
+  margin-top: 1px;
+  padding: 2px 9px;
   border-radius: 999px;
   background: rgba(231, 210, 154, 0.12);
   border: 1px solid rgba(231, 210, 154, 0.32);
   font-family: var(--font-body-alt);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.03em;
   color: var(--gold-champagne);
+}
+.payment-plan__step--active .payment-plan__step-chip {
+  color: var(--color-navy-primary);
+  background: var(--gold-champagne);
+  border-color: var(--gold-champagne);
 }
 /* Always visible (never hover-only) expanded meaning of the chip
    abbreviation — small, secondary, sits right under the chip. */
 .payment-plan__step-chip-full {
   font-family: var(--font-body-alt);
-  font-size: 10.5px;
-  color: rgba(248, 242, 230, 0.5);
-  max-width: 12ch;
+  font-size: 10px;
+  color: rgba(248, 242, 230, 0.45);
+  max-width: 14ch;
   line-height: 1.3;
 }
 
-/* Time-interval connector between two steps. */
-.payment-plan__connector {
-  flex: 0 1 64px;
+/* Time-between-instalments label — floats on the incoming line
+   segment, roughly at its midpoint, with a short gold arrow. */
+.payment-plan__step-gap {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 22px;
+  transform: translate(-50%, -100%);
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  min-width: 48px;
-  padding-top: 2px;
-}
-.payment-plan__connector::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(231, 210, 154, 0.5), transparent);
-}
-.payment-plan__connector span {
-  position: relative;
-  z-index: 1;
+  gap: 3px;
   padding: 2px 8px;
   border-radius: 999px;
   background: var(--savills-navy);
+  border: 1px solid rgba(231, 210, 154, 0.3);
   font-family: var(--font-body-alt);
-  font-size: 10.5px;
-  color: rgba(248, 242, 230, 0.55);
+  font-size: 10px;
+  color: rgba(248, 242, 230, 0.68);
   white-space: nowrap;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.payment-plan__row.is-visible .payment-plan__step-gap {
+  opacity: 1;
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.payment-plan__step-gap svg {
+  flex: 0 0 auto;
+  color: var(--gold-champagne);
 }
 
-/* Dual-track (mortgage) values — champagne gold for KH, cool
-   silver-blue for NH, shown side by side under each step. */
-.payment-plan__dual-values {
+/* Row-to-row hand-off, chunked (768-1279px) tier only — a small
+   centred marker so the flow from the end of one row to the start of
+   the next stays visually obvious (see chunkMilestones() in
+   js/sections.js). */
+.payment-plan__row-turn {
+  align-self: center;
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 6px;
+  margin: -2px 0 2px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: rgba(231, 210, 154, 0.1);
+  border: 1px solid rgba(231, 210, 154, 0.28);
+  color: var(--gold-champagne);
+  font-family: var(--font-body-alt);
+  font-size: 10.5px;
+  font-weight: 700;
 }
-.payment-plan__dual-value {
-  font-family: var(--font-heading-alt);
-  font-weight: 400;
-  font-size: 20px;
+.payment-plan__row-turn svg {
+  flex: 0 0 auto;
 }
-.payment-plan__dual-value--customer { color: var(--gold-champagne); }
-.payment-plan__dual-value--bank { color: #9fb8cc; }
+
+@media (prefers-reduced-motion: reduce) {
+  .payment-plan__step::before,
+  .payment-plan__step-node,
+  .payment-plan__step-gap {
+    transition: none;
+  }
+}
+
 .payment-plan__track-totals {
   display: flex;
   flex-wrap: wrap;
@@ -1686,40 +1794,44 @@
 .payment-plan__track-totals-item--bank { color: #9fb8cc; }
 
 /* -----------------------------------------------------
-   BENEFIT SUMMARY — compact metric cards, not oversized USP cards.
+   BENEFIT SUMMARY — compact inline pills that support the timeline
+   above without competing with it (small type, no heavy card frame).
    ----------------------------------------------------- */
 .payment-plan__benefits {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(248, 242, 230, 0.1);
 }
 .payment-plan__benefit {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 14px 16px;
-  border-radius: 12px;
-  background: rgba(248, 242, 230, 0.04);
-  border: 1px solid rgba(231, 210, 154, 0.16);
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(248, 242, 230, 0.03);
+  border: 1px solid rgba(231, 210, 154, 0.14);
 }
 .payment-plan__benefit-label {
   font-family: var(--font-body-alt);
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: rgba(248, 242, 230, 0.6);
+  color: rgba(248, 242, 230, 0.55);
 }
 .payment-plan__benefit-value {
-  font-family: var(--font-heading-alt);
-  font-weight: 400;
-  font-size: 19px;
+  font-family: var(--font-body-alt);
+  font-weight: 700;
+  font-size: 13px;
   color: var(--gold-champagne);
 }
 .payment-plan__benefit-note {
   font-family: var(--font-body-alt);
-  font-size: 11.5px;
-  color: rgba(248, 242, 230, 0.55);
+  font-size: 10.5px;
+  color: rgba(248, 242, 230, 0.45);
 }
 
 .policy__disclaimer {
@@ -2436,38 +2548,68 @@
   .policy__tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .policy__tab { min-height: 56px; padding: 11px 14px; }
   .policy__tab-label { font-size: 13px; }
-  .policy__panel-shell { min-height: 190px; padding: 22px; }
-  /* Vertical stepper — same markup as desktop, just re-flowed:
-     milestone label on the left, value/time/chip on the right, a
-     short vertical line (with its gap label) connecting each step. */
-  .payment-plan__timeline { flex-direction: column; gap: 0; }
+  .policy__panel-shell { min-height: 0; padding: 22px; }
+  /* Vertical stepper: the connecting line moves to the left and runs
+     the full column height on .payment-plan__row itself (one single
+     element — mobile is always a single, unchunked row, so there's no
+     need for the per-step equal-width-column trick the horizontal
+     tiers use), nodes sit on that line, and each step's name/time/
+     chip content reads to its right. Same markup/data as desktop. */
+  .payment-plan__timeline { gap: 26px; }
+  .payment-plan__row {
+    position: relative;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 30px;
+  }
+  .payment-plan__row::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    left: 21px;
+    top: 22px;
+    bottom: 22px;
+    width: 2px;
+    background: linear-gradient(180deg, #8a641f 0%, #e7c36a 34%, #fff0b8 66%, #b9872f 100%);
+    transform: scaleY(0);
+    transform-origin: top center;
+    transition: transform 650ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .payment-plan__row.is-visible::before {
+    transform: scaleY(1);
+  }
   .payment-plan__step {
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     text-align: left;
     width: 100%;
-    border-radius: 10px;
-  }
-  .payment-plan__step--grouped { flex-direction: column; align-items: flex-start; text-align: left; }
-  .payment-plan__step-values { align-items: flex-end; }
-  .payment-plan__step--grouped .payment-plan__step-values { align-items: flex-start; }
-  .payment-plan__connector {
-    flex: 0 0 auto;
-    min-height: 30px;
+    min-width: 0;
     padding: 0;
-    margin-left: 20px;
   }
-  .payment-plan__connector::before {
-    left: 0;
-    right: auto;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    height: auto;
-    background: linear-gradient(180deg, transparent, rgba(231, 210, 154, 0.5), transparent);
+  .payment-plan__step::before { display: none; }
+  .payment-plan__step-node {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    margin: 0 14px 0 0;
   }
-  .payment-plan__benefits { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .payment-plan__step-pct { font-size: 13px; }
+  .payment-plan__step-node-customer,
+  .payment-plan__step-node-bank { font-size: 10.5px; }
+  .payment-plan__step-body { align-items: flex-start; text-align: left; max-width: none; padding-top: 4px; }
+  .payment-plan__step-gap {
+    left: 58px;
+    /* Centred in the 30px flex gap above this step (see
+       .payment-plan__row's gap), clear of both this step's name and
+       the previous step's content. */
+    top: -24px;
+    transform: none;
+    padding: 1px 7px;
+    font-size: 9.5px;
+  }
+  .payment-plan__row-turn { display: none; }
+  .payment-plan__benefits { flex-direction: column; align-items: stretch; }
+  .payment-plan__benefit { justify-content: space-between; }
 
   .savills-section__pillars { grid-template-columns: 1fr; }
 
