@@ -653,34 +653,39 @@
    ========================================================= */
 
 /* Level 1: Palm City (shared master-community amenities) vs. Palm
-   River (in-residence, floor-grouped). */
+   River (in-residence, floor-grouped) — always exactly 2 tabs, so a
+   fixed 2-column grid distributes them evenly and keeps both equal
+   width/height regardless of label length (min-height, not height,
+   so a genuinely tight viewport can wrap to a second line instead of
+   clipping the longer label). */
 .amenities__main-tabs {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 16px;
 }
 .amenities__main-tab {
   border-radius: 999px;
-  height: clamp(58px, 6vw, 64px);
-  padding: 0 clamp(28px, 3vw, 36px);
+  min-height: clamp(58px, 6vw, 64px);
+  padding: 10px clamp(20px, 3vw, 36px);
   font-size: 13px;
+  text-align: center;
 }
 
-/* Level 2: each level-1 tab now always has 4 real groups (Palm City's
-   4 categories, Palm River's 4 floors), so this row is always shown —
-   no more conditional hide/show. */
+/* Level 2: each level-1 tab always has 4 real groups (Palm City's 4
+   categories, Palm River's 4 floors) — same fixed-grid approach. */
 .amenities__floor-tabs {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   margin-bottom: 32px;
 }
 .amenities__floor-tab {
   border-radius: 999px;
-  height: clamp(42px, 4.4vw, 46px);
-  padding: 0 clamp(18px, 2vw, 22px);
+  min-height: clamp(42px, 4.4vw, 46px);
+  padding: 8px clamp(10px, 2vw, 22px);
   font-size: 12.5px;
+  text-align: center;
 }
 
 .amenities__layout {
@@ -1055,21 +1060,24 @@
 /* =========================================================
    FLOOR PLANS AND SHOW UNITS
    ========================================================= */
+/* Always exactly 6 apartment types (window.floorPlanTypes) — a fixed
+   6-column grid gives every tab equal width/height regardless of
+   label length, sized to fit the longest ("2PN đặc biệt"/"3PN đặc
+   biệt") without cropping; min-height (not height) lets it wrap to a
+   second line rather than clip if a viewport is genuinely tight. */
 .floorplans__tabs {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 32px;
 }
 .floorplans__tab {
-  /* Colour/state/focus come from .glass-tab — this only sets shape.
-     Wider labels ("2PN đặc biệt", "3PN đặc biệt") size the tab by
-     their own content rather than a fixed width, so the row never
-     produces awkward equal-width gaps. */
+  /* Colour/state/focus come from .glass-tab — this only sets shape. */
   border-radius: 13px;
-  height: clamp(58px, 6vw, 64px);
-  padding: 0 clamp(28px, 3vw, 34px);
+  min-height: clamp(58px, 6vw, 64px);
+  padding: 10px clamp(8px, 2vw, 20px);
   font-size: 13px;
+  text-align: center;
 }
 .floorplans__viewer {
   display: grid;
@@ -2183,42 +2191,22 @@
 /* =========================================================
    FINAL REGISTRATION FORM
    ========================================================= */
-.final-form__container {
-  display: grid;
-  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
-  gap: 48px;
-  /* start, not center: with the empty media frame gone,
-     .final-form__benefits is a short list — centering it against the
-     much taller form column would leave it floating in a large empty
-     void instead of reading as "moved up" into the freed space. */
-  align-items: start;
-}
 /* No approved image was ever supplied for this slot (see README §9l
    for the same call on the credibility section) — .final-form__media
-   and its empty placeholder frame have been removed outright rather
-   than kept as reserved blank space; .final-form__benefits is now the
-   grid's first child directly. */
-.final-form__benefits {
+   and its empty placeholder frame were removed outright rather than
+   kept as reserved blank space, and the three-item benefits list that
+   sat beside it has since been removed too (its content is already
+   covered by the section intro above). The form is now the section's
+   only content, so it's simply centred rather than living in a
+   two-column grid. */
+.final-form__container {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-family: var(--font-body-alt);
-  font-size: 14px;
-}
-.final-form__benefits li {
-  padding-left: 18px;
-  position: relative;
-}
-.final-form__benefits li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 8px;
-  width: 8px;
-  height: 1px;
-  background: var(--gold-champagne);
+  justify-content: center;
 }
 .final-form__panel {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
   padding: 40px;
   border-radius: 4px;
   border: 1px solid transparent;
@@ -2228,6 +2216,55 @@
   box-shadow: 0 22px 55px rgba(0, 12, 30, 0.3), inset 0 1px 0 rgba(255, 243, 206, 0.2);
   backdrop-filter: blur(14px) saturate(120%);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
+  /* Entrance — see setupFinalFormReveal() in js/sections.js, which
+     adds .is-revealed once via IntersectionObserver the first time
+     the form enters the viewport (never re-triggers). */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+.final-form__panel.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* One-shot champagne-gold light sweep across the glass border/surface
+   on first reveal — a background-image on the panel's own box, so it
+   never needs overflow:hidden (which would otherwise clip the
+   multi-select dropdown panel below). Runs once, not continuously. */
+.final-form__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(115deg,
+    transparent 30%,
+    rgba(243, 226, 179, 0.16) 47%,
+    rgba(255, 243, 206, 0.26) 50%,
+    rgba(243, 226, 179, 0.16) 53%,
+    transparent 70%);
+  background-size: 240% 240%;
+  background-position: -70% -70%;
+  opacity: 0;
+}
+.final-form__panel.is-revealed::before {
+  animation: final-form-sheen 1500ms ease-out 320ms 1 both;
+}
+@keyframes final-form-sheen {
+  0% { background-position: -70% -70%; opacity: 0; }
+  18% { opacity: 0.85; }
+  100% { background-position: 170% 170%; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .final-form__panel {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .final-form__panel.is-revealed::before {
+    animation: none;
+  }
 }
 .final-form__title {
   font-family: var(--font-heading-alt);
@@ -2262,15 +2299,25 @@
   font-size: 14px;
   font-family: inherit;
   color: var(--color-white);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
 }
 .final-form .form-field select { color: var(--color-white); }
 .final-form .form-field select option { color: var(--color-navy-primary); }
 .final-form .form-field input::placeholder { color: rgba(248, 242, 230, 0.45); }
+/* Brighter gold border + a soft inner glow on focus — box-shadow only
+   (never a size/padding change), so focusing a field never resizes or
+   shifts the form. Also covers the product-type multi-select's own
+   trigger button, which is a <button>, not an <input>/<select>. */
 .final-form .form-field input:focus-visible,
-.final-form .form-field select:focus-visible {
-  border-color: var(--gold-champagne);
+.final-form .form-field select:focus-visible,
+.final-form .multiselect__trigger:focus-visible {
+  border-color: var(--gold-specular);
   outline: 2px solid var(--gold-champagne);
   outline-offset: 1px;
+  box-shadow: 0 0 0 3px rgba(231, 210, 154, 0.2), inset 0 0 16px rgba(231, 210, 154, 0.14);
+}
+.final-form .multiselect__trigger {
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 200ms ease;
 }
 /* Custom chevron + hover/placeholder treatment layered on top of the
    base select styling above (same as .popup__form .form-field select
@@ -2336,6 +2383,19 @@
 }
 .btn--submit[data-loading="true"] .btn__spinner { display: inline-block; }
 @keyframes btn-spin { to { transform: rotate(360deg); } }
+/* Subtle hover lift + pressed state, scoped to the final-form submit
+   button only (the popup's own submit button is out of scope here). */
+#final-form-submit {
+  transition: transform 160ms ease, box-shadow 160ms ease, background-color 200ms ease, border-color 200ms ease;
+}
+#final-form-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(255, 223, 0, 0.22);
+}
+#final-form-submit:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 4px 12px rgba(255, 223, 0, 0.18);
+}
 .final-form__success {
   text-align: center;
   padding: 32px 8px;
@@ -2443,6 +2503,72 @@
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+/* Motion for the three contact buttons only (phone/Zalo/WhatsApp) —
+   the yellow register CTA above keeps its plain existing hover/lift,
+   deliberately not sharing this treatment so it stays visually
+   distinct as "the" call to action, not "one of four" icon buttons. */
+.floating-contacts__btn--hotline,
+.floating-contacts__btn--zalo,
+.floating-contacts__btn--whatsapp {
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+.floating-contacts__btn--hotline:hover,
+.floating-contacts__btn--hotline:focus-visible,
+.floating-contacts__btn--zalo:hover,
+.floating-contacts__btn--zalo:focus-visible,
+.floating-contacts__btn--whatsapp:hover,
+.floating-contacts__btn--whatsapp:focus-visible {
+  transform: translateY(-2px) scale(1.05);
+}
+.floating-contacts__btn--hotline:active,
+.floating-contacts__btn--zalo:active,
+.floating-contacts__btn--whatsapp:active {
+  transform: translateY(0) scale(0.94);
+  transition-duration: 100ms;
+}
+/* A soft gold ring "breathes" outward from each button once every 7s,
+   each on its own offset so the three never pulse in sync — a subtle
+   ::after ring, not a glow/flash on the button itself, and paused
+   entirely while the button has hover/keyboard focus so it never
+   competes with the interaction feedback above. */
+.floating-contacts__btn--hotline::after,
+.floating-contacts__btn--zalo::after,
+.floating-contacts__btn--whatsapp::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(231, 210, 154, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  animation: floating-contacts-ring 7s ease-out infinite;
+}
+.floating-contacts__btn--hotline::after { animation-delay: 0s; }
+.floating-contacts__btn--zalo::after { animation-delay: 2.4s; }
+.floating-contacts__btn--whatsapp::after { animation-delay: 4.8s; }
+.floating-contacts__btn--hotline:hover::after,
+.floating-contacts__btn--hotline:focus-visible::after,
+.floating-contacts__btn--zalo:hover::after,
+.floating-contacts__btn--zalo:focus-visible::after,
+.floating-contacts__btn--whatsapp:hover::after,
+.floating-contacts__btn--whatsapp:focus-visible::after {
+  animation-play-state: paused;
+  opacity: 0;
+}
+@keyframes floating-contacts-ring {
+  0%, 80% { transform: scale(1); opacity: 0; }
+  86% { opacity: 0.45; }
+  100% { transform: scale(1.32); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-contacts__btn--hotline::after,
+  .floating-contacts__btn--zalo::after,
+  .floating-contacts__btn--whatsapp::after {
+    animation: none;
+    opacity: 0;
+  }
+}
 .mobile-contact-bar {
   display: none;
 }
@@ -2461,8 +2587,7 @@
   }
   .details__grid,
   .floorplans__viewer,
-  .residential__container,
-  .final-form__container {
+  .residential__container {
     grid-template-columns: 1fr;
   }
   .details__media { position: static; }
@@ -2473,6 +2598,10 @@
      compact corner cluster rather than eating into the content column. */
   .floating-contacts { right: 12px; bottom: 16px; gap: 8px; }
   .amenity-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Balanced rows of equal-width tabs — 4 category tabs as 2x2, 6
+     apartment-type tabs as 2 rows of 3 (see the base rules above). */
+  .amenities__floor-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .floorplans__tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   /* Floor plan image full width above the 2x2 feature-card grid. */
   .floorplan-typical-layout { grid-template-columns: 1fr; gap: 32px; }
   .savills-section__pillars { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
@@ -2507,8 +2636,7 @@
 
   .location__map-frame { aspect-ratio: 4 / 3; }
   .location__panel { grid-template-columns: 1fr; }
-  .location__tablist,
-  .floorplans__tabs {
+  .location__tablist {
     flex-wrap: nowrap;
     overflow-x: auto;
     scroll-snap-type: x proximity;
@@ -2519,37 +2647,23 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  .location__tablist::-webkit-scrollbar,
-  .floorplans__tabs::-webkit-scrollbar {
+  .location__tablist::-webkit-scrollbar {
     display: none;
   }
-  .location__tab,
-  .floorplans__tab {
+  .location__tab {
     flex: 0 0 auto;
     scroll-snap-align: start;
     min-height: 48px;
   }
 
+  /* Amenities (2 + 4 tabs) and apartment types (6 tabs): a clean
+     2-column grid rather than the horizontal-scroll row above — small,
+     stable counts that read better as balanced equal-width rows than
+     as a scroller (see the base/tablet rules for the same groups). */
   .amenities__main-tabs,
-  .amenities__floor-tabs {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    padding-bottom: 4px;
-    margin-inline: -4px;
-    padding-inline: 4px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .amenities__main-tabs::-webkit-scrollbar,
-  .amenities__floor-tabs::-webkit-scrollbar {
-    display: none;
-  }
-  .amenities__main-tab,
-  .amenities__floor-tab {
-    flex: 0 0 auto;
-    scroll-snap-align: start;
-    min-height: 48px;
+  .amenities__floor-tabs,
+  .floorplans__tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   /* Image above, single-column list below; keep clear of the fixed
      mobile contact bar at the very bottom of the viewport. */
@@ -2635,7 +2749,6 @@
 
   .residential__container { grid-template-columns: 1fr; }
 
-  .final-form__container { grid-template-columns: 1fr; }
   .final-form__panel { padding: 28px 22px; }
 
   .floating-contacts { display: none; }

@@ -1518,6 +1518,33 @@
     });
   }
 
+  // Fade-up + one-shot light-sweep the first time the final-form panel
+  // enters the viewport — see .final-form__panel.is-revealed in
+  // css/sections.css. IntersectionObserver unobserves itself right
+  // after the first hit, so this can never re-trigger on repeat scroll
+  // in/out; the no-IntersectionObserver branch reveals immediately
+  // rather than leaving the form permanently invisible.
+  function setupFinalFormReveal() {
+    var panel = document.querySelector(".final-form__panel");
+    if (!panel) return;
+    if (!("IntersectionObserver" in window)) {
+      panel.classList.add("is-revealed");
+      return;
+    }
+    var observer = new IntersectionObserver(
+      function (entries, obs) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            panel.classList.add("is-revealed");
+            obs.disconnect();
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(panel);
+  }
+
   /* -----------------------------------------------------
      10. GLASS MEDIA FRAME — scroll-entrance + pointer parallax
      The static glass chrome renders with plain CSS (see
@@ -1622,6 +1649,7 @@
   setupPolicyResponsiveReflow();
   setupFloatingContacts();
   setupFinalForm();
+  setupFinalFormReveal();
   setupDepthFrames();
   setupTier1CertificateZoom();
 
