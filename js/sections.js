@@ -1425,7 +1425,7 @@
       zalo.removeAttribute("aria-disabled");
       zalo.outerHTML = '<a class="floating-contacts__btn floating-contacts__btn--zalo" id="floating-zalo" ' +
         'href="' + window.projectConfig.zaloUrl + '" target="_blank" rel="noopener noreferrer" aria-label="Liên hệ qua Zalo">' +
-        '<img src="assets/icons/icon-zalo.png" alt="" aria-hidden="true">' +
+        '<span class="floating-contacts__motion"><img src="assets/icons/icon-zalo.png" alt="" aria-hidden="true"></span>' +
         '<span class="floating-contacts__label">Zalo</span></a>';
     }
     if (window.projectConfig.whatsappUrl && whatsapp) {
@@ -1433,7 +1433,7 @@
       whatsapp.removeAttribute("aria-disabled");
       whatsapp.outerHTML = '<a class="floating-contacts__btn floating-contacts__btn--whatsapp" id="floating-whatsapp" ' +
         'href="' + window.projectConfig.whatsappUrl + '" target="_blank" rel="noopener noreferrer" aria-label="Liên hệ qua WhatsApp">' +
-        '<img src="assets/icons/icon-whatsapp.png" alt="" aria-hidden="true">' +
+        '<span class="floating-contacts__motion"><img src="assets/icons/icon-whatsapp.png" alt="" aria-hidden="true"></span>' +
         '<span class="floating-contacts__label">WhatsApp</span></a>';
     }
   }

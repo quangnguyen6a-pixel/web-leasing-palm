@@ -2436,16 +2436,81 @@
   border: 1px solid rgba(231, 210, 154, 0.35);
   color: var(--color-white);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  /* One-shot entrance, staggered 100ms per button (see the nth-child
+     rules below) — fill-mode: backwards only (never "forwards"), so
+     once the animation ends the button reverts to plain, un-animated
+     opacity:1/transform:none and :hover/:active below regain full
+     control. A "forwards" fill would keep the animation's last frame
+     "in effect" indefinitely and silently block :hover from ever
+     changing transform again. */
+  animation: floating-contacts-enter 550ms ease-out backwards;
+}
+.floating-contacts__btn:nth-child(1) { animation-delay: 0ms; }
+.floating-contacts__btn:nth-child(2) { animation-delay: 100ms; }
+.floating-contacts__btn:nth-child(3) { animation-delay: 200ms; }
+.floating-contacts__btn:nth-child(4) { animation-delay: 300ms; }
+@keyframes floating-contacts-enter {
+  from { opacity: 0; transform: translateY(11px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .floating-contacts__btn:hover,
 .floating-contacts__btn:focus-visible {
-  transform: translateY(-2px);
-  border-color: rgba(231, 210, 154, 0.65);
+  transform: scale(1.05) translateX(-3px);
+  border-color: var(--gold-champagne);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.3), 0 0 14px rgba(231, 210, 154, 0.3);
 }
 .floating-contacts__btn:focus-visible {
   outline: 2px solid var(--gold-champagne);
   outline-offset: 3px;
+}
+.floating-contacts__btn:active {
+  transform: scale(0.96);
+  transition-duration: 120ms;
+}
+/* The yellow CTA keeps its own accent for the "brighter border" — a
+   champagne-gold ring reads as an unrelated colour against solid
+   yellow, so it brightens toward the palette's own hover yellow
+   instead, while sharing every other motion rule above. */
+.floating-contacts__btn--register:hover,
+.floating-contacts__btn--register:focus-visible {
+  border-color: var(--savills-yellow-hover);
+}
+/* Gentle idle float — lives on an inner wrapper around the icon only
+   (not the outer button), so it can keep animating independently of
+   :hover/:active above without the two ever fighting for control of
+   the same element's transform (see floating-contacts-idle below).
+   Nested transforms compose visually: the icon quietly bobs while the
+   button itself still scales/shifts normally on hover. */
+.floating-contacts__motion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: floating-contacts-idle 3.6s ease-in-out infinite;
+}
+.floating-contacts__btn:nth-child(1) .floating-contacts__motion { animation-delay: 500ms; }
+.floating-contacts__btn:nth-child(2) .floating-contacts__motion { animation-delay: 600ms; }
+.floating-contacts__btn:nth-child(3) .floating-contacts__motion { animation-delay: 700ms; }
+.floating-contacts__btn:nth-child(4) .floating-contacts__motion { animation-delay: 800ms; }
+.floating-contacts__btn:hover .floating-contacts__motion,
+.floating-contacts__btn:focus-visible .floating-contacts__motion {
+  animation-play-state: paused;
+}
+@keyframes floating-contacts-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2.5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-contacts__btn {
+    animation-name: floating-contacts-fade;
+  }
+  .floating-contacts__motion {
+    animation: none;
+  }
+}
+@keyframes floating-contacts-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .floating-contacts__icon {
   flex: 0 0 auto;
@@ -2502,72 +2567,6 @@
 .floating-contacts__btn[disabled] {
   opacity: 0.45;
   cursor: not-allowed;
-}
-
-/* Motion for the three contact buttons only (phone/Zalo/WhatsApp) —
-   the yellow register CTA above keeps its plain existing hover/lift,
-   deliberately not sharing this treatment so it stays visually
-   distinct as "the" call to action, not "one of four" icon buttons. */
-.floating-contacts__btn--hotline,
-.floating-contacts__btn--zalo,
-.floating-contacts__btn--whatsapp {
-  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
-}
-.floating-contacts__btn--hotline:hover,
-.floating-contacts__btn--hotline:focus-visible,
-.floating-contacts__btn--zalo:hover,
-.floating-contacts__btn--zalo:focus-visible,
-.floating-contacts__btn--whatsapp:hover,
-.floating-contacts__btn--whatsapp:focus-visible {
-  transform: translateY(-2px) scale(1.05);
-}
-.floating-contacts__btn--hotline:active,
-.floating-contacts__btn--zalo:active,
-.floating-contacts__btn--whatsapp:active {
-  transform: translateY(0) scale(0.94);
-  transition-duration: 100ms;
-}
-/* A soft gold ring "breathes" outward from each button once every 7s,
-   each on its own offset so the three never pulse in sync — a subtle
-   ::after ring, not a glow/flash on the button itself, and paused
-   entirely while the button has hover/keyboard focus so it never
-   competes with the interaction feedback above. */
-.floating-contacts__btn--hotline::after,
-.floating-contacts__btn--zalo::after,
-.floating-contacts__btn--whatsapp::after {
-  content: "";
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(231, 210, 154, 0.55);
-  opacity: 0;
-  pointer-events: none;
-  animation: floating-contacts-ring 7s ease-out infinite;
-}
-.floating-contacts__btn--hotline::after { animation-delay: 0s; }
-.floating-contacts__btn--zalo::after { animation-delay: 2.4s; }
-.floating-contacts__btn--whatsapp::after { animation-delay: 4.8s; }
-.floating-contacts__btn--hotline:hover::after,
-.floating-contacts__btn--hotline:focus-visible::after,
-.floating-contacts__btn--zalo:hover::after,
-.floating-contacts__btn--zalo:focus-visible::after,
-.floating-contacts__btn--whatsapp:hover::after,
-.floating-contacts__btn--whatsapp:focus-visible::after {
-  animation-play-state: paused;
-  opacity: 0;
-}
-@keyframes floating-contacts-ring {
-  0%, 80% { transform: scale(1); opacity: 0; }
-  86% { opacity: 0.45; }
-  100% { transform: scale(1.32); opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .floating-contacts__btn--hotline::after,
-  .floating-contacts__btn--zalo::after,
-  .floating-contacts__btn--whatsapp::after {
-    animation: none;
-    opacity: 0;
-  }
 }
 .mobile-contact-bar {
   display: none;
