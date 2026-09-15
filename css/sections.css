@@ -2054,6 +2054,10 @@
   line-height: 1.35;
   color: var(--color-white);
   margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 .press-card__excerpt {
   font-family: var(--font-body-alt);
