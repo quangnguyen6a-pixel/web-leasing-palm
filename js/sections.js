@@ -1331,7 +1331,6 @@
     window.pressArticles.forEach(function (article) {
       var title = lang === "en" ? article.titleEn : article.titleVi;
       var excerpt = lang === "en" ? article.excerptEn : article.excerptVi;
-      var source = lang === "en" ? article.sourceEn : article.sourceVi;
       var cta = lang === "en" ? article.ctaEn : article.ctaVi;
       var imageAlt = lang === "en" ? article.imageAltEn : article.imageAltVi;
 
@@ -1352,11 +1351,6 @@
       handleImgError(img);
       media.appendChild(img);
       card.appendChild(media);
-
-      var publisher = document.createElement("div");
-      publisher.className = "press-card__publisher";
-      publisher.textContent = source;
-      card.appendChild(publisher);
 
       var titleEl = document.createElement("h3");
       titleEl.className = "press-card__title";
