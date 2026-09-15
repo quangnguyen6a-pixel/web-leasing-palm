@@ -713,37 +713,46 @@ window.paymentPlans = [
 
 /* -----------------------------------------------------
    PRESS ARTICLES — Row 12 (D12)
-   One shared, un-translated record per article (a real published
-   headline/publisher isn't re-translated for the EN toggle — only the
-   surrounding UI labels are). The two entries below are the only
-   confirmed source URLs from D12; title/excerpt/date/logo/image were
-   never supplied for either, so they stay empty and render as an
-   honest editable-placeholder label (see renderPressArticles() in
-   js/sections.js) rather than an invented headline or a broken image.
-   Fill in any field here and it appears on the card automatically.
+   Two confirmed Savills sources, each with real VI/EN copy supplied
+   by the client (not translated on the fly — both language versions
+   are given explicitly). See renderPressArticles() in js/sections.js
+   for how these fields become a card.
    ----------------------------------------------------- */
 window.pressArticles = [
   {
-    publisher: "Savills Việt Nam",
-    logo: "assets/savills-logo.png",
-    title: "",
-    excerpt: "",
-    date: "",
+    sourceVi: "SAVILLS BLOG",
+    sourceEn: "SAVILLS BLOG",
+    titleVi: "Palm River trong bức tranh bất động sản ven sông Sài Gòn",
+    titleEn: "Palm River in Saigon’s riverside property landscape",
+    excerptVi: "Tìm hiểu Palm River – phân khu căn hộ cao cấp ven sông thuộc khu đô thị Palm City tại Nam Rạch Chiếc, TP.HCM.",
+    excerptEn: "Discover Palm River, a premium riverside apartment precinct within Palm City in Nam Rach Chiec, Ho Chi Minh City.",
+    ctaVi: "Đọc bài viết",
+    ctaEn: "Read article",
     url: "https://vn.savills.com.vn/blog/article/238470/vietnam-viet/du-an-ven-song-sai-gon.aspx#palm-river",
-    image: ""
+    /* Existing approved riverside render — the only local asset showing
+       the Palm River towers and their riverside setting together. */
+    image: "assets/palm-city-overview-riverside.jpg",
+    imageObjectPosition: "50% 30%",
+    imageAltVi: "Phối cảnh các tòa tháp Palm River bên bờ sông Sài Gòn",
+    imageAltEn: "Rendering of the Palm River towers along the Saigon riverside"
   },
   {
-    publisher: "Savills Việt Nam",
-    logo: "assets/savills-logo.png",
-    title: "",
-    excerpt: "",
-    date: "",
+    sourceVi: "SAVILLS VIỆT NAM",
+    sourceEn: "SAVILLS VIETNAM",
+    titleVi: "Savills Việt Nam trở thành Đối tác Chiến lược Quốc tế của Palm River",
+    titleEn: "Savills Vietnam appointed International Strategic Partner for Palm River",
+    excerptVi: "Savills Việt Nam đồng hành cùng Hương Việt Properties trong vai trò Đối tác Chiến lược Quốc tế của dự án Palm River.",
+    excerptEn: "Savills Vietnam partners with Huong Viet Properties as the International Strategic Partner for Palm River.",
+    ctaVi: "Xem bài đăng",
+    ctaEn: "View post",
     url: "https://www.facebook.com/SavillsVietnam/posts/savills-vi%E1%BB%87t-nam-%C4%91%C6%B0%E1%BB%A3c-b%E1%BB%95-nhi%E1%BB%87m-l%C3%A0m-%C4%91%E1%BB%91i-t%C3%A1c-chi%E1%BA%BFn-l%C6%B0%E1%BB%A3c-qu%E1%BB%91c-t%E1%BA%BF-c%E1%BB%A7a-palm-river-d%E1%BB%B1-/1558683272966044/",
-    /* Matches this article's own subject (Savills appointed
-       international strategic partner for Palm River) — a real photo
-       of the on-stage certificate handover, from the "[Đã lọc] HÌNH
-       ẢNH DỰ ÁN" Drive folder root. See README asset-mapping report. */
-    image: "assets/media/palm-river-savills-partnership-event.jpg"
+    /* Real photo of the on-stage certificate handover, matching this
+       post's own subject (Savills appointed international strategic
+       partner for Palm River). */
+    image: "assets/media/palm-river-savills-partnership-event.jpg",
+    imageObjectPosition: "50% 30%",
+    imageAltVi: "Lễ công bố Savills Việt Nam là Đối tác Chiến lược Quốc tế của Palm River",
+    imageAltEn: "Ceremony announcing Savills Vietnam as Palm River’s International Strategic Partner"
   }
 ];
 

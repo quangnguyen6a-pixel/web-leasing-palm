@@ -1321,10 +1321,7 @@
   /* -----------------------------------------------------
      7b. PRESS ARTICLE GRID (§10)
      Data-driven, shared by VI/EN — window.pressArticles (js/config.js)
-     holds one un-translated record per article (a real published
-     headline/publisher isn't re-translated). Any field not yet
-     confirmed renders an honest editable-placeholder label instead of
-     inventing a headline, publisher or image.
+     holds fully bilingual copy for each confirmed article.
      ----------------------------------------------------- */
   function renderPressArticles(lang) {
     var host = document.getElementById("press-grid");
@@ -1332,75 +1329,48 @@
     host.innerHTML = "";
 
     window.pressArticles.forEach(function (article) {
-      var hasUrl = !!article.url;
-      var card = document.createElement(hasUrl ? "a" : "div");
+      var title = lang === "en" ? article.titleEn : article.titleVi;
+      var excerpt = lang === "en" ? article.excerptEn : article.excerptVi;
+      var source = lang === "en" ? article.sourceEn : article.sourceVi;
+      var cta = lang === "en" ? article.ctaEn : article.ctaVi;
+      var imageAlt = lang === "en" ? article.imageAltEn : article.imageAltVi;
+
+      var card = document.createElement("a");
       card.className = "press-card";
-      if (hasUrl) {
-        card.href = article.url;
-        card.target = "_blank";
-        card.rel = "noopener noreferrer";
-      }
+      card.href = article.url;
+      card.target = "_blank";
+      card.rel = "noopener noreferrer";
 
       var media = document.createElement("div");
-      if (article.image) {
-        media.className = "press-card__media";
-        var img = document.createElement("img");
-        img.src = article.image;
-        img.alt = "";
-        img.loading = "lazy";
-        img.decoding = "async";
-        handleImgError(img);
-        media.appendChild(img);
-      } else {
-        media.className = "press-card__media press-card__media--empty";
-        var mediaNote = document.createElement("span");
-        mediaNote.textContent = lang === "en" ? "Add article image" : "Thêm ảnh bài viết";
-        media.appendChild(mediaNote);
-      }
+      media.className = "press-card__media";
+      var img = document.createElement("img");
+      img.src = article.image;
+      img.alt = imageAlt || "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      if (article.imageObjectPosition) img.style.objectPosition = article.imageObjectPosition;
+      handleImgError(img);
+      media.appendChild(img);
       card.appendChild(media);
 
       var publisher = document.createElement("div");
       publisher.className = "press-card__publisher";
-      if (article.logo) {
-        var logo = document.createElement("img");
-        logo.src = article.logo;
-        logo.alt = article.publisher || "";
-        logo.loading = "lazy";
-        logo.decoding = "async";
-        handleImgError(logo);
-        publisher.appendChild(logo);
-      } else {
-        var publisherName = document.createElement("span");
-        publisherName.textContent = article.publisher ||
-          (lang === "en" ? "Publisher pending" : "Đang cập nhật đơn vị báo chí");
-        publisher.appendChild(publisherName);
-      }
+      publisher.textContent = source;
       card.appendChild(publisher);
 
-      var title = document.createElement("h3");
-      title.className = "press-card__title";
-      title.textContent = article.title || (lang === "en" ? "Article title pending" : "Đang cập nhật tiêu đề bài viết");
-      card.appendChild(title);
+      var titleEl = document.createElement("h3");
+      titleEl.className = "press-card__title";
+      titleEl.textContent = title;
+      card.appendChild(titleEl);
 
-      var excerpt = document.createElement("p");
-      excerpt.className = "press-card__excerpt";
-      excerpt.textContent = article.excerpt || (lang === "en" ? "Article summary pending" : "Đang cập nhật mô tả bài viết");
-      card.appendChild(excerpt);
-
-      if (article.date) {
-        var date = document.createElement("span");
-        date.className = "press-card__date";
-        date.textContent = article.date;
-        card.appendChild(date);
-      }
+      var excerptEl = document.createElement("p");
+      excerptEl.className = "press-card__excerpt";
+      excerptEl.textContent = excerpt;
+      card.appendChild(excerptEl);
 
       var link = document.createElement("span");
       link.className = "press-card__link";
-      link.appendChild(document.createTextNode(
-        hasUrl
-          ? (lang === "en" ? "Read article" : "Đọc bài viết")
-          : (lang === "en" ? "Link pending" : "Đang cập nhật liên kết")
-      ));
+      link.appendChild(document.createTextNode(cta));
       var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       icon.setAttribute("class", "press-card__link-icon");
       icon.setAttribute("viewBox", "0 0 24 24");
@@ -1408,6 +1378,11 @@
       icon.innerHTML = '<path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
       link.appendChild(icon);
       card.appendChild(link);
+
+      var newTabNote = document.createElement("span");
+      newTabNote.className = "sr-only";
+      newTabNote.textContent = lang === "en" ? "(opens in a new tab)" : "(mở trong tab mới)";
+      card.appendChild(newTabNote);
 
       host.appendChild(card);
     });
