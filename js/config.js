@@ -577,6 +577,24 @@ window.savillsAbout = {
    validates every plan sums to 100% (dev-console warning if not) and
    builds the desktop-horizontal / mobile-vertical timeline from this
    one array — no separate breakpoint markup. */
+/* -----------------------------------------------------
+   HANDOVER SPECIFICATIONS — approved pages from "Palm River - Danh
+   mục vật tư bàn giao và thương hiệu" (materials/brand handover
+   checklist), rendered as a carousel between Floor Plans and Payment
+   Policy. Every page supplied in the source folder is included, in
+   its original order; alt text names each page's subject for
+   accessibility rather than repeating a generic "handover image".
+   ----------------------------------------------------- */
+window.handoverImages = [
+  { src: "assets/handover-checklist-01.webp", altVi: "Danh mục vật tư bàn giao – Sàn", altEn: "Handover materials – Flooring" },
+  { src: "assets/handover-checklist-02.webp", altVi: "Danh mục vật tư bàn giao – Tường", altEn: "Handover materials – Walls" },
+  { src: "assets/handover-checklist-03.webp", altVi: "Danh mục vật tư bàn giao – Thiết bị phòng tắm", altEn: "Handover materials – Bathroom fixtures" },
+  { src: "assets/handover-checklist-04.webp", altVi: "Danh mục vật tư bàn giao – Thiết bị bếp", altEn: "Handover materials – Kitchen appliances" },
+  { src: "assets/handover-checklist-05.webp", altVi: "Danh mục vật tư bàn giao – Tủ nội thất (Sảnh, Bếp, Phòng ngủ)", altEn: "Handover materials – Built-in cabinetry (Entrance, Kitchen, Bedroom)" },
+  { src: "assets/handover-checklist-06.webp", altVi: "Danh mục vật tư bàn giao – Tủ nội thất (Tủ gương, Tủ kho)", altEn: "Handover materials – Built-in cabinetry (Mirror cabinet, Storage)" },
+  { src: "assets/handover-checklist-07.webp", altVi: "Danh mục vật tư bàn giao – Điều hòa & Thiết bị điện", altEn: "Handover materials – Air-conditioning & electrical equipment" }
+];
+
 window.paymentPlanMilestoneChips = {
   XNDK: { vi: "XNĐK", en: "Confirmation", fullVi: "Xác nhận đăng ký", fullEn: "Confirmation of Registration" },
   VBTT: { vi: "VBTT", en: "VBTT", fullVi: "Văn bản thỏa thuận", fullEn: "Agreement Document" },

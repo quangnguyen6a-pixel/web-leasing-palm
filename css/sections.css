@@ -92,7 +92,7 @@
 /* Colour rhythm: alternating deep-navy / warm-ivory sections. Each
    tone is a soft two-point radial wash (gold catch-light, faint ivory
    glow) over a diagonal base so neither reads as one flat fill. */
-.details, .amenities, .policy, .savills-section, .final-form, .credibility-section, .why-now {
+.details, .amenities, .policy, .savills-section, .final-form, .credibility-section, .why-now, .handover {
   background:
     radial-gradient(circle at 82% 16%, rgba(196, 147, 56, 0.16), transparent 32%),
     radial-gradient(circle at 8% 78%, rgba(243, 226, 179, 0.08), transparent 30%),
@@ -120,7 +120,7 @@
    breathing room before the footer is intentional, not a boundary
    that's shared with another padded section below it. */
 .details, .location, .amenities, .floorplans, .policy,
-.progress-section, .savills-section, .residential, .credibility-section, .why-now {
+.progress-section, .savills-section, .residential, .credibility-section, .why-now, .handover {
   padding-top: var(--section-space-desktop);
   padding-bottom: var(--space-lg);
   overflow-x: hidden;
@@ -397,6 +397,10 @@
     transform: none !important;
   }
   .glass-media-frame[data-depth-frame] .glass-media-inner img {
+    transform: none !important;
+  }
+  .handover-carousel__slide {
+    transition: opacity 1ms linear !important;
     transform: none !important;
   }
 }
@@ -874,6 +878,128 @@
 .amenity-expand:focus-visible {
   outline: 2px solid var(--gold-champagne);
   outline-offset: 2px;
+}
+
+/* -----------------------------------------------------
+   HANDOVER SPECIFICATIONS CAROUSEL — a standalone section between
+   Floor Plans and Payment Policy. Deliberately keeps its prev/next
+   controls OUTSIDE the image frame (flanking it) rather than
+   overlaid, unlike the amenities carousel above: these slides are
+   dense spec tables whose text runs edge-to-edge, so an overlaid
+   control would sit on top of real content. Crossfade + object-fit:
+   contain reuse the same technique as the amenities carousel and the
+   floor-plan viewer respectively. ----------------------------------*/
+.handover-carousel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 900px;
+  margin: 8px auto 0;
+}
+.handover-carousel__frame {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.handover-carousel__stage {
+  position: relative;
+  aspect-ratio: 2 / 1;
+  background: var(--color-ivory);
+}
+.handover-carousel__stage:focus-visible {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 2px;
+}
+.handover-carousel__slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  opacity: 0;
+  transform: scale(1.01);
+  transition: opacity 420ms ease, transform 420ms ease;
+  pointer-events: none;
+}
+.handover-carousel__slide.is-active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+.handover-carousel__img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  cursor: zoom-in;
+}
+.handover-carousel__nav {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(231, 210, 154, 0.4);
+  background: rgba(0, 28, 61, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 200ms ease, border-color 200ms ease, transform 150ms ease;
+}
+.handover-carousel__nav:hover, .handover-carousel__nav:focus-visible {
+  background: var(--gold-champagne);
+  border-color: var(--gold-champagne);
+  color: var(--color-navy-primary);
+}
+.handover-carousel__nav:active {
+  transform: scale(0.94);
+}
+.handover-carousel__nav:focus-visible {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 2px;
+}
+.handover-carousel__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.handover-carousel__dots {
+  display: flex;
+  gap: 8px;
+}
+.handover-carousel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(248, 242, 230, 0.6);
+  background: rgba(248, 242, 230, 0.25);
+  padding: 0;
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+.handover-carousel__dot.is-active {
+  background: var(--gold-champagne);
+  border-color: var(--gold-champagne);
+  transform: scale(1.2);
+}
+.handover-carousel__dot:focus-visible {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 2px;
+}
+.handover-carousel__counter {
+  font-family: var(--font-body-alt);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: rgba(248, 242, 230, 0.6);
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .handover-carousel { gap: 8px; }
 }
 
 /* Group heading + count badge + the list preview/toggle, sitting
@@ -1410,6 +1536,64 @@
   color: var(--color-white);
   font-size: 30px;
   line-height: 1;
+  min-width: 44px;
+  min-height: 44px;
+}
+.image-zoom-modal__close:focus-visible {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 2px;
+}
+/* Optional gallery nav — hidden by default via [hidden], shown only
+   when openZoomGallery() (js/sections.js) mounts a multi-image set
+   (currently the Handover Specifications carousel). The single-image
+   call sites (floor-plan viewer, Residential certificate) never see
+   these. */
+.image-zoom-modal__nav[hidden],
+.image-zoom-modal__counter[hidden] {
+  display: none;
+}
+.image-zoom-modal__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(231, 210, 154, 0.4);
+  background: rgba(0, 28, 61, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+.image-zoom-modal__nav:hover, .image-zoom-modal__nav:focus-visible {
+  background: var(--gold-champagne);
+  border-color: var(--gold-champagne);
+  color: var(--color-navy-primary);
+}
+.image-zoom-modal__nav:focus-visible {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 2px;
+}
+.image-zoom-modal__nav--prev { left: -56px; }
+.image-zoom-modal__nav--next { right: -56px; }
+.image-zoom-modal__counter {
+  position: absolute;
+  bottom: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--font-body-alt);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: rgba(248, 242, 230, 0.75);
+}
+@media (max-width: 767px) {
+  .image-zoom-modal__nav--prev { left: 4px; }
+  .image-zoom-modal__nav--next { right: 4px; }
 }
 
 /* =========================================================
@@ -1492,6 +1676,43 @@
   line-height: 1.6;
   color: rgba(248, 242, 230, 0.82);
 }
+
+/* Approved "giá vàng ưu đãi" promotional image — sits between the
+   intro sentence and the payment tabs. Reuses .glass-media-frame /
+   .glass-media-inner (see shared component above); only object-fit
+   (contain, not the shared default cover) and sizing are scoped here
+   so the full poster — headline, price and disclaimers — is always
+   visible, never cropped. */
+.policy__promo-frame {
+  max-width: 420px;
+  margin: 0 auto 32px;
+}
+.policy__promo-frame:hover {
+  border-color: rgba(231, 210, 154, 0.42);
+}
+.policy__promo-inner {
+  aspect-ratio: 4 / 5;
+  padding: 10px;
+  background: linear-gradient(160deg, rgba(0, 28, 61, 0.92), rgba(196, 147, 56, 0.16));
+}
+.policy__promo-trigger {
+  all: unset;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  cursor: zoom-in;
+  border-radius: 12px;
+}
+.policy__promo-trigger:focus-visible {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 3px;
+}
+.glass-media-inner.policy__promo-inner img {
+  object-fit: contain;
+  border-radius: 12px;
+}
+.policy__promo-frame.is-broken .policy__promo-trigger { display: none; }
 
 .policy__panel-shell {
   min-height: 200px;

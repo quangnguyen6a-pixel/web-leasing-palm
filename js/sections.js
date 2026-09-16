@@ -880,8 +880,16 @@
     });
   }
 
-  /* Simple image zoom modal, created once and reused. */
+  /* Simple image zoom modal, created once and reused. Also supports an
+     optional gallery mode (openZoomGallery) for the Handover
+     Specifications carousel: prev/next + a slide counter, hidden via
+     [hidden] and unused by every single-image call site (floor-plan
+     viewer, Residential certificate, Offers & Payment promo image). */
   var zoomModal;
+  var zoomGallery = null; // { images: [{src,altVi,altEn}], index }
+  function escapeAttr(str) {
+    return String(str).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  }
   function ensureZoomModal() {
     if (zoomModal) return zoomModal;
     zoomModal = document.createElement("div");
@@ -890,29 +898,233 @@
       '<div class="image-zoom-modal__overlay"></div>' +
       '<div class="image-zoom-modal__figure">' +
       '<button type="button" class="image-zoom-modal__close" aria-label="Đóng">&times;</button>' +
+      '<button type="button" class="image-zoom-modal__nav image-zoom-modal__nav--prev" hidden>' +
+      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 2.5L4 8l6 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+      '<button type="button" class="image-zoom-modal__nav image-zoom-modal__nav--next" hidden>' +
+      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 2.5l6 5.5-6 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
       '<div class="image-zoom-modal__body"></div>' +
+      '<p class="image-zoom-modal__counter" hidden></p>' +
       "</div>";
     document.body.appendChild(zoomModal);
+    var lastFocused = null;
     function close() {
       zoomModal.setAttribute("data-open", "false");
+      zoomGallery = null;
+      document.body.style.overflow = "";
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+    function openCommon() {
+      lastFocused = document.activeElement;
+      document.body.style.overflow = "hidden";
+      zoomModal.setAttribute("data-open", "true");
+      zoomModal.querySelector(".image-zoom-modal__close").focus();
     }
     zoomModal.querySelector(".image-zoom-modal__overlay").addEventListener("click", close);
     zoomModal.querySelector(".image-zoom-modal__close").addEventListener("click", close);
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") close();
+    zoomModal.querySelector(".image-zoom-modal__nav--prev").addEventListener("click", function () {
+      stepZoomGallery(-1);
     });
+    zoomModal.querySelector(".image-zoom-modal__nav--next").addEventListener("click", function () {
+      stepZoomGallery(1);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (zoomModal.getAttribute("data-open") !== "true") return;
+      if (e.key === "Escape") close();
+      if (zoomGallery) {
+        if (e.key === "ArrowLeft") stepZoomGallery(-1);
+        if (e.key === "ArrowRight") stepZoomGallery(1);
+      }
+    });
+    zoomModal.close = close;
+    zoomModal.openCommon = openCommon;
     return zoomModal;
+  }
+  function renderZoomGallerySlide() {
+    var modal = ensureZoomModal();
+    var lang = currentLang();
+    var entry = zoomGallery.images[zoomGallery.index];
+    var alt = lang === "en" ? entry.altEn : entry.altVi;
+    modal.querySelector(".image-zoom-modal__body").innerHTML =
+      '<img src="' + escapeAttr(entry.src) + '" alt="' + escapeAttr(alt) + '">';
+    var counter = modal.querySelector(".image-zoom-modal__counter");
+    counter.hidden = false;
+    var pad2 = function (n) { return n < 10 ? "0" + n : String(n); };
+    counter.textContent = pad2(zoomGallery.index + 1) + " / " + pad2(zoomGallery.images.length);
+    var prevBtn = modal.querySelector(".image-zoom-modal__nav--prev");
+    var nextBtn = modal.querySelector(".image-zoom-modal__nav--next");
+    prevBtn.hidden = false;
+    nextBtn.hidden = false;
+    prevBtn.setAttribute("aria-label", lang === "en" ? "Previous image" : "Ảnh trước");
+    nextBtn.setAttribute("aria-label", lang === "en" ? "Next image" : "Ảnh tiếp theo");
+  }
+  function stepZoomGallery(delta) {
+    if (!zoomGallery) return;
+    zoomGallery.index = (zoomGallery.index + delta + zoomGallery.images.length) % zoomGallery.images.length;
+    renderZoomGallerySlide();
+    if (typeof zoomGallery.onChange === "function") zoomGallery.onChange(zoomGallery.index);
   }
   function openZoomModal(src, label) {
     var modal = ensureZoomModal();
+    zoomGallery = null;
+    modal.querySelector(".image-zoom-modal__nav--prev").hidden = true;
+    modal.querySelector(".image-zoom-modal__nav--next").hidden = true;
+    modal.querySelector(".image-zoom-modal__counter").hidden = true;
     var body = modal.querySelector(".image-zoom-modal__body");
     if (src) {
-      body.innerHTML = '<img src="' + src + '" alt="' + label + '">';
+      body.innerHTML = '<img src="' + escapeAttr(src) + '" alt="' + escapeAttr(label) + '">';
     } else {
       body.innerHTML = '<p style="color:#fff;font-family:var(--font-body-alt);padding:40px;">' +
         (currentLang() === "en" ? "Image being updated" : "Hình ảnh đang được cập nhật") + "</p>";
     }
-    modal.setAttribute("data-open", "true");
+    modal.openCommon();
+  }
+  // Gallery variant used by the Handover Specifications carousel: pass
+  // the full images array (window.handoverImages) and the currently
+  // active index; adds working prev/next + a "01 / 07" counter to the
+  // same shared modal. onChange (optional) lets the caller keep its
+  // own inline carousel in sync when the visitor navigates inside the
+  // lightbox instead of closing it first.
+  function openZoomGallery(images, startIndex, onChange) {
+    ensureZoomModal();
+    zoomGallery = { images: images, index: startIndex || 0, onChange: onChange };
+    renderZoomGallerySlide();
+    zoomModal.openCommon();
+  }
+
+  /* -----------------------------------------------------
+     HANDOVER SPECIFICATIONS CAROUSEL — a fixed image set (no tabs, no
+     language-driven items), so unlike the amenities carousel this only
+     ever mounts its slides once; a language switch just relabels the
+     alt text and aria-labels already on screen. -----------------------*/
+  var handoverCarouselIndex = 0;
+  var handoverCarouselBuilt = false;
+
+  function renderHandoverCarousel(lang) {
+    var stage = document.getElementById("handover-carousel-stage");
+    var dotsHost = document.getElementById("handover-carousel-dots");
+    var counter = document.getElementById("handover-carousel-counter");
+    var expandBtn = document.getElementById("handover-carousel-expand");
+    var images = window.handoverImages || [];
+    if (!stage || !dotsHost || !images.length) return;
+
+    if (handoverCarouselBuilt) {
+      Array.prototype.forEach.call(stage.querySelectorAll(".handover-carousel__img"), function (img, i) {
+        img.alt = lang === "en" ? images[i].altEn : images[i].altVi;
+      });
+      Array.prototype.forEach.call(dotsHost.querySelectorAll(".handover-carousel__dot"), function (dot, i) {
+        dot.setAttribute("aria-label", (lang === "en" ? "Handover specification image " : "Ảnh bàn giao số ") + (i + 1));
+      });
+      updateHandoverCounter(counter);
+      if (expandBtn) {
+        expandBtn.onclick = function () {
+          openZoomGallery(images, handoverCarouselIndex, goToHandoverSlide);
+        };
+      }
+      return;
+    }
+    handoverCarouselBuilt = true;
+
+    stage.innerHTML = "";
+    dotsHost.innerHTML = "";
+
+    images.forEach(function (entry, index) {
+      var slide = document.createElement("div");
+      slide.className = "handover-carousel__slide" + (index === 0 ? " is-active" : "");
+
+      var img = document.createElement("img");
+      img.className = "handover-carousel__img";
+      img.alt = lang === "en" ? entry.altEn : entry.altVi;
+      img.decoding = "async";
+      img.loading = index === 0 ? "eager" : "lazy";
+      img.src = entry.src;
+      handleImgError(img);
+      slide.appendChild(img);
+      stage.appendChild(slide);
+
+      var dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "handover-carousel__dot" + (index === 0 ? " is-active" : "");
+      dot.setAttribute("role", "tab");
+      dot.setAttribute("aria-label", (lang === "en" ? "Handover specification image " : "Ảnh bàn giao số ") + (index + 1));
+      dot.setAttribute("aria-selected", index === 0 ? "true" : "false");
+      dot.addEventListener("click", function () { goToHandoverSlide(index); });
+      dotsHost.appendChild(dot);
+    });
+
+    updateHandoverCounter(counter);
+
+    stage.addEventListener("click", function () {
+      openZoomGallery(images, handoverCarouselIndex, goToHandoverSlide);
+    });
+    if (expandBtn) {
+      expandBtn.onclick = function () {
+        openZoomGallery(images, handoverCarouselIndex, goToHandoverSlide);
+      };
+    }
+
+    setupHandoverCarouselInteraction();
+  }
+
+  function updateHandoverCounter(counter) {
+    if (!counter || !window.handoverImages) return;
+    var pad2 = function (n) { return n < 10 ? "0" + n : String(n); };
+    counter.textContent = pad2(handoverCarouselIndex + 1) + " / " + pad2(window.handoverImages.length);
+  }
+
+  // Also used as the lightbox's onChange callback, so its own prev/next
+  // stays mirrored on the inline carousel underneath it.
+  function goToHandoverSlide(index) {
+    var stage = document.getElementById("handover-carousel-stage");
+    if (!stage || !window.handoverImages) return;
+    var count = window.handoverImages.length;
+    handoverCarouselIndex = (index + count) % count;
+    Array.prototype.forEach.call(stage.querySelectorAll(".handover-carousel__slide"), function (slide, i) {
+      slide.classList.toggle("is-active", i === handoverCarouselIndex);
+    });
+    Array.prototype.forEach.call(
+      document.querySelectorAll("#handover-carousel-dots .handover-carousel__dot"),
+      function (dot, i) {
+        var isActive = i === handoverCarouselIndex;
+        dot.classList.toggle("is-active", isActive);
+        dot.setAttribute("aria-selected", isActive ? "true" : "false");
+      }
+    );
+    updateHandoverCounter(document.getElementById("handover-carousel-counter"));
+  }
+
+  function setupHandoverCarouselInteraction() {
+    var carousel = document.getElementById("handover-carousel");
+    var stage = document.getElementById("handover-carousel-stage");
+    var prevBtn = document.getElementById("handover-carousel-prev");
+    var nextBtn = document.getElementById("handover-carousel-next");
+    if (!carousel || !stage) return;
+
+    if (prevBtn) prevBtn.addEventListener("click", function () { goToHandoverSlide(handoverCarouselIndex - 1); });
+    if (nextBtn) nextBtn.addEventListener("click", function () { goToHandoverSlide(handoverCarouselIndex + 1); });
+
+    stage.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") { e.preventDefault(); goToHandoverSlide(handoverCarouselIndex - 1); }
+      if (e.key === "ArrowRight") { e.preventDefault(); goToHandoverSlide(handoverCarouselIndex + 1); }
+    });
+
+    // Touch swipe (same threshold/technique as the amenities carousel).
+    var startX = 0, deltaX = 0, tracking = false;
+    stage.addEventListener("touchstart", function (e) {
+      tracking = true;
+      startX = e.touches[0].clientX;
+      deltaX = 0;
+    }, { passive: true });
+    stage.addEventListener("touchmove", function (e) {
+      if (!tracking) return;
+      deltaX = e.touches[0].clientX - startX;
+    }, { passive: true });
+    stage.addEventListener("touchend", function () {
+      if (!tracking) return;
+      tracking = false;
+      if (Math.abs(deltaX) > 40) {
+        goToHandoverSlide(handoverCarouselIndex + (deltaX < 0 ? 1 : -1));
+      }
+    });
   }
 
   /* -----------------------------------------------------
@@ -1582,6 +1794,19 @@
     });
   }
 
+  /* -----------------------------------------------------
+     OFFERS & PAYMENT PROMO IMAGE ZOOM — static image (not config-
+     driven), same pattern as setupTier1CertificateZoom() above.
+     ----------------------------------------------------- */
+  function setupPolicyPromoZoom() {
+    var btn = document.getElementById("policy-promo-trigger");
+    var img = btn && btn.querySelector("img");
+    if (!btn || !img) return;
+    btn.addEventListener("click", function () {
+      openZoomModal(img.getAttribute("src"), img.getAttribute("alt"));
+    });
+  }
+
   // Re-chunks the payment timeline's rows (see policyRowSize()) when a
   // resize crosses the 768px/1280px boundaries that change how many
   // milestones fit per row — a plain CSS media query can't do this
@@ -1605,6 +1830,7 @@
     renderLocation(lang);
     renderAmenitySection(lang);
     renderFloorplans(lang);
+    renderHandoverCarousel(lang);
     renderPolicySection(lang);
     renderProgress(lang);
     renderPressArticles(lang);
@@ -1621,6 +1847,7 @@
   setupFinalFormReveal();
   setupDepthFrames();
   setupTier1CertificateZoom();
+  setupPolicyPromoZoom();
 
   document.addEventListener("palmcity:langchange", function (e) {
     renderAll();

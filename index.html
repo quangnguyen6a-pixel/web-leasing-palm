@@ -605,6 +605,47 @@
   </section>
 
   <!-- =========================================================
+       HANDOVER SPECIFICATIONS — image carousel of the approved
+       "Palm River - Danh mục vật tư bàn giao và thương hiệu" pages.
+       Rendered by renderHandoverCarousel() in js/sections.js from
+       window.handoverImages (js/config.js).
+       ========================================================= -->
+  <section class="handover" id="ban-giao" aria-labelledby="handover-title">
+    <div class="section-container handover__container">
+      <header class="section-head">
+        <h2 class="section-title" id="handover-title" data-lang-vi="Danh mục bàn giao" data-lang-en="Handover Specifications">Danh mục bàn giao</h2>
+      </header>
+
+      <div class="handover-carousel" id="handover-carousel">
+        <button type="button" class="handover-carousel__nav handover-carousel__nav--prev" id="handover-carousel-prev"
+                aria-label="Ảnh trước" data-lang-vi-aria="Ảnh trước" data-lang-en-aria="Previous image">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 2.5L4 8l6 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <figure class="glass-media-frame handover-carousel__frame" data-depth-frame>
+          <div class="glass-media-inner handover-carousel__stage" id="handover-carousel-stage"
+               role="group" aria-roledescription="carousel" aria-label="Hình ảnh danh mục bàn giao"
+               data-lang-vi-aria-label="Hình ảnh danh mục bàn giao" data-lang-en-aria-label="Handover specification images"
+               tabindex="0"></div>
+          <button type="button" class="amenity-expand" id="handover-carousel-expand"
+                  aria-label="Mở ảnh lớn" data-lang-vi-aria="Mở ảnh lớn" data-lang-en-aria="Enlarge image"
+                  data-lang-vi="Xem ảnh" data-lang-en="View image">Xem ảnh</button>
+        </figure>
+
+        <button type="button" class="handover-carousel__nav handover-carousel__nav--next" id="handover-carousel-next"
+                aria-label="Ảnh tiếp theo" data-lang-vi-aria="Ảnh tiếp theo" data-lang-en-aria="Next image">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 2.5l6 5.5-6 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <div class="handover-carousel__meta">
+        <div class="handover-carousel__dots" id="handover-carousel-dots" role="tablist" aria-label="Chọn ảnh"></div>
+        <p class="handover-carousel__counter" id="handover-carousel-counter" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
        PAYMENT POLICY
        ========================================================= -->
   <section class="policy" id="chinh-sach" aria-labelledby="policy-title">
@@ -617,6 +658,22 @@
       <p class="policy__intro"
          data-lang-vi="4 phương thức thanh toán linh hoạt với tổng ưu đãi lên đến 15,5% – đăng ký ưu tiên 100 triệu VNĐ có hoàn lại."
          data-lang-en="4 flexible payment options with total incentives of up to 15.5%, plus a refundable VND 100 million priority registration fee.">4 phương thức thanh toán linh hoạt với tổng ưu đãi lên đến 15,5% – đăng ký ưu tiên 100 triệu VNĐ có hoàn lại.</p>
+
+      <!-- Approved "giá vàng ưu đãi" promotional image — introduces the
+           offer before the detailed payment methods below. Tap/click
+           opens the shared image-zoom lightbox (js/sections.js). -->
+      <figure class="glass-media-frame policy__promo-frame" data-depth-frame>
+        <div class="glass-media-inner policy__promo-inner" id="policy-promo-inner">
+          <button type="button" class="policy__promo-trigger" id="policy-promo-trigger"
+                  aria-label="Mở ảnh lớn" data-lang-vi-aria="Mở ảnh lớn" data-lang-en-aria="Enlarge image">
+            <img src="assets/offers-gold-promotion.webp"
+                 alt="Bảng giá và ưu đãi Palm River"
+                 data-lang-vi-alt="Bảng giá và ưu đãi Palm River" data-lang-en-alt="Palm River price and offers"
+                 loading="lazy" decoding="async"
+                 onerror="this.closest('.policy__promo-frame').classList.add('is-broken'); console.warn('Failed to load image:', this.src);">
+          </button>
+        </div>
+      </figure>
 
       <!-- Rendered by renderPolicySection()/renderPolicyPanel() in
            js/sections.js from window.paymentPlans (js/config.js) — do
