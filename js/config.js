@@ -426,8 +426,15 @@ window.amenityTabs = [
    FLOOR PLANS — Row 8 "Mặt bằng & Nhà mẫu" (D8)
    Area and the three approved benefit points per type come straight
    from D8 — nothing summarised, no direction/price/availability/
-   furniture-package details invented. Per-type images were not part
-   of this content update and stay unset (neutral placeholder).
+   furniture-package details invented.
+
+   Per-type images are hotlinked directly from the external Savills
+   Hub asset host (savills-hub.com.vn/residential/palm-river-2/...) per
+   explicit instruction — not downloaded/copied into assets/. Because
+   these files live outside this repo, availability depends on that
+   host staying up; renderFloorplans() in js/sections.js shows a
+   dedicated bilingual error message in the image frame (not a broken-
+   image icon) if any one of them fails to load.
    ----------------------------------------------------- */
 window.floorPlanTypical = {
   headingVi: "Mặt bằng tầng điển hình", headingEn: "Typical floor layout",
@@ -457,7 +464,7 @@ window.floorPlanTypes = [
   {
     id: "studio", vi: "Studio", en: "Studio",
     areaVi: "41,3 m²", areaEn: "41.3 m²",
-    image: "", expectedAsset: "assets/floor-plans/studio.jpg",
+    image: "https://savills-hub.com.vn/residential/palm-river-2/assets/images/studio.jpg",
     benefits: [
       { vi: "Tối ưu không gian: Thiết kế mở xuyên suốt không vách ngăn, tận dụng triệt để từng mét vuông sử dụng.", en: "Space-optimised: Open-plan design with no partitions, making full use of every square metre." },
       { vi: "Mặt tiền kính cực đại: Đón sáng và gió tự nhiên hoàn hảo nhờ dải cửa kính trải dài toàn bộ mặt tiền căn hộ.", en: "Maximum glass frontage: Perfect natural light and airflow thanks to a glass façade spanning the entire unit frontage." },
@@ -467,7 +474,7 @@ window.floorPlanTypes = [
   {
     id: "1pn", vi: "1PN", en: "1BR",
     areaVi: "65,9 m²", areaEn: "65.9 m²",
-    image: "", expectedAsset: "assets/floor-plans/1pn.jpg",
+    image: "https://savills-hub.com.vn/residential/palm-river-2/assets/images/1-pn.jpg",
     benefits: [
       { vi: "Diện tích hiếm có: 65,9m² cho phân khúc 1 phòng ngủ, mang lại không gian sống rộng rãi cho người độc thân và cặp đôi.", en: "Rare floor area: 65.9m² for the 1-bedroom segment, offering spacious living for singles and couples." },
       { vi: "Kính bo cong nghệ thuật: Phòng khách sở hữu hệ kính bo tròn góc tinh tế, mở rộng tầm nhìn Panorama tuyệt mỹ.", en: "Artistic curved glazing: The living room features an elegant curved-corner glass system, opening onto a stunning panoramic view." },
@@ -480,7 +487,7 @@ window.floorPlanTypes = [
     /* Corner variant (84.9 m² net / 75.8 m² gross) — the leading
        figure in this type's area range; the site has no separate slot
        for the 85.9 m² standard variant's own card (see README). */
-    image: "assets/floorplan-2pn-corner.jpg",
+    image: "https://savills-hub.com.vn/residential/palm-river-2/assets/images/2-pn.jpg",
     benefits: [
       { vi: "Tầm nhìn đa diện: 100% là căn góc (gồm 2 căn góc bo tròn kính panorama và 1 căn góc chuẩn).", en: "Multi-angle views: 100% corner units (including 2 curved panorama-glass corner units and 1 standard corner unit)." },
       { vi: "Thiết kế vuông vức: Bố trí công năng thông minh, triệt tiêu hoàn toàn các góc chết.", en: "Squared-off design: A smart functional layout that eliminates all dead corners." },
@@ -490,7 +497,7 @@ window.floorPlanTypes = [
   {
     id: "2pn-dac-biet", vi: "2PN đặc biệt", en: "2BR Deluxe",
     areaVi: "120,2 m²", areaEn: "120.2 m²",
-    image: "", expectedAsset: "assets/floor-plans/2pn-dac-biet.jpg",
+    image: "https://savills-hub.com.vn/residential/palm-river-2/assets/images/2-pn-dac-biet.jpg",
     benefits: [
       { vi: "Phòng khách: Không gian sinh hoạt chung cực lớn kết hợp hệ cửa lùa 6 cánh panorama.", en: "Living room: An extra-large shared living space paired with a 6-panel panoramic sliding-door system." },
       { vi: "Bếp đôi đẳng cấp: Phân tách hoàn toàn khu vực bếp khô và bếp ướt riêng biệt.", en: "Dual premium kitchen: Fully separated dry and wet kitchen areas." },
@@ -500,7 +507,7 @@ window.floorPlanTypes = [
   {
     id: "3pn", vi: "3PN", en: "3BR",
     areaVi: "126,1 m²", areaEn: "126.1 m²",
-    image: "assets/floorplan-3pn.jpg",
+    image: "https://savills-hub.com.vn/residential/palm-river-2/assets/images/3-pn.jpg",
     benefits: [
       { vi: "Master Suite đẳng cấp: Phòng ngủ chính sở hữu tầm nhìn góc rộng, đi kèm hệ thống phòng tắm lớn trang bị bồn tắm thư giãn.", en: "Premium master suite: The master bedroom enjoys a wide corner view, with a large en-suite bathroom fitted with a relaxation bathtub." },
       { vi: "Bếp kín chuyên biệt: Tách biệt hoàn toàn khu vực nấu nướng, ngăn ám mùi hiệu quả – thiết kế “đo ni đóng giày” cho gia đình Việt.", en: "Dedicated enclosed kitchen: A fully separated cooking area for effective odour control — tailor-made for Vietnamese families." },
@@ -510,7 +517,7 @@ window.floorPlanTypes = [
   {
     id: "3pn-dac-biet", vi: "3PN đặc biệt", en: "3BR Deluxe",
     areaVi: "157,0 m²", areaEn: "157.0 m²",
-    image: "", expectedAsset: "assets/floor-plans/3pn-dac-biet.jpg",
+    image: "https://savills-hub.com.vn/residential/palm-river-2/assets/images/3-pn-dac-biet.jpg",
     benefits: [
       { vi: "Kính bo cong Panorama: Phòng Master sở hữu hệ kính bo tròn nghệ thuật, tối đa hóa tầm nhìn ngoạn mục.", en: "Panoramic curved glazing: The master bedroom features an artistic curved-glass system, maximising the spectacular view." },
       { vi: "Tiện nghi thượng lưu: Bố trí 2 phòng tắm lớn kết hợp cùng 1 Powder Room (WC dành riêng cho khách).", en: "Upscale amenities: Two large bathrooms plus one powder room (guest WC)." },

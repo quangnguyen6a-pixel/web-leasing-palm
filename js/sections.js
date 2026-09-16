@@ -771,9 +771,30 @@
 
     // Config field: window.floorPlanTypes[i].image (js/config.js) —
     // empty by default, renders the neutral placeholder note until an
-    // approved plan/show-unit file is supplied per type.
+    // approved plan/show-unit file is supplied per type. These images
+    // are hotlinked from the external Savills Hub host (not copied
+    // into assets/), so a failed request here means that external
+    // host, not this site; the extra error listener below swaps in a
+    // dedicated bilingual message rather than the generic
+    // hidden-broken-image fallback handleImgError() leaves elsewhere.
     renderDepthFrameImage(frameHost, activeType.image, typeLabel, null, "contain");
+    var floorplanImageFailed = false;
+    var floorplanImg = frameHost.querySelector("img");
+    if (floorplanImg) {
+      floorplanImg.addEventListener("error", function () {
+        floorplanImageFailed = true;
+        console.warn("Failed to load floor-plan image:", activeType.image);
+        frameHost.innerHTML = "";
+        var note = document.createElement("p");
+        note.className = "glass-media-note";
+        note.textContent = currentLang() === "en"
+          ? "The floor-plan image could not be loaded."
+          : "Không thể tải hình ảnh mặt bằng.";
+        frameHost.appendChild(note);
+      });
+    }
     frameHost.onclick = function () {
+      if (floorplanImageFailed) return;
       openZoomModal(activeType.image || null, typeLabel);
     };
 
