@@ -855,19 +855,62 @@
     });
   }
 
+  var activeTypicalTowerIndex = 0;
+
   function renderFloorplanTypicalMedia(lang) {
+    var tabsHost = document.getElementById("floorplan-typical-towers");
     var wrap = document.getElementById("floorplan-typical-image-wrap");
     var zoomBtn = document.getElementById("floorplan-typical-zoom");
     if (!wrap || !window.floorPlanTypical) return;
-    var label = lang === "en" ? window.floorPlanTypical.headingEn : window.floorPlanTypical.headingVi;
+    var towers = window.floorPlanTypical.towers || [];
+
+    if (tabsHost) {
+      tabsHost.innerHTML = "";
+      towers.forEach(function (tower, index) {
+        var isActive = index === activeTypicalTowerIndex;
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "glass-tab glass-tab--light floorplan-typical-towers__tab" + (isActive ? " is-active" : "");
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-selected", isActive ? "true" : "false");
+        btn.textContent = lang === "en" ? tower.labelEn : tower.labelVi;
+        btn.addEventListener("click", function () {
+          activeTypicalTowerIndex = index;
+          renderFloorplanTypicalMedia(currentLang());
+        });
+        tabsHost.appendChild(btn);
+      });
+    }
+
+    var activeTower = towers[activeTypicalTowerIndex];
+    var label = activeTower
+      ? (lang === "en" ? activeTower.altEn : activeTower.altVi)
+      : (lang === "en" ? window.floorPlanTypical.headingEn : window.floorPlanTypical.headingVi);
+
     wrap.innerHTML = "";
-    if (window.floorPlanTypical.image) {
+    var typicalImageFailed = false;
+    if (activeTower && activeTower.image) {
       var img = document.createElement("img");
-      img.src = window.floorPlanTypical.image;
+      img.src = activeTower.image;
       img.alt = label;
       img.loading = "lazy";
       img.decoding = "async";
-      handleImgError(img);
+      img.style.objectFit = "contain";
+      // Hotlinked from the external Savills Hub host (not copied into
+      // assets/), so a failed request means that host, not this site —
+      // shows a dedicated bilingual message rather than a broken-image
+      // icon, same pattern as the per-type floor-plan images above.
+      img.addEventListener("error", function () {
+        typicalImageFailed = true;
+        console.warn("Failed to load floor-plan image:", activeTower.image);
+        wrap.innerHTML = "";
+        var note = document.createElement("p");
+        note.className = "glass-media-note";
+        note.textContent = currentLang() === "en"
+          ? "The floor-plan image could not be loaded."
+          : "Không thể tải hình ảnh mặt bằng.";
+        wrap.appendChild(note);
+      });
       wrap.appendChild(img);
     } else {
       var note = document.createElement("p");
@@ -877,7 +920,8 @@
     }
     if (zoomBtn) {
       zoomBtn.onclick = function () {
-        openZoomModal(window.floorPlanTypical.image || null, label);
+        if (typicalImageFailed) return;
+        openZoomModal((activeTower && activeTower.image) || null, label);
       };
     }
   }
@@ -1313,11 +1357,13 @@
     var wrap = document.createElement("div");
     wrap.className = "payment-plan payment-plan--promo";
 
-    var frame = document.createElement("figure");
-    frame.className = "glass-media-frame policy__promo-frame";
-
-    var inner = document.createElement("div");
-    inner.className = "glass-media-inner policy__promo-inner";
+    // Single image-stage element — no nested glass-media-frame /
+    // glass-media-inner pair here, which used to stack two borders and
+    // two border-radii around one another. This is the only frame
+    // between the shared .policy__panel-shell (outer content panel)
+    // and the image itself.
+    var stage = document.createElement("figure");
+    stage.className = "policy__promo-frame";
 
     var trigger = document.createElement("button");
     trigger.type = "button";
@@ -1331,23 +1377,22 @@
     img.loading = "lazy";
     img.decoding = "async";
     img.addEventListener("error", function () {
-      frame.classList.add("is-broken");
+      stage.classList.add("is-broken");
       console.warn("Failed to load image:", img.src);
     });
     trigger.appendChild(img);
     trigger.addEventListener("click", function () {
       openZoomModal(img.getAttribute("src"), img.getAttribute("alt"));
     });
-    inner.appendChild(trigger);
+    stage.appendChild(trigger);
 
     var pill = document.createElement("span");
-    pill.className = "amenity-expand";
+    pill.className = "amenity-expand policy__promo-view";
     pill.setAttribute("aria-hidden", "true");
     pill.textContent = lang === "en" ? "View image" : "Xem ảnh";
-    inner.appendChild(pill);
+    stage.appendChild(pill);
 
-    frame.appendChild(inner);
-    wrap.appendChild(frame);
+    wrap.appendChild(stage);
     panel.appendChild(wrap);
   }
 

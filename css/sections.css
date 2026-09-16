@@ -1309,6 +1309,18 @@
   font-size: 13px;
   text-align: center;
 }
+.floorplan-typical-towers {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.floorplan-typical-towers__tab {
+  /* Colour/state/focus come from .glass-tab — this only sets shape. */
+  border-radius: 13px;
+  padding: 9px 22px;
+  font-size: 13px;
+}
 .floorplans__viewer {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
@@ -1756,17 +1768,28 @@
    payment panel only when the 5th "Ưu đãi/Promotions" tab is active
    (see renderPolicyPromoPanel() in js/sections.js, which mounts this
    exact markup fresh on each selection; nothing else in
-   window.paymentPlans uses it). Reuses .glass-media-frame /
-   .glass-media-inner (see shared component above); only object-fit
-   (contain, not the shared default cover) and sizing are scoped here
-   so the full poster — headline, price and disclaimers — is always
-   visible, never cropped. */
+   window.paymentPlans uses it).
+
+   One frame only, scoped strictly to this panel: .policy__panel-shell
+   (shared by every payment tab) is the outer content panel; this is
+   the single inner image stage — one champagne-gold border, one
+   radius, one restrained shadow, no nested glass-media-frame /
+   glass-media-inner pair stacking a second border behind it. Height
+   is not fixed — width:100%/height:auto + object-fit:contain lets the
+   panel size to the image naturally. */
 .policy__promo-frame {
+  position: relative;
   width: 100%;
-  margin: 0 auto 32px;
+  margin: 0 auto;
+  padding: 16px;
+  border: 1px solid rgba(231, 210, 154, 0.32);
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(0, 28, 61, 0.92), rgba(196, 147, 56, 0.14));
+  box-shadow: 0 22px 50px -28px rgba(0, 10, 26, 0.6);
+  transition: border-color 300ms ease;
 }
 @media (min-width: 768px) and (max-width: 1023px) {
-  .policy__promo-frame { width: 85%; max-width: none; }
+  .policy__promo-frame { padding: 12px; }
 }
 @media (min-width: 1024px) {
   .policy__promo-frame { width: 74%; max-width: 900px; }
@@ -1774,35 +1797,28 @@
 .policy__promo-frame:hover {
   border-color: rgba(231, 210, 154, 0.5);
 }
-@media (prefers-reduced-motion: reduce) {
-  .policy__promo-frame:hover {
-    transform: none;
-  }
-}
-.policy__promo-inner {
-  aspect-ratio: 4 / 5;
-  padding: 10px;
-  background: linear-gradient(160deg, rgba(0, 28, 61, 0.92), rgba(196, 147, 56, 0.16));
-}
-.policy__promo-inner .amenity-expand {
-  pointer-events: none;
-}
 .policy__promo-trigger {
   all: unset;
   display: block;
   box-sizing: border-box;
   width: 100%;
-  height: 100%;
   cursor: zoom-in;
   border-radius: 12px;
+  overflow: hidden;
 }
 .policy__promo-trigger:focus-visible {
   outline: 2px solid var(--gold-champagne);
   outline-offset: 3px;
 }
-.glass-media-inner.policy__promo-inner img {
+.policy__promo-trigger img {
+  display: block;
+  width: 100%;
+  height: auto;
   object-fit: contain;
   border-radius: 12px;
+}
+.policy__promo-view {
+  pointer-events: none;
 }
 .policy__promo-frame.is-broken .policy__promo-trigger { display: none; }
 
@@ -2300,11 +2316,11 @@
 .press-section-header {
   margin-bottom: 28px;
 }
+/* Typography now comes from the shared .section-title class (added
+   alongside .press-section-title in the HTML) so this heading matches
+   "Ưu đãi & Thanh toán" and every other primary section heading. */
 .press-section-title {
-  font-family: var(--font-heading-alt);
-  font-weight: 400;
-  font-size: clamp(22px, 2.2vw, 28px);
-  color: var(--color-navy-primary);
+  margin-bottom: 0;
 }
 .press-grid {
   display: grid;

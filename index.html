@@ -595,11 +595,13 @@
         <h3 class="floorplans__typical-heading" data-lang-vi="Mặt bằng tầng điển hình" data-lang-en="Typical floor layout">Mặt bằng tầng điển hình</h3>
 
         <div class="floorplan-typical-layout">
-          <!-- Expected asset: assets/floor-plans/typical-floor.jpg (approved
-               typical-floor plan drawing). Renders automatically once
-               window.floorPlanTypical.image is set in js/config.js.
-               Uses the shared .glass-media-frame component (see
-               css/sections.css). -->
+          <!-- Rendered by renderFloorplanTypicalMedia() in
+               js/sections.js from window.floorPlanTypical.towers
+               (js/config.js) — hotlinked Tower 3 / Tower 4 images with
+               a compact two-option switcher reusing the .glass-tab
+               style. Uses the shared .glass-media-frame component
+               (see css/sections.css). -->
+          <div class="floorplan-typical-towers" id="floorplan-typical-towers" role="tablist" aria-label="Tháp"></div>
           <figure class="glass-media-frame" data-depth-frame>
             <div class="glass-media-inner floorplan-image-wrap" id="floorplan-typical-image-wrap">
               <p class="glass-media-note" data-lang-vi="Thêm ảnh mặt bằng tại đây" data-lang-en="Add the floor plan image here">Thêm ảnh mặt bằng tại đây</p>
@@ -717,7 +719,7 @@
            confirmed Savills sources with bilingual copy. -->
       <section class="press-section" aria-labelledby="press-section-title">
         <div class="press-section-header">
-          <h2 class="press-section-title" id="press-section-title"
+          <h2 class="section-title press-section-title" id="press-section-title"
               data-lang-vi="Tin tức và truyền thông" data-lang-en="News and media">Tin tức và truyền thông</h2>
         </div>
         <div class="press-grid" id="press-grid"></div>

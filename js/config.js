@@ -433,12 +433,26 @@ window.amenityTabs = [
    ----------------------------------------------------- */
 window.floorPlanTypical = {
   headingVi: "Mặt bằng tầng điển hình", headingEn: "Typical floor layout",
-  /* Approved Tower 3 typical-floor drawing, from the "[Đã lọc] HÌNH
-     ẢNH DỰ ÁN" Drive folder → 2. LAYOUT CĂN HỘ. Matches the site's
-     navy/gold identity (unlike the alternate Vietnamese-labelled
-     version in the same folder, which carries a different green
-     brand skin) — see README for the asset-mapping report. */
-  image: "assets/floorplan-tower3-typical.jpg",
+  /* Hotlinked directly from the external Savills Hub asset host per
+     explicit instruction — not downloaded/copied into assets/. One
+     entry per tower; renderFloorplanTypicalMedia() in js/sections.js
+     switches between them via a small tab pair and shows a dedicated
+     bilingual error message (not a broken-image icon) if either URL
+     fails to load. */
+  towers: [
+    {
+      id: "thap3", labelVi: "Tháp 3", labelEn: "Tower 3",
+      image: "https://savills-hub.com.vn/residential/palm-river-2/assets/images/mat-bang-tang-thap-3.jpg",
+      altVi: "Mặt bằng tầng điển hình tháp 3 Palm River",
+      altEn: "Typical floor plan of Palm River Tower 3"
+    },
+    {
+      id: "thap4", labelVi: "Tháp 4", labelEn: "Tower 4",
+      image: "https://savills-hub.com.vn/residential/palm-river-2/assets/images/mat-bang-tang-thap-4.jpg",
+      altVi: "Mặt bằng tầng điển hình tháp 4 Palm River",
+      altEn: "Typical floor plan of Palm River Tower 4"
+    }
+  ],
   points: [
     { titleVi: "Mật độ siêu riêng tư", titleEn: "Ultra-private density",
       textVi: "Chỉ 6 căn/tầng. Gần như 100% là căn góc (2 căn đơn lập tuyệt đối, 4 căn chỉ chung 1 vách tường).",
