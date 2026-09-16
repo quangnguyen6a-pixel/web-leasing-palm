@@ -58,20 +58,15 @@ window.projectConfig = {
    riverside rendering is kept in this slot instead.
    ----------------------------------------------------- */
 window.projectDetails = [
-  { vi: "Vị trí", en: "Location", valueVi: "Khu đô thị Palm City, mặt tiền đường Song Hành, khu Nam Rạch Chiếc, phường Bình Trưng, TP.HCM", valueEn: "Palm City urban area, fronting Song Hanh Road, Nam Rach Chiec, Binh Trung Ward, Ho Chi Minh City", confirmed: true },
-  { vi: "Chủ đầu tư", en: "Investor", valueVi: "Công ty TNHH Nam Rạch Chiếc", valueEn: "Nam Rach Chiec Co., Ltd.", confirmed: true },
-  { vi: "Đơn vị phát triển", en: "Developer", valueVi: "Hướng Việt Properties", valueEn: "Huong Viet Properties", confirmed: true },
-  { vi: "Đại lý phân phối F1", en: "F1 distribution agent", valueVi: "Savills Việt Nam", valueEn: "Savills Vietnam", confirmed: true },
-  { vi: "Mật độ xây dựng", en: "Building density", valueVi: "Chỉ 25%", valueEn: "Only 25%", confirmed: true },
-  { vi: "Quy mô căn hộ", en: "Number of units", valueVi: "620 căn tại 4 tháp", valueEn: "620 units across 4 towers", confirmed: true },
-  { vi: "Loại hình sản phẩm", en: "Product types", valueVi: "Studio, 1PN, 2PN, 2PN đặc biệt, 3PN, 3PN đặc biệt, Duplex, Penthouse và Shophouse", valueEn: "Studio, 1BR, 2BR, 2BR Deluxe, 3BR, 3BR Deluxe, Duplex, Penthouse and Shophouse", confirmed: true },
-  { vi: "Diện tích thông thủy", en: "Carpet area", valueVi: "41,3–157 m²", valueEn: "41.3–157 m²", confirmed: true },
-  { vi: "Thang máy", en: "Lifts", valueVi: "5 thang/sàn", valueEn: "5 lifts per floor", confirmed: true },
-  { vi: "Booking giữ chỗ", en: "Booking reservation", valueVi: "Từ 100 triệu VNĐ", valueEn: "From VND 100 million", confirmed: true },
-  { vi: "Chiết khấu", en: "Discount", valueVi: "Đến 16,5%", valueEn: "Up to 16.5%", confirmed: true },
-  { vi: "Khởi công", en: "Groundbreaking", valueVi: "16/06/2026", valueEn: "16 June 2026", confirmed: true },
-  { vi: "Thời gian bàn giao", en: "Handover timeline", valueVi: "Cuối năm 2028", valueEn: "Late 2028", confirmed: true },
-  { vi: "Tiêu chuẩn bàn giao", en: "Handover standard", valueVi: "Nội thất hoàn thiện", valueEn: "Fully furnished", confirmed: true }
+  { vi: "Địa chỉ", en: "Address", valueVi: "Khu đô thị Palm City, đường Song Hành, Nam Rạch Chiếc, phường Bình Trưng, TP.Hồ Chí Minh (phường An Phú, Quận 2 cũ)", valueEn: "Palm City Urban Area, Song Hanh Road, Nam Rach Chiec, Binh Trung Ward, Ho Chi Minh City (formerly An Phu Ward, District 2)", confirmed: true },
+  { vi: "Chủ đầu tư", en: "Developer", valueVi: "Hướng Việt Properties, Công ty TNHH Nam Rạch Chiếc", valueEn: "Hướng Việt Properties, Nam Rạch Chiếc Co., Ltd.", confirmed: true },
+  { vi: "Mật độ xây dựng", en: "Construction density", valueVi: "Khoảng 26%", valueEn: "Approximately 26%", confirmed: true },
+  { vi: "Quy mô", en: "Scale", valueVi: "1,9 ha • 4 tòa • 36 tầng • Khoảng 620 căn hộ", valueEn: "1.9 ha • 4 towers • 36 storeys • Approximately 620 apartments", confirmed: true },
+  { vi: "Sản phẩm", en: "Property types", valueVi: "Studio, 1–2–3 PN, Duplex, Penthouse, Shophouse", valueEn: "Studios, 1-, 2- and 3-bedroom apartments, duplexes, penthouses and shophouses", confirmed: true },
+  { vi: "Giá bán trung bình", en: "Average selling price", valueVi: "Từ 168 triệu đồng/m² (diện tích thông thủy)", valueEn: "From VND 168 million/m² of net saleable area", confirmed: true },
+  { vi: "Dự kiến bàn giao", en: "Expected handover", valueVi: "Quý I/2029", valueEn: "Q1 2029", confirmed: true },
+  { vi: "Tiêu chuẩn bàn giao", en: "Handover standard", valueVi: "Hoàn thiện đầy đủ khu vực bếp và phòng tắm", valueEn: "Fully finished kitchen and bathroom areas", confirmed: true },
+  { vi: "Hình thức sở hữu", en: "Ownership tenure", valueVi: "Sở hữu lâu dài đối với người Việt Nam; 50 năm đối với người nước ngoài", valueEn: "Freehold for Vietnamese nationals; 50-year ownership term for foreign buyers", confirmed: true }
 ];
 
 /* -----------------------------------------------------
@@ -725,6 +720,20 @@ window.paymentPlans = [
       { label: "Principal grace period", value: "36–60 months" },
       { label: "Bank supports", value: "75%", note: "of payment" }
     ]
+  },
+  /* 5th selectable block — not a payment plan, so it carries no
+     milestones/benefits/registrationAmount; renderPolicyPanel() in
+     js/sections.js checks isPromo and mounts the approved "giá vàng
+     ưu đãi" image (previously a standalone figure above the tabs)
+     instead of a timeline. validatePaymentPlans() also skips it. */
+  {
+    id: "promotions",
+    number: "05",
+    labelVi: "Ưu đãi", labelEn: "Promotions",
+    isPromo: true,
+    promoImage: "assets/offers-gold-promotion.webp",
+    promoAltVi: "Bảng giá và ưu đãi Palm River",
+    promoAltEn: "Palm River price and offers"
   }
 ];
 

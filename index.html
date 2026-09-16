@@ -19,7 +19,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Serif+Display:wght@400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
 
-<!-- Preload hero image for LCP (see /assets — replace with approved final asset) -->
+<!-- Preload the hotlinked hero image for LCP; the local file stays
+     preloaded too since it's the onerror fallback the hero swaps to
+     immediately if the external host fails, and it's also reused by
+     the mid-page CTA section further down. -->
+<link rel="preload" as="image" href="https://savills-hub.com.vn/residential/palm-river-2/assets/images/tong-the-palm-river.jpg">
 <link rel="preload" as="image" href="assets/palm-city-hero.webp">
 
 <link rel="icon" type="image/png" href="assets/savills-logo.png">
@@ -145,9 +149,19 @@
     </svg>
 
     <div class="hero__media">
-      <img src="assets/palm-city-hero.webp" alt="Phối cảnh dự án Palm River" class="hero__image"
+      <!-- Hotlinked directly from the external Savills Hub host per
+           explicit instruction — not downloaded/copied into assets/.
+           On failure, falls back to the previous local hero image
+           (assets/palm-city-hero.webp, still shipped in this repo)
+           rather than a broken-image icon or the dev placeholder
+           below, and logs the failed URL/error for diagnosis. -->
+      <img src="https://savills-hub.com.vn/residential/palm-river-2/assets/images/tong-the-palm-river.jpg"
+           alt="Phối cảnh tổng thể dự án Palm River"
+           data-lang-vi-alt="Phối cảnh tổng thể dự án Palm River" data-lang-en-alt="Overall perspective of the Palm River development"
+           class="hero__image"
+           style="object-position: 62% 42%;"
            fetchpriority="high" decoding="async"
-           onerror="this.closest('.hero__media').classList.add('hero__media--fallback')">
+           onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';console.error('Hero image failed to load:', this.src, event);this.src='assets/palm-city-hero.webp';}else{this.closest('.hero__media').classList.add('hero__media--fallback');}">
       <div class="hero__image-fallback" aria-hidden="true">[APPROVED_HERO_IMAGE]</div>
       <div class="hero__overlay" aria-hidden="true"></div>
       <div class="hero__spotlight" aria-hidden="true"></div>
@@ -601,46 +615,49 @@
           <div class="floorplan-features" id="floorplans-typical-points"></div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- =========================================================
-       HANDOVER SPECIFICATIONS — image carousel of the approved
-       "Palm River - Danh mục vật tư bàn giao và thương hiệu" pages.
-       Rendered by renderHandoverCarousel() in js/sections.js from
-       window.handoverImages (js/config.js).
-       ========================================================= -->
-  <section class="handover" id="ban-giao" aria-labelledby="handover-title">
-    <div class="section-container handover__container">
-      <header class="section-head">
-        <h2 class="section-title" id="handover-title" data-lang-vi="Danh mục bàn giao" data-lang-en="Handover Specifications">Danh mục bàn giao</h2>
-      </header>
+      <!-- =====================================================
+           HANDOVER SPECIFICATIONS — moved inside Floor Plans and
+           Living Spaces (was previously its own standalone section)
+           so it reads as this section's closing subsection rather
+           than a second full-page heading. Same divider/heading
+           treatment as "Mặt bằng tầng điển hình" above (see
+           .floorplans__typical / .floorplans__typical-heading), just
+           with a tighter top gap — see .floorplans__handover in
+           css/sections.css. Carousel markup/behaviour (arrows, dots,
+           counter, swipe, keyboard, lightbox) is unchanged; still
+           rendered by renderHandoverCarousel() in js/sections.js from
+           window.handoverImages (js/config.js).
+           ===================================================== -->
+      <div class="floorplans__typical floorplans__handover" id="ban-giao">
+        <h3 class="floorplans__typical-heading" data-lang-vi="Danh mục bàn giao" data-lang-en="Handover Specifications">Danh mục bàn giao</h3>
 
-      <div class="handover-carousel" id="handover-carousel">
-        <button type="button" class="handover-carousel__nav handover-carousel__nav--prev" id="handover-carousel-prev"
-                aria-label="Ảnh trước" data-lang-vi-aria="Ảnh trước" data-lang-en-aria="Previous image">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 2.5L4 8l6 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <div class="handover-carousel" id="handover-carousel">
+          <button type="button" class="handover-carousel__nav handover-carousel__nav--prev" id="handover-carousel-prev"
+                  aria-label="Ảnh trước" data-lang-vi-aria="Ảnh trước" data-lang-en-aria="Previous image">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 2.5L4 8l6 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
 
-        <figure class="glass-media-frame handover-carousel__frame" data-depth-frame>
-          <div class="glass-media-inner handover-carousel__stage" id="handover-carousel-stage"
-               role="group" aria-roledescription="carousel" aria-label="Hình ảnh danh mục bàn giao"
-               data-lang-vi-aria-label="Hình ảnh danh mục bàn giao" data-lang-en-aria-label="Handover specification images"
-               tabindex="0"></div>
-          <button type="button" class="amenity-expand" id="handover-carousel-expand"
-                  aria-label="Mở ảnh lớn" data-lang-vi-aria="Mở ảnh lớn" data-lang-en-aria="Enlarge image"
-                  data-lang-vi="Xem ảnh" data-lang-en="View image">Xem ảnh</button>
-        </figure>
+          <figure class="glass-media-frame glass-media-frame--light handover-carousel__frame" data-depth-frame>
+            <div class="glass-media-inner handover-carousel__stage" id="handover-carousel-stage"
+                 role="group" aria-roledescription="carousel" aria-label="Hình ảnh danh mục bàn giao"
+                 data-lang-vi-aria-label="Hình ảnh danh mục bàn giao" data-lang-en-aria-label="Handover specification images"
+                 tabindex="0"></div>
+            <button type="button" class="amenity-expand" id="handover-carousel-expand"
+                    aria-label="Mở ảnh lớn" data-lang-vi-aria="Mở ảnh lớn" data-lang-en-aria="Enlarge image"
+                    data-lang-vi="Xem ảnh" data-lang-en="View image">Xem ảnh</button>
+          </figure>
 
-        <button type="button" class="handover-carousel__nav handover-carousel__nav--next" id="handover-carousel-next"
-                aria-label="Ảnh tiếp theo" data-lang-vi-aria="Ảnh tiếp theo" data-lang-en-aria="Next image">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 2.5l6 5.5-6 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
+          <button type="button" class="handover-carousel__nav handover-carousel__nav--next" id="handover-carousel-next"
+                  aria-label="Ảnh tiếp theo" data-lang-vi-aria="Ảnh tiếp theo" data-lang-en-aria="Next image">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 2.5l6 5.5-6 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
 
-      <div class="handover-carousel__meta">
-        <div class="handover-carousel__dots" id="handover-carousel-dots" role="tablist" aria-label="Chọn ảnh"></div>
-        <p class="handover-carousel__counter" id="handover-carousel-counter" aria-live="polite"></p>
+        <div class="handover-carousel__meta">
+          <div class="handover-carousel__dots" id="handover-carousel-dots" role="tablist" aria-label="Chọn ảnh"></div>
+          <p class="handover-carousel__counter" id="handover-carousel-counter" aria-live="polite"></p>
+        </div>
       </div>
     </div>
   </section>
@@ -658,28 +675,6 @@
       <p class="policy__intro"
          data-lang-vi="4 phương thức thanh toán linh hoạt với tổng ưu đãi lên đến 15,5% – đăng ký ưu tiên 100 triệu VNĐ có hoàn lại."
          data-lang-en="4 flexible payment options with total incentives of up to 15.5%, plus a refundable VND 100 million priority registration fee.">4 phương thức thanh toán linh hoạt với tổng ưu đãi lên đến 15,5% – đăng ký ưu tiên 100 triệu VNĐ có hoàn lại.</p>
-
-      <!-- Approved "giá vàng ưu đãi" promotional image — introduces the
-           offer before the detailed payment methods below. Tap/click
-           opens the shared image-zoom lightbox (js/sections.js). -->
-      <figure class="glass-media-frame policy__promo-frame" data-depth-frame>
-        <div class="glass-media-inner policy__promo-inner" id="policy-promo-inner">
-          <button type="button" class="policy__promo-trigger" id="policy-promo-trigger"
-                  aria-label="Mở ảnh lớn" data-lang-vi-aria="Mở ảnh lớn" data-lang-en-aria="Enlarge image">
-            <img src="assets/offers-gold-promotion.webp"
-                 alt="Bảng giá và ưu đãi Palm River"
-                 data-lang-vi-alt="Bảng giá và ưu đãi Palm River" data-lang-en-alt="Palm River price and offers"
-                 loading="lazy" decoding="async"
-                 onerror="this.closest('.policy__promo-frame').classList.add('is-broken'); console.warn('Failed to load image:', this.src);">
-          </button>
-          <!-- Purely visual label — the trigger button above already
-               covers the whole frame and carries the real aria-label,
-               so this stays out of the accessibility tree and lets
-               clicks pass through to it (see .amenity-expand reuse in
-               css/sections.css). -->
-          <span class="amenity-expand" aria-hidden="true" data-lang-vi="Xem ảnh" data-lang-en="View image">Xem ảnh</span>
-        </div>
-      </figure>
 
       <!-- Rendered by renderPolicySection()/renderPolicyPanel() in
            js/sections.js from window.paymentPlans (js/config.js) — do

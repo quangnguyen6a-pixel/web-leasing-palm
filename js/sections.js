@@ -1228,6 +1228,7 @@
   function validatePaymentPlans() {
     if (!window.paymentPlans) return;
     window.paymentPlans.forEach(function (plan) {
+      if (plan.isPromo) return;
       if (plan.id === "mortgage") {
         var customer = 0, bank = 0;
         plan.milestones.forEach(function (m) {
@@ -1302,11 +1303,64 @@
     rows.forEach(function (row) { observer.observe(row); });
   }
 
+  // Mounts the approved "giá vàng ưu đãi" promo image fresh each time
+  // the 5th "Ưu đãi/Promotions" tab is selected — same markup/classes
+  // as the image previously sat as a standalone figure above the
+  // tabs (css/sections.css .policy__promo-*), just built here instead
+  // of once in static HTML, and wired straight to the shared zoom
+  // modal (js/sections.js openZoomModal) rather than a fixed element id.
+  function renderPolicyPromoPanel(panel, plan, lang) {
+    var wrap = document.createElement("div");
+    wrap.className = "payment-plan payment-plan--promo";
+
+    var frame = document.createElement("figure");
+    frame.className = "glass-media-frame policy__promo-frame";
+
+    var inner = document.createElement("div");
+    inner.className = "glass-media-inner policy__promo-inner";
+
+    var trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "policy__promo-trigger";
+    var alt = lang === "en" ? plan.promoAltEn : plan.promoAltVi;
+    trigger.setAttribute("aria-label", lang === "en" ? "Enlarge image" : "Mở ảnh lớn");
+
+    var img = document.createElement("img");
+    img.src = plan.promoImage;
+    img.alt = alt;
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.addEventListener("error", function () {
+      frame.classList.add("is-broken");
+      console.warn("Failed to load image:", img.src);
+    });
+    trigger.appendChild(img);
+    trigger.addEventListener("click", function () {
+      openZoomModal(img.getAttribute("src"), img.getAttribute("alt"));
+    });
+    inner.appendChild(trigger);
+
+    var pill = document.createElement("span");
+    pill.className = "amenity-expand";
+    pill.setAttribute("aria-hidden", "true");
+    pill.textContent = lang === "en" ? "View image" : "Xem ảnh";
+    inner.appendChild(pill);
+
+    frame.appendChild(inner);
+    wrap.appendChild(frame);
+    panel.appendChild(wrap);
+  }
+
   function renderPolicyPanel(plan, lang) {
     var panel = document.getElementById("policy-panel");
     if (!panel) return;
     panel.innerHTML = "";
     panel.setAttribute("aria-labelledby", "policy-tab-" + plan.id);
+
+    if (plan.isPromo) {
+      renderPolicyPromoPanel(panel, plan, lang);
+      return;
+    }
 
     var wrap = document.createElement("div");
     wrap.className = "payment-plan";
@@ -1785,19 +1839,6 @@
     });
   }
 
-  /* -----------------------------------------------------
-     OFFERS & PAYMENT PROMO IMAGE ZOOM — static image (not config-
-     driven), same pattern as setupTier1CertificateZoom() above.
-     ----------------------------------------------------- */
-  function setupPolicyPromoZoom() {
-    var btn = document.getElementById("policy-promo-trigger");
-    var img = btn && btn.querySelector("img");
-    if (!btn || !img) return;
-    btn.addEventListener("click", function () {
-      openZoomModal(img.getAttribute("src"), img.getAttribute("alt"));
-    });
-  }
-
   // Re-chunks the payment timeline's rows (see policyRowSize()) when a
   // resize crosses the 768px/1280px boundaries that change how many
   // milestones fit per row — a plain CSS media query can't do this
@@ -1837,7 +1878,6 @@
   setupFinalFormReveal();
   setupDepthFrames();
   setupTier1CertificateZoom();
-  setupPolicyPromoZoom();
 
   document.addEventListener("palmcity:langchange", function (e) {
     renderAll();

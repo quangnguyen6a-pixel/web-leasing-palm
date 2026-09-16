@@ -92,7 +92,7 @@
 /* Colour rhythm: alternating deep-navy / warm-ivory sections. Each
    tone is a soft two-point radial wash (gold catch-light, faint ivory
    glow) over a diagonal base so neither reads as one flat fill. */
-.details, .amenities, .policy, .savills-section, .final-form, .why-now, .handover {
+.details, .amenities, .policy, .savills-section, .final-form, .why-now {
   background:
     radial-gradient(circle at 82% 16%, rgba(196, 147, 56, 0.16), transparent 32%),
     radial-gradient(circle at 8% 78%, rgba(243, 226, 179, 0.08), transparent 30%),
@@ -120,7 +120,7 @@
    breathing room before the footer is intentional, not a boundary
    that's shared with another padded section below it. */
 .details, .location, .amenities, .floorplans, .policy,
-.savills-section, .residential, .credibility-section, .why-now, .handover {
+.savills-section, .residential, .credibility-section, .why-now {
   padding-top: var(--section-space-desktop);
   padding-bottom: var(--space-lg);
   overflow-x: hidden;
@@ -1038,29 +1038,31 @@
   display: flex;
   gap: 8px;
 }
+/* Navy-toned (not the default ivory) — the carousel now lives inside
+   the light champagne .floorplans section, not a dark navy one. */
 .handover-carousel__dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  border: 1px solid rgba(248, 242, 230, 0.6);
-  background: rgba(248, 242, 230, 0.25);
+  border: 1px solid rgba(0, 28, 61, 0.32);
+  background: rgba(0, 28, 61, 0.14);
   padding: 0;
   transition: background-color 200ms ease, transform 200ms ease;
 }
 .handover-carousel__dot.is-active {
-  background: var(--gold-champagne);
-  border-color: var(--gold-champagne);
+  background: var(--gold-deep);
+  border-color: var(--gold-deep);
   transform: scale(1.2);
 }
 .handover-carousel__dot:focus-visible {
-  outline: 2px solid var(--gold-champagne);
+  outline: 2px solid var(--gold-deep);
   outline-offset: 2px;
 }
 .handover-carousel__counter {
   font-family: var(--font-body-alt);
   font-size: 13px;
   letter-spacing: 0.04em;
-  color: rgba(248, 242, 230, 0.6);
+  color: rgba(0, 28, 61, 0.55);
   margin: 0;
 }
 @media (max-width: 640px) {
@@ -1412,6 +1414,14 @@
   padding-top: 48px;
   border-top: 1px solid rgba(0, 28, 61, 0.12);
 }
+/* Handover Specifications subsection — same divider treatment as
+   .floorplans__typical above (reused, not redefined) but with a
+   tighter gap since it follows the typical-floor block rather than
+   the full tabs+viewer, so two full-size gaps never stack. */
+.floorplans__handover {
+  margin-top: var(--space-lg, 24px);
+  padding-top: 32px;
+}
 .floorplans__typical-heading {
   font-family: var(--font-heading-alt);
   font-weight: 400;
@@ -1671,7 +1681,7 @@
    ========================================================= */
 .policy__tabs {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 16px;
   margin-bottom: 28px;
 }
@@ -1742,8 +1752,11 @@
   color: rgba(248, 242, 230, 0.82);
 }
 
-/* Approved "giá vàng ưu đãi" promotional image — sits between the
-   intro sentence and the payment tabs. Reuses .glass-media-frame /
+/* Approved "giá vàng ưu đãi" promotional image — shown inside the
+   payment panel only when the 5th "Ưu đãi/Promotions" tab is active
+   (see renderPolicyPromoPanel() in js/sections.js, which mounts this
+   exact markup fresh on each selection; nothing else in
+   window.paymentPlans uses it). Reuses .glass-media-frame /
    .glass-media-inner (see shared component above); only object-fit
    (contain, not the shared default cover) and sizing are scoped here
    so the full poster — headline, price and disclaimers — is always
@@ -2879,7 +2892,7 @@
    ========================================================= */
 @media (min-width: 768px) and (max-width: 1023px) {
   .details, .location, .amenities, .floorplans, .policy,
-  .savills-section, .residential, .credibility-section, .why-now, .handover {
+  .savills-section, .residential, .credibility-section, .why-now {
     padding-top: var(--section-space-tablet);
     padding-bottom: var(--space-md);
   }
@@ -2906,7 +2919,8 @@
   /* Floor plan image full width above the 2x2 feature-card grid. */
   .floorplan-typical-layout { grid-template-columns: 1fr; gap: 32px; }
   .savills-section__pillars { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-  .policy__tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  /* 5 payment blocks as a clean 3+2 wrap at tablet width. */
+  .policy__tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
   .policy__tab { min-height: 64px; padding: 13px 16px; }
 }
 
@@ -2915,7 +2929,7 @@
    ========================================================= */
 @media (max-width: 767px) {
   .details, .location, .amenities, .floorplans, .policy,
-  .savills-section, .residential, .credibility-section, .why-now, .handover {
+  .savills-section, .residential, .credibility-section, .why-now {
     padding-top: var(--section-space-mobile);
     padding-bottom: var(--space-sm);
   }
