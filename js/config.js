@@ -581,7 +581,7 @@ window.paymentPlanMilestoneChips = {
   XNDK: { vi: "XNĐK", en: "Confirmation", fullVi: "Xác nhận đăng ký", fullEn: "Confirmation of Registration" },
   VBTT: { vi: "VBTT", en: "VBTT", fullVi: "Văn bản thỏa thuận", fullEn: "Agreement Document" },
   HDMB: { vi: "HĐMB", en: "SPA", fullVi: "Hợp đồng mua bán", fullEn: "Sales and Purchase Agreement" },
-  HANDOVER: { vi: "Bàn giao", en: "Handover", fullVi: "Bàn giao", fullEn: "Handover" },
+  HANDOVER: { vi: "Bàn giao", en: "Handover", fullVi: "Danh mục bàn giao", fullEn: "Handover Specifications" },
   GCN: { vi: "GCN", en: "GCN", fullVi: "Giấy chứng nhận", fullEn: "Ownership Certificate" }
 };
 
@@ -609,12 +609,12 @@ window.paymentPlans = [
     ],
     benefitsVi: [
       { label: "Ký HĐMB", value: "Chỉ 10%" },
-      { label: "Ưu đãi", value: "Lên đến 11%" },
+      { label: "Ưu đãi giới hạn", value: "Lên đến 11%" },
       { label: "Thanh toán", value: "Trong 26 tháng", note: "Đến khi nhận nhà" }
     ],
     benefitsEn: [
       { label: "SPA signing", value: "Only 10%" },
-      { label: "Incentive", value: "Up to 11%" },
+      { label: "Limited-Time Offers", value: "Up to 11%" },
       { label: "Payment term", value: "26 months", note: "Until handover" }
     ]
   },
@@ -640,13 +640,13 @@ window.paymentPlans = [
     benefitsVi: [
       { label: "Ký HĐMB", value: "Chỉ 10%" },
       { label: "Thanh toán 0%", value: "Trong 15 tháng", note: "Đến khi nhận nhà" },
-      { label: "Ưu đãi", value: "Lên đến 6,5%" },
+      { label: "Ưu đãi giới hạn", value: "Lên đến 6,5%" },
       { label: "Thanh toán", value: "30%", note: "Đến khi nhận nhà" }
     ],
     benefitsEn: [
       { label: "SPA signing", value: "Only 10%" },
       { label: "0% payment", value: "For 15 months", note: "Until handover" },
-      { label: "Incentive", value: "Up to 6.5%" },
+      { label: "Limited-Time Offers", value: "Up to 6.5%" },
       { label: "Payment", value: "30%", note: "Until handover" }
     ]
   },
@@ -771,17 +771,18 @@ window.registrationForm = {
   paragraphVi: "Đăng ký để được tư vấn bảng giá dự kiến, layout chi tiết và chính sách bán hàng đợt 1 trực tiếp từ Chủ đầu tư Hướng Việt và Savills Việt Nam.",
   paragraphEn: "Register to receive advice on the indicative price list, detailed layouts and the first sales policy directly from developer Huong Viet and Savills Vietnam.",
   purposeOptions: [
-    { value: "o-de-o", vi: "Mua để ở", en: "Live-in" },
-    { value: "dau-tu", vi: "Đầu tư", en: "Investment" },
-    { value: "second-home", vi: "Second home", en: "Second home" },
-    { value: "cho-thue", vi: "Cho thuê", en: "Rental" }
+    { value: "o-de-o", vi: "Mua để ở", en: "For Own Living" },
+    { value: "dau-tu", vi: "Đầu tư", en: "For Investment" },
+    { value: "cho-thue", vi: "Cho thuê", en: "For Rental" }
   ],
   productOptions: [
+    { value: "studio", vi: "Studio", en: "Studio" },
     { value: "1pn", vi: "1 phòng ngủ (1PN)", en: "1 bedroom (1BR)" },
     { value: "2pn", vi: "2 phòng ngủ (2PN)", en: "2 bedrooms (2BR)" },
     { value: "3pn", vi: "3 phòng ngủ (3PN)", en: "3 bedrooms (3BR)" },
     { value: "duplex-penthouse", vi: "Duplex/Penthouse", en: "Duplex/Penthouse" },
-    { value: "shophouse", vi: "Shophouse", en: "Shophouse" }
+    { value: "shophouse", vi: "Shophouse", en: "Shophouse" },
+    { value: "thang-may-rieng", vi: "Căn hộ thang máy riêng", en: "Private elevator apartment" }
   ],
   budgetOptions: [
     { value: "duoi-15", vi: "Dưới 15 tỷ", en: "Under VND 15 billion" },

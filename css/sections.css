@@ -92,7 +92,7 @@
 /* Colour rhythm: alternating deep-navy / warm-ivory sections. Each
    tone is a soft two-point radial wash (gold catch-light, faint ivory
    glow) over a diagonal base so neither reads as one flat fill. */
-.details, .amenities, .policy, .savills-section, .final-form, .credibility-section {
+.details, .amenities, .policy, .savills-section, .final-form, .credibility-section, .why-now {
   background:
     radial-gradient(circle at 82% 16%, rgba(196, 147, 56, 0.16), transparent 32%),
     radial-gradient(circle at 8% 78%, rgba(243, 226, 179, 0.08), transparent 30%),
@@ -120,7 +120,7 @@
    breathing room before the footer is intentional, not a boundary
    that's shared with another padded section below it. */
 .details, .location, .amenities, .floorplans, .policy,
-.progress-section, .savills-section, .residential, .credibility-section {
+.progress-section, .savills-section, .residential, .credibility-section, .why-now {
   padding-top: var(--section-space-desktop);
   padding-bottom: var(--space-lg);
   overflow-x: hidden;
@@ -147,6 +147,43 @@
   border: 1px solid rgba(0, 28, 61, 0.12);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+}
+
+/* -----------------------------------------------------
+   WHY CONSIDER PALM RIVER NOW — 8-item USP grid. Cards reuse the
+   shared .glass-panel surface (defined above) rather than introducing
+   a new visual treatment. -----------------------------------------*/
+.why-now__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px 24px;
+}
+.why-now__card {
+  padding: 26px 24px;
+}
+.why-now__index {
+  display: block;
+  font-family: var(--font-heading-alt);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--gold-champagne);
+  margin-bottom: 12px;
+}
+.why-now__title {
+  font-family: var(--font-heading-alt);
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.3;
+  margin: 0 0 10px;
+  color: var(--color-white);
+}
+.why-now__desc {
+  font-family: var(--font-body-alt);
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: rgba(248, 242, 230, 0.72);
+  margin: 0;
 }
 
 /* Premium glass — the full metallic-bordered treatment, reserved for
