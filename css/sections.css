@@ -62,15 +62,15 @@
   height: 2px;
   background: var(--gold-bright);
 }
-/* Light-section instances (Location/Floor plans/Progress/Residential)
-   need the darker end of the scale — pale champagne fails contrast on
-   the warm-ivory background used there. */
+/* Light-section instances (Location/Floor plans/Residential) need the
+   darker end of the scale — pale champagne fails contrast on the
+   warm-ivory background used there. */
 .location .section-tag, .floorplans .section-tag,
-.progress-section .section-tag, .residential .section-tag {
+.residential .section-tag {
   color: var(--gold-deep);
 }
 .location .section-tag::before, .floorplans .section-tag::before,
-.progress-section .section-tag::before, .residential .section-tag::before {
+.residential .section-tag::before {
   background: var(--gold-deep);
 }
 .section-title {
@@ -99,7 +99,7 @@
     linear-gradient(135deg, #001428 0%, #002b49 48%, #001c3d 100%);
   color: var(--color-white);
 }
-.location, .floorplans, .progress-section, .residential {
+.location, .floorplans, .residential {
   background:
     radial-gradient(circle at 18% 12%, rgba(228, 198, 117, 0.28), transparent 30%),
     radial-gradient(circle at 88% 78%, rgba(196, 147, 56, 0.14), transparent 34%),
@@ -107,7 +107,7 @@
   color: var(--color-navy-primary);
 }
 .location .section-lead, .floorplans .section-lead,
-.progress-section .section-lead, .residential .section-lead {
+.residential .section-lead {
   color: #17324d;
 }
 
@@ -120,7 +120,7 @@
    breathing room before the footer is intentional, not a boundary
    that's shared with another padded section below it. */
 .details, .location, .amenities, .floorplans, .policy,
-.progress-section, .savills-section, .residential, .credibility-section, .why-now, .handover {
+.savills-section, .residential, .credibility-section, .why-now, .handover {
   padding-top: var(--section-space-desktop);
   padding-bottom: var(--space-lg);
   overflow-x: hidden;
@@ -159,7 +159,54 @@
   gap: 20px 24px;
 }
 .why-now__card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding: 26px 24px;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 300ms ease,
+              box-shadow 300ms ease;
+}
+/* Restrained internal light sweep — a static diagonal highlight that
+   only becomes visible (via opacity) on hover/focus, never animating
+   on its own, so it reads as "premium" rather than "flashing". */
+.why-now__card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(115deg, transparent 35%, rgba(243, 226, 179, 0.16) 50%, transparent 65%);
+  transform: translateX(-30%);
+  transition: opacity 300ms ease, transform 500ms ease;
+}
+.why-now__card > * {
+  position: relative;
+  z-index: 1;
+}
+.why-now__card:hover,
+.why-now__card:focus-visible {
+  transform: translateY(-5px);
+  border-color: rgba(231, 210, 154, 0.62);
+  box-shadow: 0 28px 60px rgba(0, 12, 30, 0.38), 0 0 0 1px rgba(231, 210, 154, 0.14), inset 0 1px 0 rgba(243, 230, 198, 0.25);
+}
+.why-now__card:hover::before,
+.why-now__card:focus-visible::before {
+  opacity: 1;
+  transform: translateX(30%);
+}
+.why-now__card:hover .why-now__index,
+.why-now__card:focus-visible .why-now__index {
+  color: var(--gold-specular);
+}
+.why-now__card:focus-visible {
+  outline: 2px solid var(--gold-champagne);
+  outline-offset: 3px;
+}
+.why-now__card:active {
+  transform: translateY(-2px) scale(0.99);
+  transition-duration: 120ms;
 }
 .why-now__index {
   display: block;
@@ -169,6 +216,7 @@
   letter-spacing: 0.06em;
   color: var(--gold-champagne);
   margin-bottom: 12px;
+  transition: color 300ms ease;
 }
 .why-now__title {
   font-family: var(--font-heading-alt);
@@ -184,6 +232,17 @@
   line-height: 1.6;
   color: rgba(248, 242, 230, 0.72);
   margin: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .why-now__card,
+  .why-now__card::before {
+    transition: none !important;
+  }
+  .why-now__card:hover,
+  .why-now__card:focus-visible,
+  .why-now__card:active {
+    transform: none !important;
+  }
 }
 
 /* Premium glass — the full metallic-bordered treatment, reserved for
@@ -892,9 +951,15 @@
 .handover-carousel {
   display: flex;
   align-items: center;
-  gap: 14px;
-  max-width: 900px;
+  gap: 10px;
+  width: 100%;
   margin: 8px auto 0;
+}
+@media (min-width: 1024px) {
+  .handover-carousel {
+    width: 88%;
+    max-width: 1100px;
+  }
 }
 .handover-carousel__frame {
   flex: 1 1 auto;
@@ -2126,41 +2191,6 @@
 }
 
 /* =========================================================
-   CONSTRUCTION PROGRESS
-   ========================================================= */
-.progress-section__empty {
-  padding: 56px 32px;
-  border-radius: 4px;
-  border: 1px dashed rgba(0, 28, 61, 0.22);
-  text-align: center;
-  font-family: var(--font-body-alt);
-  font-size: 15px;
-  color: rgba(0, 28, 61, 0.6);
-}
-.progress-section__timeline {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 12px;
-  margin-bottom: 24px;
-}
-.progress-section__milestone-btn {
-  flex: 0 0 auto;
-  font-family: var(--font-body-alt);
-  font-size: 13px;
-  font-weight: 700;
-  padding: 10px 16px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 28, 61, 0.18);
-  background: transparent;
-  color: var(--color-navy-primary);
-}
-.progress-section__milestone-btn[aria-selected="true"] {
-  background: var(--color-navy-primary);
-  color: var(--color-white);
-}
-
-/* =========================================================
    SAVILLS SECTION
    ========================================================= */
 .savills-section__intro {
@@ -2830,7 +2860,7 @@
    ========================================================= */
 @media (min-width: 768px) and (max-width: 1023px) {
   .details, .location, .amenities, .floorplans, .policy,
-  .progress-section, .savills-section, .residential, .credibility-section {
+  .savills-section, .residential, .credibility-section, .why-now, .handover {
     padding-top: var(--section-space-tablet);
     padding-bottom: var(--space-md);
   }
@@ -2866,7 +2896,7 @@
    ========================================================= */
 @media (max-width: 767px) {
   .details, .location, .amenities, .floorplans, .policy,
-  .progress-section, .savills-section, .residential, .credibility-section {
+  .savills-section, .residential, .credibility-section, .why-now, .handover {
     padding-top: var(--section-space-mobile);
     padding-bottom: var(--space-sm);
   }

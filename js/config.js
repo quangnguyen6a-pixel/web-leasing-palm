@@ -520,13 +520,6 @@ window.floorPlanTypes = [
 ];
 
 /* -----------------------------------------------------
-   CONSTRUCTION PROGRESS — Row 10 "Tiến độ xây dựng" (D10)
-   D10 states additional images are still required from Residential.
-   No milestones/dates exist yet — kept empty on purpose.
-   ----------------------------------------------------- */
-window.progressMilestones = [];
-
-/* -----------------------------------------------------
    SAVILLS / SAVILLS RESIDENTIAL — Rows 11 & 13 (D11)
    Corporate intro, Residential intro and the three commitments below
    are the approved copy from D11, split to match the two existing

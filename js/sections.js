@@ -1501,36 +1501,6 @@
   }
 
   /* -----------------------------------------------------
-     6. CONSTRUCTION PROGRESS (§9)
-     ----------------------------------------------------- */
-  function renderProgress(lang) {
-    var host = document.getElementById("progress-content");
-    if (!host) return;
-    var milestones = window.progressMilestones || [];
-    if (!milestones.length) {
-      host.innerHTML =
-        '<div class="progress-section__empty">' +
-        (lang === "en" ? "Progress information is being updated." : "Thông tin tiến độ đang được cập nhật.") +
-        "</div>";
-      return;
-    }
-    // Interface framework for future data — not exercised while
-    // window.progressMilestones is empty (see js/config.js).
-    var timeline = document.createElement("div");
-    timeline.className = "progress-section__timeline";
-    milestones.forEach(function (m, i) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "progress-section__milestone-btn";
-      btn.setAttribute("aria-selected", i === 0 ? "true" : "false");
-      btn.textContent = lang === "en" ? m.labelEn : m.labelVi;
-      timeline.appendChild(btn);
-    });
-    host.innerHTML = "";
-    host.appendChild(timeline);
-  }
-
-  /* -----------------------------------------------------
      7b. PRESS ARTICLE GRID (§10)
      Data-driven, shared by VI/EN — window.pressArticles (js/config.js)
      holds fully bilingual copy for each confirmed article.
@@ -1832,7 +1802,6 @@
     renderFloorplans(lang);
     renderHandoverCarousel(lang);
     renderPolicySection(lang);
-    renderProgress(lang);
     renderPressArticles(lang);
   }
 
