@@ -672,6 +672,12 @@
                  loading="lazy" decoding="async"
                  onerror="this.closest('.policy__promo-frame').classList.add('is-broken'); console.warn('Failed to load image:', this.src);">
           </button>
+          <!-- Purely visual label — the trigger button above already
+               covers the whole frame and carries the real aria-label,
+               so this stays out of the accessibility tree and lets
+               clicks pass through to it (see .amenity-expand reuse in
+               css/sections.css). -->
+          <span class="amenity-expand" aria-hidden="true" data-lang-vi="Xem ảnh" data-lang-en="View image">Xem ảnh</span>
         </div>
       </figure>
 
