@@ -1402,6 +1402,15 @@
     panel.innerHTML = "";
     panel.setAttribute("aria-labelledby", "policy-tab-" + plan.id);
 
+    // .policy__panel-shell (index.html) is the shared outer content box
+    // for all 5 tabs — the 4 payment timelines need its border/padding/
+    // background, but the Promotions image should sit directly in the
+    // section with no outer frame around it. Toggling a modifier here
+    // (rather than removing the shared element) keeps one component for
+    // both states — see .policy__panel-shell--promo in css/sections.css.
+    var shell = panel.closest(".policy__panel-shell");
+    if (shell) shell.classList.toggle("policy__panel-shell--promo", !!plan.isPromo);
+
     if (plan.isPromo) {
       renderPolicyPromoPanel(panel, plan, lang);
       return;
